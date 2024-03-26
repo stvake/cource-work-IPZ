@@ -1,7 +1,7 @@
 from tkinter import *
 import tkinter.ttk as ttk
 
-import mysql.connector
+import db_module as db
 
 
 class App(Tk):
@@ -18,10 +18,14 @@ class App(Tk):
         self.get_all_workers()
 
     def get_all_workers(self):
-        # get all workers from db on startup
-
-        for i in range(10):  # placeholder
-            self.add_worker()
+        workers = db.get_all_workers()
+        for x in workers:
+            worker = Worker(self.frame.interior)
+            worker.id = x[0]
+            worker.name_label.config(text=f"ПІБ: {x[1]} {x[2]} {x[3]}")
+            worker.birth_date_label.config(text=f"Дата народження: {x[4]}")
+            worker.post_label.config(text=f"Посада: {x[5]}")
+            worker.photo_label.config(image=PhotoImage(file=x[6]))
 
     def add_worker(self):
         worker = Worker(self.frame.interior)
@@ -29,8 +33,6 @@ class App(Tk):
         # worker.id = worker_id
 
     def save_worker_to_db(self, worker):
-        # Connect to the database and save the worker
-        # Return the id of the saved worker
         ...
 
 
@@ -72,7 +74,7 @@ class Worker(ttk.Frame):
         self.id = None
 
         self.config(relief=RIDGE, borderwidth=2)
-        self.pack(padx=5, pady=5)
+        self.pack(padx=5, pady=5, anchor=W)
 
         self.photo_frame = ttk.Frame(self, relief=RIDGE, borderwidth=2)
         self.photo_frame.pack(side=LEFT, fill=BOTH, padx=5, pady=5)
@@ -105,7 +107,7 @@ class Worker(ttk.Frame):
 
     def delete(self):
         self.destroy()
-        # delete from database
+        db.delete_worker(self.id)
 
 
 def main():
