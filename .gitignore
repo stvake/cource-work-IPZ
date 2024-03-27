@@ -163,6 +163,8 @@ cython_debug/
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/cource-work-IPZ.iml
+.idea/misc.xml
 
 # AWS User-specific
 .idea/**/aws.xml
