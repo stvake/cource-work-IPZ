@@ -9,6 +9,8 @@ class App(Tk):
         super().__init__()
         self.title('Відділ кадрів')
 
+        self.protocol("WM_DELETE_WINDOW", self.close_app)
+
         self.add_button = ttk.Button(self, text='Додати', command=self.add_worker)
         self.add_button.pack(anchor=W, padx=5, pady=5)
 
@@ -16,6 +18,10 @@ class App(Tk):
         self.frame.pack(expand=True, fill=BOTH)
 
         self.get_all_workers()
+
+    def close_app(self):
+        db.close_connection()
+        self.destroy()
 
     def get_all_workers(self):
         workers = db.get_all_workers()
@@ -25,7 +31,8 @@ class App(Tk):
             worker.name_label.config(text=f"ПІБ: {x[1]} {x[2]} {x[3]}")
             worker.birth_date_label.config(text=f"Дата народження: {x[4]}")
             worker.post_label.config(text=f"Посада: {x[5]}")
-            worker.photo_label.config(image=PhotoImage(file=x[6]))
+            worker.photo = PhotoImage(file=x[6])
+            worker.photo_label.config(image=worker.photo)
 
     def add_worker(self):
         worker = Worker(self.frame.interior)
@@ -76,11 +83,11 @@ class Worker(ttk.Frame):
         self.config(relief=RIDGE, borderwidth=2)
         self.pack(padx=5, pady=5, anchor=W)
 
+        self.photo = None
         self.photo_frame = ttk.Frame(self, relief=RIDGE, borderwidth=2)
         self.photo_frame.pack(side=LEFT, fill=BOTH, padx=5, pady=5)
 
-        self.photo = PhotoImage(file="placeholder_photo.png")
-        self.photo_label = ttk.Label(self.photo_frame, image=self.photo)
+        self.photo_label = ttk.Label(self.photo_frame)
         self.photo_label.pack()
 
         self.info_frame = ttk.Frame(self)
@@ -106,8 +113,8 @@ class Worker(ttk.Frame):
         ...
 
     def delete(self):
-        self.destroy()
         db.delete_worker(self.id)
+        self.destroy()
 
 
 def main():
