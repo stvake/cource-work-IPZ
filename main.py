@@ -20,7 +20,7 @@ class App(Tk):
         self.get_all_workers()
 
     def close_app(self):
-        db.close_connection()
+        db.connection.close()
         self.destroy()
 
     def get_all_workers(self):
@@ -28,14 +28,16 @@ class App(Tk):
         for x in workers:
             worker = Worker(self.frame.interior)
             worker.name_text.config(state=NORMAL)
+            worker.email_text.config(state=NORMAL)
             worker.birth_date_text.config(state=NORMAL)
             worker.post_text.config(state=NORMAL)
 
             worker.id = x[0]
             worker.name_text.insert(1.0, f"{x[1]} {x[2]} {x[3]}")
-            worker.birth_date_text.insert(1.0, f"{x[4]}")
-            worker.post_text.insert(1.0, f"{x[5]}")
-            worker.photo = PhotoImage(file=x[6])
+            worker.email_text.insert(1.0, f"{x[4]}")
+            worker.birth_date_text.insert(1.0, f"{x[5]}")
+            worker.post_text.insert(1.0, f"{x[6]}")
+            worker.photo = PhotoImage(file=x[7])
             worker.photo_label.config(image=worker.photo)
 
             worker.name_text.config(state=DISABLED)
@@ -103,17 +105,21 @@ class Worker(ttk.Frame):
 
         self.name_label = ttk.Label(self.info_frame, text="ПІБ:")
         self.name_label.grid(row=0, column=0, sticky=W, padx=5, pady=5)
+        self.email_label = ttk.Label(self.info_frame, text="Email:")
+        self.email_label.grid(row=1, column=0, sticky=W, padx=5, pady=5)
         self.birth_date_label = ttk.Label(self.info_frame, text="Дата народження:")
-        self.birth_date_label.grid(row=1, column=0, sticky=W, padx=5, pady=5)
+        self.birth_date_label.grid(row=2, column=0, sticky=W, padx=5, pady=5)
         self.post_label = ttk.Label(self.info_frame, text="Посада:")
-        self.post_label.grid(row=2, column=0, sticky=W, padx=5, pady=5)
+        self.post_label.grid(row=3, column=0, sticky=W, padx=5, pady=5)
 
         self.name_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
         self.name_text.grid(row=0, column=1, sticky=W, padx=5, pady=5)
+        self.email_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
+        self.email_text.grid(row=1, column=1, sticky=W, padx=5, pady=5)
         self.birth_date_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
-        self.birth_date_text.grid(row=1, column=1, sticky=W, padx=5, pady=5)
+        self.birth_date_text.grid(row=2, column=1, sticky=W, padx=5, pady=5)
         self.post_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
-        self.post_text.grid(row=2, column=1, sticky=W, padx=5, pady=5)
+        self.post_text.grid(row=3, column=1, sticky=W, padx=5, pady=5)
 
         self.buttons_frame = ttk.Frame(self)
         self.buttons_frame.pack(side=BOTTOM, fill=BOTH, padx=5, pady=5)
