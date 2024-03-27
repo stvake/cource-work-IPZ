@@ -3,8 +3,15 @@ import mysql.connector
 from tkinter import Tk
 from tkinter.messagebox import showerror
 
-with open('config.json', 'r') as f:
-    config = json.load(f)
+try:
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+except FileNotFoundError:
+    root = Tk()
+    root.withdraw()
+    showerror("Помилка", "Відсутній файл з налаштуванням підключення до БД.")
+    exit()
+
 try:
     mydb = mysql.connector.connect(
         host=config["host"],

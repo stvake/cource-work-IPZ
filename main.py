@@ -11,8 +11,8 @@ class App(Tk):
 
         self.protocol("WM_DELETE_WINDOW", self.close_app)
 
-        self.add_button = ttk.Button(self, text='Додати', command=self.add_worker)
-        self.add_button.pack(anchor=W, padx=5, pady=5)
+        self.add_worker_button = ttk.Button(self, text='Додати', command=self.add_worker)
+        self.add_worker_button.pack(anchor=W, padx=5, pady=5)
 
         self.frame = VerticalScrolledFrame(self)
         self.frame.pack(expand=True, fill=BOTH)
@@ -27,12 +27,20 @@ class App(Tk):
         workers = db.get_all_workers()
         for x in workers:
             worker = Worker(self.frame.interior)
+            worker.name_text.config(state=NORMAL)
+            worker.birth_date_text.config(state=NORMAL)
+            worker.post_text.config(state=NORMAL)
+
             worker.id = x[0]
-            worker.name_label.config(text=f"ПІБ: {x[1]} {x[2]} {x[3]}")
-            worker.birth_date_label.config(text=f"Дата народження: {x[4]}")
-            worker.post_label.config(text=f"Посада: {x[5]}")
+            worker.name_text.insert(1.0, f"{x[1]} {x[2]} {x[3]}")
+            worker.birth_date_text.insert(1.0, f"{x[4]}")
+            worker.post_text.insert(1.0, f"{x[5]}")
             worker.photo = PhotoImage(file=x[6])
             worker.photo_label.config(image=worker.photo)
+
+            worker.name_text.config(state=DISABLED)
+            worker.birth_date_text.config(state=DISABLED)
+            worker.post_text.config(state=DISABLED)
 
     def add_worker(self):
         worker = Worker(self.frame.interior)
@@ -100,6 +108,13 @@ class Worker(ttk.Frame):
         self.post_label = ttk.Label(self.info_frame, text="Посада:")
         self.post_label.grid(row=2, column=0, sticky=W, padx=5, pady=5)
 
+        self.name_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
+        self.name_text.grid(row=0, column=1, sticky=W, padx=5, pady=5)
+        self.birth_date_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
+        self.birth_date_text.grid(row=1, column=1, sticky=W, padx=5, pady=5)
+        self.post_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
+        self.post_text.grid(row=2, column=1, sticky=W, padx=5, pady=5)
+
         self.buttons_frame = ttk.Frame(self)
         self.buttons_frame.pack(side=BOTTOM, fill=BOTH, padx=5, pady=5)
 
@@ -115,6 +130,13 @@ class Worker(ttk.Frame):
     def delete(self):
         db.delete_worker(self.id)
         self.destroy()
+
+
+# class AddWorkerWindow(Toplevel):
+#     def __init__(self, parent):
+#         super().__init__(parent)
+#
+#         self.title("Додати нового робітника")
 
 
 def main():
