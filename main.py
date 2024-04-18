@@ -1,6 +1,10 @@
 from tkinter import *
 import tkinter.ttk as ttk
 
+from PIL import Image, ImageTk
+
+from io import BytesIO
+
 import db_module as db
 
 
@@ -44,7 +48,9 @@ class App(Tk):
             worker.email_text.insert(1.0, f"{x[4]}")
             worker.birth_date_text.insert(1.0, f"{x[5]}")
             worker.post_text.insert(1.0, f"{x[6]}")
-            worker.photo = PhotoImage(file=x[7])
+
+            img = Image.open(BytesIO(x[7]))
+            worker.photo = ImageTk.PhotoImage(img)
             worker.photo_label.config(image=worker.photo)
 
             worker.name_text.config(state=DISABLED)
@@ -55,23 +61,23 @@ class App(Tk):
         # worker = Worker(self.frame.interior)
         # worker_id = self.save_worker_to_db(worker)
         # worker.id = worker_id
-        pass
-
-    def save_worker_to_db(self, worker):
         ...
+
+    # def save_worker_to_db(self, worker):
+    #     ...
 
 
 class VerticalScrolledFrame(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        vscrollbar = ttk.Scrollbar(self, orient=VERTICAL)
-        vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
+        v_scrollbar = ttk.Scrollbar(self, orient=VERTICAL)
+        v_scrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
         self.canvas = Canvas(self, bd=0, highlightthickness=0,
                              width=500, height=500,
-                             yscrollcommand=vscrollbar.set)
+                             yscrollcommand=v_scrollbar.set)
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
-        vscrollbar.config(command=self.canvas.yview)
+        v_scrollbar.config(command=self.canvas.yview)
 
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
@@ -95,9 +101,12 @@ class VerticalScrolledFrame(ttk.Frame):
 class Worker(ttk.Frame):
     def __init__(self, parent, notebook):
         super().__init__(parent)
+
         self.notebook = notebook
 
         self.id = None
+
+        self.info_page = None
 
         self.config(relief=RIDGE, borderwidth=2)
         self.pack(padx=5, pady=5, anchor=W)
@@ -140,7 +149,6 @@ class Worker(ttk.Frame):
 
     def more_info(self):
         self.info_page = FullWorkerInfo(self.notebook, self.name_text.get(1.0, END)[:-1])
-
 
     def delete(self):
         db.delete_worker(self.id)
@@ -200,12 +208,12 @@ class FullWorkerInfo:
         self.languageInfo_Entry = Entry(self.info_frame, width=15)
         self.languageInfo_Entry.grid(row=5, column=1, sticky=W, padx=5, pady=5)
 
-        self.closeTab_Button = ttk.Button(self.mainFrame, text="Зберегти та закрити вкладку", command=self.closeTab)
+        self.closeTab_Button = ttk.Button(self.mainFrame, text="Зберегти та закрити вкладку", command=self.close_tab)
         self.closeTab_Button.pack()
 
         notebook.insert("end", self.mainFrame, text=name)
 
-    def closeTab(self):
+    def close_tab(self):
         self.notebook.forget(self.mainFrame)
 
 
