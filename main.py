@@ -73,9 +73,7 @@ class VerticalScrolledFrame(ttk.Frame):
 
         v_scrollbar = ttk.Scrollbar(self, orient=VERTICAL)
         v_scrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
-        self.canvas = Canvas(self, bd=0, highlightthickness=0,
-                             width=500, height=500,
-                             yscrollcommand=v_scrollbar.set)
+        self.canvas = Canvas(self, bd=0, highlightthickness=0, width=500, height=500, yscrollcommand=v_scrollbar.set)
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
         v_scrollbar.config(command=self.canvas.yview)
 
@@ -148,7 +146,7 @@ class Worker(ttk.Frame):
         self.button_delete.grid(row=2, column=1, sticky=W, padx=5, pady=5)
 
     def more_info(self):
-        self.info_page = FullWorkerInfo(self.notebook, self.name_text.get(1.0, END)[:-1])
+        self.info_page = FullWorkerInfo(self.notebook, self.name_text.get(1.0, END)[:-1], self.id)
 
     def delete(self):
         db.delete_worker(self.id)
@@ -156,7 +154,9 @@ class Worker(ttk.Frame):
 
 
 class FullWorkerInfo:
-    def __init__(self, notebook, name):
+    def __init__(self, notebook, name, worker_id):
+        self.id = worker_id
+
         self.notebook = notebook
         self.mainFrame = ttk.Frame(notebook)
 
@@ -170,10 +170,10 @@ class FullWorkerInfo:
         self.info_frame = ttk.Frame(self.mainFrame)
         self.info_frame.pack(side=LEFT, fill=BOTH, padx=5, pady=5)
 
-        self.firstName_Label = ttk.Label(self.info_frame, text="Ім'я: ")
-        self.firstName_Label.grid(row=0, column=0, sticky=W, padx=5, pady=5)
         self.lastName_Label = ttk.Label(self.info_frame, text="Прізвище: ")
-        self.lastName_Label.grid(row=0, column=2, sticky=W, padx=5, pady=5)
+        self.lastName_Label.grid(row=0, column=0, sticky=W, padx=5, pady=5)
+        self.firstName_Label = ttk.Label(self.info_frame, text="Ім'я: ")
+        self.firstName_Label.grid(row=0, column=2, sticky=W, padx=5, pady=5)
         self.patronymic_Label = ttk.Label(self.info_frame, text="По-батькові: ")
         self.patronymic_Label.grid(row=0, column=4, sticky=W, padx=5, pady=5)
         self.email_Label = ttk.Label(self.info_frame, text="Email: ")
@@ -182,17 +182,17 @@ class FullWorkerInfo:
         self.birthDate_Label.grid(row=2, column=0, sticky=W, padx=5, pady=5)
         self.post_Label = ttk.Label(self.info_frame, text="Посада: ")
         self.post_Label.grid(row=3, column=0, sticky=W, padx=5, pady=5)
-        self.placeOfBirth_Label = ttk.Label(self.info_frame, text="Місце народження: ")
-        self.placeOfBirth_Label.grid(row=2, column=2, sticky=W, padx=5, pady=5)
+        self.birthPlace_Label = ttk.Label(self.info_frame, text="Місце народження: ")
+        self.birthPlace_Label.grid(row=2, column=2, sticky=W, padx=5, pady=5)
         self.educationInfo_Label = ttk.Label(self.info_frame, text="Інформація про освіту: ")
         self.educationInfo_Label.grid(row=4, column=0, sticky=W, padx=5, pady=5)
         self.languageInfo_Label = ttk.Label(self.info_frame, text="Володіння іноземними мовами: ")
         self.languageInfo_Label.grid(row=5, column=0, sticky=W, padx=5, pady=5)
 
-        self.firstName_Entry = Entry(self.info_frame, width=15)
-        self.firstName_Entry.grid(row=0, column=1, sticky=W, padx=5, pady=5)
         self.lastName_Entry = Entry(self.info_frame, width=15)
-        self.lastName_Entry.grid(row=0, column=3, sticky=W, padx=5, pady=5)
+        self.lastName_Entry.grid(row=0, column=1, sticky=W, padx=5, pady=5)
+        self.firstName_Entry = Entry(self.info_frame, width=15)
+        self.firstName_Entry.grid(row=0, column=3, sticky=W, padx=5, pady=5)
         self.patronymic_Entry = Entry(self.info_frame, width=15)
         self.patronymic_Entry.grid(row=0, column=5, sticky=W, padx=5, pady=5)
         self.email_Entry = Entry(self.info_frame, width=15)
@@ -201,8 +201,8 @@ class FullWorkerInfo:
         self.birthDate_Entry.grid(row=2, column=1, sticky=W, padx=5, pady=5)
         self.post_Entry = Entry(self.info_frame, width=15)
         self.post_Entry.grid(row=3, column=1, sticky=W, padx=5, pady=5)
-        self.placeOfBirth_Entry = Entry(self.info_frame, width=15)
-        self.placeOfBirth_Entry.grid(row=2, column=3, sticky=W, padx=5, pady=5)
+        self.birthPlace_Entry = Entry(self.info_frame, width=15)
+        self.birthPlace_Entry.grid(row=2, column=3, sticky=W, padx=5, pady=5)
         self.educationInfo_Entry = Entry(self.info_frame, width=15)
         self.educationInfo_Entry.grid(row=4, column=1, sticky=W, padx=5, pady=5)
         self.languageInfo_Entry = Entry(self.info_frame, width=15)
@@ -212,6 +212,25 @@ class FullWorkerInfo:
         self.closeTab_Button.pack()
 
         notebook.insert("end", self.mainFrame, text=name)
+
+        self.get_info_from_db(self.id)
+
+    def get_info_from_db(self, worker_id):
+        info = db.get_worker_full_info(worker_id)
+        self.lastName_Entry.insert(END, str(info[0][1]))
+        self.firstName_Entry.insert(END, str(info[0][2]))
+        self.patronymic_Entry.insert(END, str(info[0][3]))
+        self.email_Entry.insert(END, str(info[0][4]))
+        self.birthDate_Entry.insert(END, str(info[0][5]))
+        self.post_Entry.insert(END, str(info[0][6]))
+
+        img = Image.open(BytesIO(info[0][7]))
+        self.photo = ImageTk.PhotoImage(img)
+        self.photo_label.config(image=self.photo)
+
+        self.birthPlace_Entry.insert(END, str(info[0][8]))
+        self.educationInfo_Entry.insert(END, str(info[0][9]))
+        self.languageInfo_Entry.insert(END, str(info[0][10]))
 
     def close_tab(self):
         self.notebook.forget(self.mainFrame)
