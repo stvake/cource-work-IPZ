@@ -86,8 +86,6 @@ class VerticalScrolledFrame(ttk.Frame):
         self.canvas.bind('<Configure>', self._configure_canvas)
         self.interior_id = self.canvas.create_window(0, 0, window=self.interior, anchor=NW)
 
-        self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
-
     def _configure_interior(self, event):
         size = (self.interior.winfo_reqwidth(), self.interior.winfo_reqheight())
         self.canvas.config(scrollregion=(0, 0, size[0], size[1]))
@@ -95,8 +93,17 @@ class VerticalScrolledFrame(ttk.Frame):
             self.canvas.config(width=self.interior.winfo_reqwidth())
 
     def _configure_canvas(self, event):
+        for x in self.get_all_widgets(self):
+            x.bind('<MouseWheel>', self._on_mousewheel)
+
         if self.interior.winfo_reqwidth() != self.canvas.winfo_width():
             self.canvas.itemconfigure(self.interior_id, width=self.canvas.winfo_width())
+
+    def get_all_widgets(self, parent):
+        all_widgets = [parent]
+        for child in parent.winfo_children():
+            all_widgets.extend(self.get_all_widgets(child))
+        return all_widgets
 
     def _on_mousewheel(self, event):
         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
