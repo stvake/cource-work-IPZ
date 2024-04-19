@@ -11,21 +11,22 @@ import db_module as db
 class App(Tk):
     def __init__(self):
         super().__init__()
+
         self.title('Відділ кадрів')
 
         self.protocol("WM_DELETE_WINDOW", self.close_app)
 
         self.notebook = ttk.Notebook(self)
 
-        self.window1 = ttk.Frame(self.notebook)
+        self.main_tab = ttk.Frame(self.notebook)
 
-        self.add_worker_button = ttk.Button(self.window1, text='Додати', command=self.add_worker)
+        self.add_worker_button = ttk.Button(self.main_tab, text='Додати', command=self.add_worker)
         self.add_worker_button.pack(anchor=W, padx=5, pady=5)
 
-        self.frame = VerticalScrolledFrame(self.window1)
+        self.frame = VerticalScrolledFrame(self.main_tab)
         self.frame.pack(expand=True, fill=BOTH)
 
-        self.notebook.add(self.window1, text="Workers list")
+        self.notebook.add(self.main_tab, text="Список робітників")
         self.notebook.pack(padx=5, pady=5, expand=True)
 
         self.get_all_workers()
@@ -85,6 +86,8 @@ class VerticalScrolledFrame(ttk.Frame):
         self.canvas.bind('<Configure>', self._configure_canvas)
         self.interior_id = self.canvas.create_window(0, 0, window=self.interior, anchor=NW)
 
+        self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
+
     def _configure_interior(self, event):
         size = (self.interior.winfo_reqwidth(), self.interior.winfo_reqheight())
         self.canvas.config(scrollregion=(0, 0, size[0], size[1]))
@@ -94,6 +97,9 @@ class VerticalScrolledFrame(ttk.Frame):
     def _configure_canvas(self, event):
         if self.interior.winfo_reqwidth() != self.canvas.winfo_width():
             self.canvas.itemconfigure(self.interior_id, width=self.canvas.winfo_width())
+
+    def _on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
 
 class Worker(ttk.Frame):
@@ -111,7 +117,7 @@ class Worker(ttk.Frame):
 
         self.photo = None
         self.photo_frame = ttk.Frame(self, relief=RIDGE, borderwidth=2)
-        self.photo_frame.pack(side=LEFT, fill=BOTH, padx=5, pady=5)
+        self.photo_frame.pack(side=LEFT, anchor=W, padx=5, pady=5)
 
         self.photo_label = ttk.Label(self.photo_frame)
         self.photo_label.pack()
@@ -162,26 +168,33 @@ class FullWorkerInfo:
         self.notebook = notebook
         self.mainFrame = ttk.Frame(notebook)
 
+        self.mainScrolledFrame = VerticalScrolledFrame(self.mainFrame)
+        self.mainScrolledFrame.pack(side=RIGHT, fill=BOTH, expand=True)
+
         self.photo = None
         self.photo_frame = ttk.Frame(self.mainFrame, relief=RIDGE, borderwidth=2)
-        self.photo_frame.pack(side=LEFT, fill=BOTH, padx=5, pady=5)
+        self.photo_frame.pack(side=LEFT, anchor=NW, padx=5, pady=5)
 
-        self.photo_label = ttk.Label(self.photo_frame)
+        self.photo_label = ttk.Label(self.photo_frame, text="WORKER \nPHOTO \nHERE", font=("Arial", 15))
         self.photo_label.pack()
 
-        #Frames
-        self.firstSection = ttk.Labelframe(self.mainFrame, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
+        self.docsTab = None
+
+        # Frames
+        self.firstSection = ttk.Labelframe(self.mainScrolledFrame.interior, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
         self.firstSection.pack(fill=BOTH, padx=5, pady=5)
-        self.secondSection = ttk.Labelframe(self.mainFrame, text="ІІ. ВІДОМОСТІ ПРО ВІЙСЬКОВИЙ ОБЛІК")
+        self.secondSection = ttk.Labelframe(self.mainScrolledFrame.interior, text="ІІ. ВІДОМОСТІ ПРО ВІЙСЬКОВИЙ ОБЛІК")
         self.secondSection.pack(fill=BOTH, padx=5, pady=5)
-        self.thirdSection = ttk.Labelframe(self.mainFrame, text="ІІІ. ПРОФЕСІЙНА ОСВІТА НА ВИРОБНИЦТВІ (ЗА РАХУНОК ПІДПРИЄМСТВА - РОБОТОДАВЦЯ)")
+        self.thirdSection = ttk.Labelframe(self.mainScrolledFrame.interior,
+                                           text="ІІІ. ПРОФЕСІЙНА ОСВІТА НА ВИРОБНИЦТВІ "
+                                                "(ЗА РАХУНОК ""ПІДПРИЄМСТВА - РОБОТОДАВЦЯ)")
         self.thirdSection.pack(fill=BOTH, padx=5, pady=5)
-        self.fourthSection = ttk.Labelframe(self.mainFrame, text="IV. ПРИЗНАЧЕННЯ І ПЕРЕВЕДЕННЯ")
+        self.fourthSection = ttk.Labelframe(self.mainScrolledFrame.interior, text="IV. ПРИЗНАЧЕННЯ І ПЕРЕВЕДЕННЯ")
         self.fourthSection.pack(fill=BOTH, padx=5, pady=5)
-        self.fifthSection = ttk.Labelframe(self.mainFrame, text="V. ВІДПУСТКИ")
+        self.fifthSection = ttk.Labelframe(self.mainScrolledFrame.interior, text="V. ВІДПУСТКИ")
         self.fifthSection.pack(fill=BOTH, padx=5, pady=5)
 
-        #Labels
+        # Labels
         self.generalInformation = ttk.Label()
         self.lastName_Label = ttk.Label(self.firstSection, text="Прізвище: ")
         self.lastName_Label.grid(row=0, column=0, sticky=W, padx=5, pady=5)
@@ -206,9 +219,9 @@ class FullWorkerInfo:
         self.doctoralStudies_Label = ttk.Label(self.firstSection, text="докторантура: ")
         self.doctoralStudies_Label.grid(row=7, column=4, padx=5, pady=5)
 
-        #Treeviews
+        # Treeviews
         self.education_table1 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
-                                            height=4)
+                                             height=4)
         self.education_table1.heading('Name', text='Назва освітнього закладу')
         self.education_table1.heading('Diploma', text='Диплом (свідоцтво), серія, номер')
         self.education_table1.heading('year', text='Рік закінчення')
@@ -216,7 +229,7 @@ class FullWorkerInfo:
         self.education_table1.grid(row=4, column=0, columnspan=6, padx=5)
 
         self.education_table2 = ttk.Treeview(self.firstSection, columns=('Spec', 'Cual', 'Form'), show='headings',
-                                            height=4)
+                                             height=4)
         self.education_table2.heading('Spec', text='Спеціальність (професія) за дипломом (свідоцтвом)')
         self.education_table2.heading('Cual', text='Кваліфікація за дипломом (свідоцтвом)')
         self.education_table2.heading('Form', text='Форма навчання')
@@ -232,7 +245,7 @@ class FullWorkerInfo:
 
         self.education_table3.grid(row=8, column=0, columnspan=6, padx=5)
 
-        #Entrys
+        # Entries
         self.lastName_Entry = ttk.Entry(self.firstSection, width=15)
         self.lastName_Entry.grid(row=0, column=1, sticky=W, padx=5, pady=5)
         self.firstName_Entry = ttk.Entry(self.firstSection, width=15)
@@ -252,12 +265,13 @@ class FullWorkerInfo:
         self.doctoralStudies_Entry = ttk.Entry(self.firstSection, width=3)
         self.doctoralStudies_Entry.grid(row=7, column=5, sticky=W, padx=5, pady=5)
 
-        #Buttons
-        self.closeTab_Button = ttk.Button(self.mainFrame, text="Зберегти та закрити вкладку", command=self.close_tab)
-        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
-        self.openDocsTab_Button = ttk.Button(self.mainFrame, text="Відкрити вікно з документами",
-                                             command=self.openDocsTab)
+        # Buttons
+        self.openDocsTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Відкрити вікно з документами",
+                                             command=self.open_docs_tab)
         self.openDocsTab_Button.pack(fill=BOTH, padx=5, pady=5)
+        self.closeTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Зберегти та закрити вкладку",
+                                          command=self.close_tab)
+        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
         notebook.insert("end", self.mainFrame, text=name)
 
@@ -283,7 +297,7 @@ class FullWorkerInfo:
     def close_tab(self):
         self.notebook.forget(self.mainFrame)
 
-    def openDocsTab(self):
+    def open_docs_tab(self):
         self.docsTab = DocumentsInfo(self.notebook, self.name)
 
 
@@ -297,6 +311,7 @@ class DocumentsInfo:
 
         self.close_tab_Button = ttk.Button(self.mainFrame, text="Зберегти та закрити", command=self.close_tab)
         self.close_tab_Button.pack()
+
     def close_tab(self):
         self.notebook.forget(self.mainFrame)
 
