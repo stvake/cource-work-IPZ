@@ -157,6 +157,8 @@ class FullWorkerInfo:
     def __init__(self, notebook, name, worker_id):
         self.id = worker_id
 
+        self.name = name
+
         self.notebook = notebook
         self.mainFrame = ttk.Frame(notebook)
 
@@ -167,71 +169,134 @@ class FullWorkerInfo:
         self.photo_label = ttk.Label(self.photo_frame)
         self.photo_label.pack()
 
-        self.info_frame = ttk.Frame(self.mainFrame)
-        self.info_frame.pack(side=LEFT, fill=BOTH, padx=5, pady=5)
+        #Frames
+        self.firstSection = ttk.Labelframe(self.mainFrame, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
+        self.firstSection.pack(fill=BOTH, padx=5, pady=5)
+        self.secondSection = ttk.Labelframe(self.mainFrame, text="ІІ. ВІДОМОСТІ ПРО ВІЙСЬКОВИЙ ОБЛІК")
+        self.secondSection.pack(fill=BOTH, padx=5, pady=5)
+        self.thirdSection = ttk.Labelframe(self.mainFrame, text="ІІІ. ПРОФЕСІЙНА ОСВІТА НА ВИРОБНИЦТВІ (ЗА РАХУНОК ПІДПРИЄМСТВА - РОБОТОДАВЦЯ)")
+        self.thirdSection.pack(fill=BOTH, padx=5, pady=5)
+        self.fourthSection = ttk.Labelframe(self.mainFrame, text="IV. ПРИЗНАЧЕННЯ І ПЕРЕВЕДЕННЯ")
+        self.fourthSection.pack(fill=BOTH, padx=5, pady=5)
+        self.fifthSection = ttk.Labelframe(self.mainFrame, text="V. ВІДПУСТКИ")
+        self.fifthSection.pack(fill=BOTH, padx=5, pady=5)
 
-        self.lastName_Label = ttk.Label(self.info_frame, text="Прізвище: ")
+        #Labels
+        self.generalInformation = ttk.Label()
+        self.lastName_Label = ttk.Label(self.firstSection, text="Прізвище: ")
         self.lastName_Label.grid(row=0, column=0, sticky=W, padx=5, pady=5)
-        self.firstName_Label = ttk.Label(self.info_frame, text="Ім'я: ")
+        self.firstName_Label = ttk.Label(self.firstSection, text="Ім'я: ")
         self.firstName_Label.grid(row=0, column=2, sticky=W, padx=5, pady=5)
-        self.patronymic_Label = ttk.Label(self.info_frame, text="По-батькові: ")
+        self.patronymic_Label = ttk.Label(self.firstSection, text="По-батькові: ")
         self.patronymic_Label.grid(row=0, column=4, sticky=W, padx=5, pady=5)
-        self.email_Label = ttk.Label(self.info_frame, text="Email: ")
-        self.email_Label.grid(row=1, column=0, sticky=W, padx=5, pady=5)
-        self.birthDate_Label = ttk.Label(self.info_frame, text="Дата народження: ")
-        self.birthDate_Label.grid(row=2, column=0, sticky=W, padx=5, pady=5)
-        self.post_Label = ttk.Label(self.info_frame, text="Посада: ")
-        self.post_Label.grid(row=3, column=0, sticky=W, padx=5, pady=5)
-        self.birthPlace_Label = ttk.Label(self.info_frame, text="Місце народження: ")
-        self.birthPlace_Label.grid(row=2, column=2, sticky=W, padx=5, pady=5)
-        self.educationInfo_Label = ttk.Label(self.info_frame, text="Інформація про освіту: ")
-        self.educationInfo_Label.grid(row=4, column=0, sticky=W, padx=5, pady=5)
-        self.languageInfo_Label = ttk.Label(self.info_frame, text="Володіння іноземними мовами: ")
-        self.languageInfo_Label.grid(row=5, column=0, sticky=W, padx=5, pady=5)
+        self.birthDate_Label = ttk.Label(self.firstSection, text="Дата народження: ")
+        self.birthDate_Label.grid(row=1, column=0, sticky=W, padx=5, pady=5)
+        self.nationality_Label = ttk.Label(self.firstSection, text="Громадянство: ")
+        self.nationality_Label.grid(row=1, column=2, sticky=W, padx=5, pady=5)
+        self.education_Label = ttk.Label(self.firstSection, text="Освіта (базова загальна середня, "
+                                                                 "повна загальна середня, професійно-технічна, "
+                                                                 "базова вища, неповна вища, повна вища) ")
+        self.education_Label.grid(row=2, column=0, columnspan=6, sticky=W, padx=5, pady=5)
+        self.Postgraduate_Label = ttk.Label(self.firstSection, text="Післядипломна професійна підготовка: ")
+        self.Postgraduate_Label.grid(row=6, column=0, columnspan=6, padx=5, pady=5)
+        self.graduateSchool_Label = ttk.Label(self.firstSection, text="аспірантура: ")
+        self.graduateSchool_Label.grid(row=7, column=0, padx=5, pady=5)
+        self.adjunctuary_Label = ttk.Label(self.firstSection, text="ад’юнктура: ")
+        self.adjunctuary_Label.grid(row=7, column=2, padx=5, pady=5)
+        self.doctoralStudies_Label = ttk.Label(self.firstSection, text="докторантура: ")
+        self.doctoralStudies_Label.grid(row=7, column=4, padx=5, pady=5)
 
-        self.lastName_Entry = Entry(self.info_frame, width=15)
+        #Treeviews
+        self.education_table1 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
+                                            height=4)
+        self.education_table1.heading('Name', text='Назва освітнього закладу')
+        self.education_table1.heading('Diploma', text='Диплом (свідоцтво), серія, номер')
+        self.education_table1.heading('year', text='Рік закінчення')
+
+        self.education_table1.grid(row=4, column=0, columnspan=6, padx=5)
+
+        self.education_table2 = ttk.Treeview(self.firstSection, columns=('Spec', 'Cual', 'Form'), show='headings',
+                                            height=4)
+        self.education_table2.heading('Spec', text='Спеціальність (професія) за дипломом (свідоцтвом)')
+        self.education_table2.heading('Cual', text='Кваліфікація за дипломом (свідоцтвом)')
+        self.education_table2.heading('Form', text='Форма навчання')
+
+        self.education_table2.grid(row=5, column=0, columnspan=6, padx=5)
+
+        self.education_table3 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year', 'degree'),
+                                             show='headings', height=4)
+        self.education_table3.heading('Name', text='Назва освітнього, наукового  закладу')
+        self.education_table3.heading('Diploma', text='Диплом, номер, дата видачі')
+        self.education_table3.heading('year', text='Рік закінчення')
+        self.education_table3.heading('degree', text='Науковий ступінь, учене звання')
+
+        self.education_table3.grid(row=8, column=0, columnspan=6, padx=5)
+
+        #Entrys
+        self.lastName_Entry = ttk.Entry(self.firstSection, width=15)
         self.lastName_Entry.grid(row=0, column=1, sticky=W, padx=5, pady=5)
-        self.firstName_Entry = Entry(self.info_frame, width=15)
+        self.firstName_Entry = ttk.Entry(self.firstSection, width=15)
         self.firstName_Entry.grid(row=0, column=3, sticky=W, padx=5, pady=5)
-        self.patronymic_Entry = Entry(self.info_frame, width=15)
+        self.patronymic_Entry = ttk.Entry(self.firstSection, width=15)
         self.patronymic_Entry.grid(row=0, column=5, sticky=W, padx=5, pady=5)
-        self.email_Entry = Entry(self.info_frame, width=15)
-        self.email_Entry.grid(row=1, column=1, sticky=W, padx=5, pady=5)
-        self.birthDate_Entry = Entry(self.info_frame, width=15)
-        self.birthDate_Entry.grid(row=2, column=1, sticky=W, padx=5, pady=5)
-        self.post_Entry = Entry(self.info_frame, width=15)
-        self.post_Entry.grid(row=3, column=1, sticky=W, padx=5, pady=5)
-        self.birthPlace_Entry = Entry(self.info_frame, width=15)
-        self.birthPlace_Entry.grid(row=2, column=3, sticky=W, padx=5, pady=5)
-        self.educationInfo_Entry = Entry(self.info_frame, width=15)
-        self.educationInfo_Entry.grid(row=4, column=1, sticky=W, padx=5, pady=5)
-        self.languageInfo_Entry = Entry(self.info_frame, width=15)
-        self.languageInfo_Entry.grid(row=5, column=1, sticky=W, padx=5, pady=5)
+        self.birthPlace_Entry = ttk.Entry(self.firstSection, width=15)
+        self.birthPlace_Entry.grid(row=1, column=1, sticky=W, padx=5, pady=5)
+        self.nationality_Entry = ttk.Entry(self.firstSection, width=15)
+        self.nationality_Entry.grid(row=1, column=3, sticky=W, padx=5, pady=5)
+        self.education_Entry = ttk.Entry(self.firstSection, width=100)
+        self.education_Entry.grid(row=3, column=0, columnspan=6, padx=5, pady=5)
+        self.graduateSchool_Entry = ttk.Entry(self.firstSection, width=3)
+        self.graduateSchool_Entry.grid(row=7, column=1, sticky=W, padx=5, pady=5)
+        self.adjunctuary_Entry = ttk.Entry(self.firstSection, width=3)
+        self.adjunctuary_Entry.grid(row=7, column=3, sticky=W, padx=5, pady=5)
+        self.doctoralStudies_Entry = ttk.Entry(self.firstSection, width=3)
+        self.doctoralStudies_Entry.grid(row=7, column=5, sticky=W, padx=5, pady=5)
 
+        #Buttons
         self.closeTab_Button = ttk.Button(self.mainFrame, text="Зберегти та закрити вкладку", command=self.close_tab)
-        self.closeTab_Button.pack()
+        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
+        self.openDocsTab_Button = ttk.Button(self.mainFrame, text="Відкрити вікно з документами",
+                                             command=self.openDocsTab)
+        self.openDocsTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
         notebook.insert("end", self.mainFrame, text=name)
 
-        self.get_info_from_db(self.id)
+        # self.get_info_from_db(self.id)
 
-    def get_info_from_db(self, worker_id):
-        info = db.get_worker_full_info(worker_id)
-        self.lastName_Entry.insert(END, str(info[0][1]))
-        self.firstName_Entry.insert(END, str(info[0][2]))
-        self.patronymic_Entry.insert(END, str(info[0][3]))
-        self.email_Entry.insert(END, str(info[0][4]))
-        self.birthDate_Entry.insert(END, str(info[0][5]))
-        self.post_Entry.insert(END, str(info[0][6]))
+    # def get_info_from_db(self, worker_id):
+    #     info = db.get_worker_full_info(worker_id)
+    #     self.lastName_Entry.insert(END, str(info[0][1]))
+    #     self.firstName_Entry.insert(END, str(info[0][2]))
+    #     self.patronymic_Entry.insert(END, str(info[0][3]))
+    #     self.email_Entry.insert(END, str(info[0][4]))
+    #     self.birthDate_Entry.insert(END, str(info[0][5]))
+    #     self.post_Entry.insert(END, str(info[0][6]))
+    #
+    #     img = Image.open(BytesIO(info[0][7]))
+    #     self.photo = ImageTk.PhotoImage(img)
+    #     self.photo_label.config(image=self.photo)
+    #
+    #     self.birthPlace_Entry.insert(END, str(info[0][8]))
+    #     self.educationInfo_Entry.insert(END, str(info[0][9]))
+    #     self.languageInfo_Entry.insert(END, str(info[0][10]))
 
-        img = Image.open(BytesIO(info[0][7]))
-        self.photo = ImageTk.PhotoImage(img)
-        self.photo_label.config(image=self.photo)
+    def close_tab(self):
+        self.notebook.forget(self.mainFrame)
 
-        self.birthPlace_Entry.insert(END, str(info[0][8]))
-        self.educationInfo_Entry.insert(END, str(info[0][9]))
-        self.languageInfo_Entry.insert(END, str(info[0][10]))
+    def openDocsTab(self):
+        self.docsTab = DocumentsInfo(self.notebook, self.name)
 
+
+class DocumentsInfo:
+    def __init__(self, notebook, name):
+        self.notebook = notebook
+
+        self.mainFrame = ttk.Frame(notebook)
+
+        notebook.insert("end", self.mainFrame, text=name + " док.")
+
+        self.close_tab_Button = ttk.Button(self.mainFrame, text="Зберегти та закрити", command=self.close_tab)
+        self.close_tab_Button.pack()
     def close_tab(self):
         self.notebook.forget(self.mainFrame)
 
