@@ -284,6 +284,27 @@ class FullWorkerInfo:
         self.passportIssueDate_Label = ttk.Label(self.firstSection, text="дата видачі")
         self.passportIssueDate_Label.grid(row=22, column=4, padx=5, pady=5)
 
+        self.militaryRecordGroup_Label = ttk.Label(self.secondSection, text="Група обліку")
+        self.militaryRecordGroup_Label.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+        self.militaryRecordSuitability_Label = ttk.Label(self.secondSection, text="Придатність до військової служби")
+        self.militaryRecordSuitability_Label.grid(row=0, column=2, padx=5, pady=5, sticky=W)
+        self.militaryRecordCategories_Label = ttk.Label(self.secondSection, text="Категорія обліку")
+        self.militaryRecordCategories_Label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
+        self.militaryRecordNameReg_Label = ttk.Label(self.secondSection,
+                                                     text="Назва райвіськомату за місцем реєстрації")
+        self.militaryRecordNameReg_Label.grid(row=1, column=2, padx=5, pady=5, sticky=W)
+        self.militaryRecordCompound_Label = ttk.Label(self.secondSection, text="Склад")
+        self.militaryRecordCompound_Label.grid(row=3, column=0, padx=5, pady=5, sticky=W)
+        self.militaryRecordNameLiving_Label = ttk.Label(self.secondSection,
+                                                        text="Назва райвіськомату за місцем фактичного проживання")
+        self.militaryRecordNameLiving_Label.grid(row=3, column=2, padx=5, pady=5, sticky=W)
+        self.militaryRecordRank_Label = ttk.Label(self.secondSection, text="Військове звання")
+        self.militaryRecordRank_Label.grid(row=4, column=0, padx=5, pady=5, sticky=W)
+        self.militaryRecordSpecialty_Label = ttk.Label(self.secondSection, text="Військово-облікова спеціальність №")
+        self.militaryRecordSpecialty_Label.grid(row=5, column=0, padx=5, pady=5, sticky=W)
+        self.militaryRecordSpecial_Label = ttk.Label(self.secondSection, text="Перебування на спеціальному обліку")
+        self.militaryRecordSpecial_Label.grid(row=5, column=2, padx=5, pady=5, sticky=W)
+
         # Treeviews
         self.education_table1 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
                                              height=4)
@@ -313,6 +334,23 @@ class FullWorkerInfo:
         self.family_table.heading('PIB', text='ПІБ')
         self.family_table.heading('BirthDate', text='Рік народження')
         self.family_table.grid(row=17, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
+
+        self.education_table3 = ttk.Treeview(self.thirdSection, columns=('Date', 'Name', 'Period', 'Type', 'Form',
+                                                                         'Document'), show='headings', height=4)
+        self.education_table3.heading('Date', text='Дата')
+        self.education_table3.heading('Name', text='Назва структурного підрозділу')
+        self.education_table3.heading('Period', text='Період навчання')
+        self.education_table3.heading('Type', text='Вид навчання')
+        self.education_table3.heading('Form', text='Форма навчання')
+        self.education_table3.heading('Document', text='Назва документу, що посвідчує професійну освіту, ким виданий')
+
+        self.education_table3.column('Date', width=140)
+        self.education_table3.column('Name', width=140)
+        self.education_table3.column('Period', width=140)
+        self.education_table3.column('Type', width=140)
+        self.education_table3.column('Form', width=140)
+        self.education_table3.column('Document', width=140)
+        self.education_table3.grid(row=0, column=0, columnspan=6, padx=5)
 
         # Entries
         self.lastName_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
@@ -383,6 +421,31 @@ class FullWorkerInfo:
         self.passportIssuedBy_Entry.grid(row=22, column=0, columnspan=4, padx=5, pady=5, sticky=NSEW)
         self.passportIssueDate_Entry = ttk.Entry(self.firstSection, justify='center')
         self.passportIssueDate_Entry.grid(row=22, column=5, padx=5, pady=5, sticky=W)
+
+        self.militaryRecordGroup_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordGroup_Entry.grid(row=0, column=1, padx=5, pady=5, sticky=W)
+        self.militaryRecordSuitability_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordSuitability_Entry.grid(row=0, column=3, padx=5, pady=5, sticky=W)
+        self.militaryRecordCategories_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordCategories_Entry.grid(row=1, column=1, padx=5, pady=5, sticky=W)
+        self.militaryRecordNameReg_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordNameReg_Entry.grid(row=1, column=3, padx=5, pady=5, sticky=W)
+        self.militaryRecordCompound_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordCompound_Entry.grid(row=3, column=1, padx=5, pady=5, sticky=W)
+
+        self.militaryRecordNameReg2_Entry = ttk.Entry(self.secondSection, justify='center', width=56)
+        self.militaryRecordNameReg2_Entry.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky=W)
+        self.militaryRecordNameLiving2_Entry = ttk.Entry(self.secondSection, justify='center', width=75)
+        self.militaryRecordNameLiving2_Entry.grid(row=2, column=2, columnspan=2, padx=5, pady=5, sticky=W)
+
+        self.militaryRecordNameLiving_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordNameLiving_Entry.grid(row=3, column=3, padx=5, pady=5, sticky=W)
+        self.militaryRecordRank_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordRank_Entry.grid(row=4, column=1, padx=5, pady=5, sticky=W)
+        self.militaryRecordSpecialty_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordSpecialty_Entry.grid(row=5, column=1, padx=5, pady=5, sticky=W)
+        self.militaryRecordSpecial_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordSpecial_Entry.grid(row=5, column=3, padx=5, pady=5, sticky=W)
 
         # Buttons
         self.openDocsTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Відкрити вікно з документами",
