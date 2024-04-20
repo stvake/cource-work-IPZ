@@ -74,7 +74,7 @@ class VerticalScrolledFrame(ttk.Frame):
 
         v_scrollbar = ttk.Scrollbar(self, orient=VERTICAL)
         v_scrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
-        self.canvas = Canvas(self, bd=0, highlightthickness=0, width=500, height=500, yscrollcommand=v_scrollbar.set)
+        self.canvas = Canvas(self, bd=0, highlightthickness=0, width=500, height=750, yscrollcommand=v_scrollbar.set)
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
         v_scrollbar.config(command=self.canvas.yview)
 
@@ -223,10 +223,66 @@ class FullWorkerInfo:
 
         self.graduateSchool_Label = ttk.Label(self.firstSection, text="аспірантура: ")
         self.graduateSchool_Label.grid(row=7, column=0, padx=5, pady=5)
-        self.adjunctuary_Label = ttk.Label(self.firstSection, text="ад’юнктура: ")
-        self.adjunctuary_Label.grid(row=7, column=2, padx=5, pady=5)
+        self.adjunct_Label = ttk.Label(self.firstSection, text="ад'юнктура: ")
+        self.adjunct_Label.grid(row=7, column=2, padx=5, pady=5)
         self.doctoralStudies_Label = ttk.Label(self.firstSection, text="докторантура: ")
         self.doctoralStudies_Label.grid(row=7, column=4, padx=5, pady=5)
+
+        self.lastWork_Label = ttk.Label(self.firstSection, text="Останнє місце роботи ")
+        self.lastWork_Label.grid(row=9, column=0, padx=5, pady=5, sticky=W)
+        self.lastPost_Label = ttk.Label(self.firstSection, text="посада (професія) ")
+        self.lastPost_Label.grid(row=9, column=2, padx=5, pady=5, sticky=W)
+
+        self.workExpDate_Label = ttk.Label(self.firstSection, text="Стаж роботи станом на")
+        self.workExpDate_Label.grid(row=10, column=0, padx=5, pady=5, sticky=W)
+        self.workExpTotal_Label = ttk.Label(self.firstSection, text="Загальний")
+        self.workExpTotal_Label.grid(row=10, column=1, padx=5, pady=5, sticky=E)
+        self.workExpDays_Label = ttk.Label(self.firstSection, text="днів")
+        self.workExpDays_Label.grid(row=10, column=2, padx=5, pady=5, sticky=E)
+        self.workExpMonths_Label = ttk.Label(self.firstSection, text="місяців")
+        self.workExpMonths_Label.grid(row=10, column=3, padx=5, pady=5)
+        self.workExpYears_Label = ttk.Label(self.firstSection, text="років")
+        self.workExpYears_Label.grid(row=10, column=4, padx=5, pady=5, sticky=W)
+
+        self.workBonus_Label = ttk.Label(self.firstSection, text="Що дає право на надбавку за вислугу років")
+        self.workBonus_Label.grid(row=11, column=0, columnspan=2, padx=5, pady=5, sticky=E)
+        self.workBonusDays_Label = ttk.Label(self.firstSection, text="днів")
+        self.workBonusDays_Label.grid(row=11, column=2, padx=5, pady=5, sticky=E)
+        self.workBonusMonths_Label = ttk.Label(self.firstSection, text="місяців")
+        self.workBonusMonths_Label.grid(row=11, column=3, padx=5, pady=5)
+        self.workBonusYears_Label = ttk.Label(self.firstSection, text="років")
+        self.workBonusYears_Label.grid(row=11, column=4, padx=5, pady=5, sticky=W)
+
+        self.workFire_Label = ttk.Label(self.firstSection, text="Дата та причина звільнення (скорочення штатів; за "
+                                                                "власним бажанням, за прогул та інші порушення, "
+                                                                "невідповідність посаді тощо)")
+        self.workFire_Label.grid(row=12, columnspan=6, padx=5, pady=5, sticky=W)
+
+        self.retire_Label = ttk.Label(self.firstSection, text="Відомості про отримання пенсії (у разі наявності "
+                                                              "вказати вид пенсійних виплат згідно з чинним "
+                                                              "законодавством)")
+        self.retire_Label.grid(row=14, columnspan=6, padx=5, pady=5, sticky=W)
+
+        self.family_Label = ttk.Label(self.firstSection, text="Родинний стан")
+        self.family_Label.grid(row=16, column=0, padx=5, pady=5, sticky=W)
+
+        self.residence_Label = ttk.Label(self.firstSection, text="Місце фактичного проживання (область, місто, район, "
+                                                                 "вулиця, № будинку, квартири, номер контактного "
+                                                                 "телефону, поштовий індекс)")
+        self.residence_Label.grid(row=18, columnspan=6, padx=5, pady=5, sticky=W)
+
+        self.registeredResidence_Label = ttk.Label(self.firstSection, text="Місце проживання за державною реєстрацією")
+        self.registeredResidence_Label.grid(row=20, column=0, columnspan=2, padx=5, pady=5, sticky=W)
+        self.passport_Label = ttk.Label(self.firstSection, text="Паспорт:")
+        self.passport_Label.grid(row=21, column=1, padx=5, pady=5, sticky=E)
+        self.passportSeries_Label = ttk.Label(self.firstSection, text="серія")
+        self.passportSeries_Label.grid(row=21, column=2, padx=5, pady=5, sticky=W)
+        self.passportNumber_Label = ttk.Label(self.firstSection, text="№")
+        self.passportNumber_Label.grid(row=21, column=3, padx=5, pady=5, sticky=W)
+        self.passportIssuedBy_Label = ttk.Label(self.firstSection, text=", ким виданий")
+        self.passportIssuedBy_Label.grid(row=21, column=4, padx=5, pady=5, sticky=W)
+        self.passportDate_Label = ttk.Label(self.firstSection, text="дата видачі")
+        self.passportDate_Label.grid(row=22, column=4, padx=5, pady=5)
 
         # Treeviews
         self.education_table1 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
@@ -234,16 +290,14 @@ class FullWorkerInfo:
         self.education_table1.heading('Name', text='Назва освітнього закладу')
         self.education_table1.heading('Diploma', text='Диплом (свідоцтво), серія, номер')
         self.education_table1.heading('year', text='Рік закінчення')
-
-        self.education_table1.grid(row=4, column=0, columnspan=6, padx=5)
+        self.education_table1.grid(row=4, column=0, columnspan=6, padx=5, sticky=NSEW)
 
         self.education_table2 = ttk.Treeview(self.firstSection, columns=('Spec', 'Cual', 'Form'), show='headings',
                                              height=4)
         self.education_table2.heading('Spec', text='Спеціальність (професія) за дипломом (свідоцтвом)')
         self.education_table2.heading('Cual', text='Кваліфікація за дипломом (свідоцтвом)')
         self.education_table2.heading('Form', text='Форма навчання')
-
-        self.education_table2.grid(row=5, column=0, columnspan=6, padx=5)
+        self.education_table2.grid(row=5, column=0, columnspan=6, padx=5, sticky=NSEW)
 
         self.education_table3 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year', 'degree'),
                                              show='headings', height=4)
@@ -251,30 +305,84 @@ class FullWorkerInfo:
         self.education_table3.heading('Diploma', text='Диплом, номер, дата видачі')
         self.education_table3.heading('year', text='Рік закінчення')
         self.education_table3.heading('degree', text='Науковий ступінь, учене звання')
+        self.education_table3.grid(row=8, column=0, columnspan=6, padx=5, sticky=NSEW)
 
-        self.education_table3.grid(row=8, column=0, columnspan=6, padx=5)
+        self.family_table = ttk.Treeview(self.firstSection, columns=('Connection', 'PIB', 'BirthDate'), show='headings',
+                                         height=4)
+        self.family_table.heading('Connection', text="Ступінь родинного зв'язку (склад сім'ї)")
+        self.family_table.heading('PIB', text='ПІБ')
+        self.family_table.heading('BirthDate', text='Рік народження')
+        self.family_table.grid(row=17, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
 
         # Entries
-        self.lastName_Entry = ttk.Entry(self.firstSection, width=15)
+        self.lastName_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.lastName_Entry.grid(row=0, column=1, sticky=W, padx=5, pady=5)
-        self.firstName_Entry = ttk.Entry(self.firstSection, width=15)
+        self.firstName_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.firstName_Entry.grid(row=0, column=3, sticky=W, padx=5, pady=5)
-        self.patronymic_Entry = ttk.Entry(self.firstSection, width=15)
+        self.patronymic_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.patronymic_Entry.grid(row=0, column=5, sticky=W, padx=5, pady=5)
-        self.birthDate_Entry = ttk.Entry(self.firstSection, width=15)
+        self.birthDate_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.birthDate_Entry.grid(row=1, column=1, sticky=W, padx=5, pady=5)
-        self.nationality_Entry = ttk.Entry(self.firstSection, width=15)
+        self.nationality_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.nationality_Entry.grid(row=1, column=3, sticky=W, padx=5, pady=5)
 
-        self.education_Entry = ttk.Entry(self.firstSection, width=100)
-        self.education_Entry.grid(row=3, column=0, columnspan=6, padx=5, pady=5)
+        self.education_Entry = ttk.Entry(self.firstSection, justify='center')
+        self.education_Entry.grid(row=3, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
 
-        self.graduateSchool_Entry = ttk.Entry(self.firstSection, width=3)
+        self.graduateSchool_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
         self.graduateSchool_Entry.grid(row=7, column=1, sticky=W, padx=5, pady=5)
-        self.adjunctuary_Entry = ttk.Entry(self.firstSection, width=3)
-        self.adjunctuary_Entry.grid(row=7, column=3, sticky=W, padx=5, pady=5)
-        self.doctoralStudies_Entry = ttk.Entry(self.firstSection, width=3)
+        self.adjunct_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
+        self.adjunct_Entry.grid(row=7, column=3, sticky=W, padx=5, pady=5)
+        self.doctoralStudies_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
         self.doctoralStudies_Entry.grid(row=7, column=5, sticky=W, padx=5, pady=5)
+
+        self.lastWork_Entry = ttk.Entry(self.firstSection, width=30, justify='center')
+        self.lastWork_Entry.grid(row=9, column=1, sticky=W, padx=5, pady=5)
+        self.lastPost_Entry = ttk.Entry(self.firstSection, width=30, justify='center')
+        self.lastPost_Entry.grid(row=9, column=3, sticky=W, padx=5, pady=5)
+
+        self.workExpDate_Entry = ttk.Entry(self.firstSection, width=18, justify='center')
+        self.workExpDate_Entry.grid(row=10, column=1, padx=5, pady=5, sticky=W)
+        self.workExpDays_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
+        self.workExpDays_Entry.grid(row=10, column=2, padx=5, pady=5, sticky=W)
+        self.workExpMonths_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
+        self.workExpMonths_Entry.grid(row=10, column=3, padx=5, pady=5, sticky=W)
+        self.workExpYears_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
+        self.workExpYears_Entry.grid(row=10, column=3, padx=5, pady=5, sticky=E)
+
+        self.workBonusDays_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
+        self.workBonusDays_Entry.grid(row=11, column=2, padx=5, pady=5, sticky=W)
+        self.workBonusMonths_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
+        self.workBonusMonths_Entry.grid(row=11, column=3, padx=5, pady=5, sticky=W)
+        self.workBonusYears_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
+        self.workBonusYears_Entry.grid(row=11, column=3, padx=5, pady=5, sticky=E)
+
+        self.workFireDate_Entry = ttk.Entry(self.firstSection, width=20, justify='center')
+        self.workFireDate_Entry.grid(row=13, padx=5, pady=5, sticky=W)
+        self.workFireReason_Entry = ttk.Entry(self.firstSection, width=100, justify='center')
+        self.workFireReason_Entry.grid(row=13, column=1, columnspan=4, padx=5, pady=5, sticky=W)
+
+        self.retire_Entry = ttk.Entry(self.firstSection, width=124, justify='center')
+        self.retire_Entry.grid(row=15, columnspan=6, padx=5, pady=5, sticky=W)
+
+        self.family_Entry = ttk.Entry(self.firstSection, justify='center')
+        self.family_Entry.grid(row=16, column=1, columnspan=5, padx=5, pady=5, sticky=NSEW)
+
+        self.residence_Entry = ttk.Entry(self.firstSection, justify='center')
+        self.residence_Entry.grid(row=19, columnspan=6, padx=5, pady=5, sticky=NSEW)
+
+        self.registeredResidence_Entry1 = ttk.Entry(self.firstSection, justify='center', width=95)
+        self.registeredResidence_Entry1.grid(row=20, column=1, columnspan=5, padx=5, pady=5, sticky=E)
+        self.registeredResidence_Entry2 = ttk.Entry(self.firstSection, justify='center', width=45)
+        self.registeredResidence_Entry2.grid(row=21, column=0, columnspan=2, padx=5, pady=5, sticky=W)
+        self.passportSeries_Entry = ttk.Entry(self.firstSection, justify='center', width=11)
+        self.passportSeries_Entry.grid(row=21, column=2, padx=5, pady=5, sticky=E)
+        self.passportNumber_Entry = ttk.Entry(self.firstSection, justify='center', width=25)
+        self.passportNumber_Entry.grid(row=21, column=3, padx=5, pady=5, sticky=E)
+        self.passportIssuedBy_Entry = ttk.Entry(self.firstSection, justify='center')
+        self.passportIssuedBy_Entry.grid(row=22, column=0, columnspan=4, padx=5, pady=5, sticky=NSEW)
+        self.passportDate_Entry = ttk.Entry(self.firstSection, justify='center')
+        self.passportDate_Entry.grid(row=22, column=5, padx=5, pady=5, sticky=W)
 
         # Buttons
         self.openDocsTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Відкрити вікно з документами",
@@ -308,7 +416,7 @@ class FullWorkerInfo:
         if info[0][18] == 1:
             self.graduateSchool_Entry.insert(END, "X")
         elif info[0][18] == 2:
-            self.adjunctuary_Entry.insert(END, "X")
+            self.adjunct_Entry.insert(END, "X")
         elif info[0][18] == 3:
             self.doctoralStudies_Entry.insert(END, "X")
 
