@@ -258,18 +258,18 @@ class FullWorkerInfo:
                                                                 "невідповідність посаді тощо)")
         self.workFire_Label.grid(row=12, columnspan=6, padx=5, pady=5, sticky=W)
 
-        self.retire_Label = ttk.Label(self.firstSection, text="Відомості про отримання пенсії (у разі наявності "
+        self.pension_Label = ttk.Label(self.firstSection, text="Відомості про отримання пенсії (у разі наявності "
                                                               "вказати вид пенсійних виплат згідно з чинним "
                                                               "законодавством)")
-        self.retire_Label.grid(row=14, columnspan=6, padx=5, pady=5, sticky=W)
+        self.pension_Label.grid(row=14, columnspan=6, padx=5, pady=5, sticky=W)
 
         self.family_Label = ttk.Label(self.firstSection, text="Родинний стан")
         self.family_Label.grid(row=16, column=0, padx=5, pady=5, sticky=W)
 
-        self.residence_Label = ttk.Label(self.firstSection, text="Місце фактичного проживання (область, місто, район, "
+        self.actualResidence_Label = ttk.Label(self.firstSection, text="Місце фактичного проживання (область, місто, район, "
                                                                  "вулиця, № будинку, квартири, номер контактного "
                                                                  "телефону, поштовий індекс)")
-        self.residence_Label.grid(row=18, columnspan=6, padx=5, pady=5, sticky=W)
+        self.actualResidence_Label.grid(row=18, columnspan=6, padx=5, pady=5, sticky=W)
 
         self.registeredResidence_Label = ttk.Label(self.firstSection, text="Місце проживання за державною реєстрацією")
         self.registeredResidence_Label.grid(row=20, column=0, columnspan=2, padx=5, pady=5, sticky=W)
@@ -281,8 +281,8 @@ class FullWorkerInfo:
         self.passportNumber_Label.grid(row=21, column=3, padx=5, pady=5, sticky=W)
         self.passportIssuedBy_Label = ttk.Label(self.firstSection, text=", ким виданий")
         self.passportIssuedBy_Label.grid(row=21, column=4, padx=5, pady=5, sticky=W)
-        self.passportDate_Label = ttk.Label(self.firstSection, text="дата видачі")
-        self.passportDate_Label.grid(row=22, column=4, padx=5, pady=5)
+        self.passportIssueDate_Label = ttk.Label(self.firstSection, text="дата видачі")
+        self.passportIssueDate_Label.grid(row=22, column=4, padx=5, pady=5)
 
         # Treeviews
         self.education_table1 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
@@ -362,14 +362,14 @@ class FullWorkerInfo:
         self.workFireReason_Entry = ttk.Entry(self.firstSection, width=100, justify='center')
         self.workFireReason_Entry.grid(row=13, column=1, columnspan=4, padx=5, pady=5, sticky=W)
 
-        self.retire_Entry = ttk.Entry(self.firstSection, width=124, justify='center')
-        self.retire_Entry.grid(row=15, columnspan=6, padx=5, pady=5, sticky=W)
+        self.pension_Entry = ttk.Entry(self.firstSection, width=124, justify='center')
+        self.pension_Entry.grid(row=15, columnspan=6, padx=5, pady=5, sticky=W)
 
         self.family_Entry = ttk.Entry(self.firstSection, justify='center')
         self.family_Entry.grid(row=16, column=1, columnspan=5, padx=5, pady=5, sticky=NSEW)
 
-        self.residence_Entry = ttk.Entry(self.firstSection, justify='center')
-        self.residence_Entry.grid(row=19, columnspan=6, padx=5, pady=5, sticky=NSEW)
+        self.actualResidence_Entry = ttk.Entry(self.firstSection, justify='center')
+        self.actualResidence_Entry.grid(row=19, columnspan=6, padx=5, pady=5, sticky=NSEW)
 
         self.registeredResidence_Entry1 = ttk.Entry(self.firstSection, justify='center', width=95)
         self.registeredResidence_Entry1.grid(row=20, column=1, columnspan=5, padx=5, pady=5, sticky=E)
@@ -381,8 +381,8 @@ class FullWorkerInfo:
         self.passportNumber_Entry.grid(row=21, column=3, padx=5, pady=5, sticky=E)
         self.passportIssuedBy_Entry = ttk.Entry(self.firstSection, justify='center')
         self.passportIssuedBy_Entry.grid(row=22, column=0, columnspan=4, padx=5, pady=5, sticky=NSEW)
-        self.passportDate_Entry = ttk.Entry(self.firstSection, justify='center')
-        self.passportDate_Entry.grid(row=22, column=5, padx=5, pady=5, sticky=W)
+        self.passportIssueDate_Entry = ttk.Entry(self.firstSection, justify='center')
+        self.passportIssueDate_Entry.grid(row=22, column=5, padx=5, pady=5, sticky=W)
 
         # Buttons
         self.openDocsTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Відкрити вікно з документами",
@@ -410,17 +410,39 @@ class FullWorkerInfo:
         self.nationality_Entry.insert(END, info[0][9])
         self.education_Entry.insert(END, info[0][10])
 
-        self.education_table1.insert(parent='', index=0, values=(info[0][12], info[0][13], info[0][14]))
-        self.education_table2.insert(parent='', index=0, values=(info[0][15], info[0][16], info[0][17]))
+        self.lastWork_Entry.insert(END, info[0][29])
+        self.lastPost_Entry.insert(END, info[0][30])
+        self.workExpDate_Entry.insert(END, info[0][12])
+        self.workExpDays_Entry.insert(END, info[0][13])
+        self.workExpMonths_Entry.insert(END, info[0][14])
+        self.workExpYears_Entry.insert(END, info[0][15])
+        self.workBonusDays_Entry.insert(END, info[0][16])
+        self.workBonusMonths_Entry.insert(END, info[0][17])
+        self.workBonusYears_Entry.insert(END, info[0][18])
+        self.workFireDate_Entry.insert(END, info[0][19])
+        self.workFireReason_Entry.insert(END, info[0][20])
 
-        if info[0][18] == 1:
-            self.graduateSchool_Entry.insert(END, "X")
-        elif info[0][18] == 2:
-            self.adjunct_Entry.insert(END, "X")
-        elif info[0][18] == 3:
-            self.doctoralStudies_Entry.insert(END, "X")
+        self.pension_Entry.insert(END, info[0][21])
+        self.family_Entry.insert(END, info[0][22])
+        self.actualResidence_Entry.insert(END, info[0][23])
+        self.registeredResidence_Entry1.insert(END, info[0][24][:3])
+        self.registeredResidence_Entry2.insert(END, info[0][24][3:])
+        self.passportSeries_Entry.insert(END, info[0][25])
+        self.passportNumber_Entry.insert(END, info[0][26])
+        self.passportIssuedBy_Entry.insert(END, info[0][27])
+        self.passportIssueDate_Entry.insert(END, info[0][28])
 
-        self.education_table3.insert(parent='', index=0, values=(info[0][19], info[0][20], info[0][21], info[0][22]))
+        # self.education_table1.insert(parent='', index=0, values=(info[0][12], info[0][13], info[0][14]))
+        # self.education_table2.insert(parent='', index=0, values=(info[0][15], info[0][16], info[0][17]))
+        #
+        # if info[0][18] == 1:
+        #     self.graduateSchool_Entry.insert(END, "X")
+        # elif info[0][18] == 2:
+        #     self.adjunct_Entry.insert(END, "X")
+        # elif info[0][18] == 3:
+        #     self.doctoralStudies_Entry.insert(END, "X")
+        #
+        # self.education_table3.insert(parent='', index=0, values=(info[0][19], info[0][20], info[0][21], info[0][22]))
 
     def close_tab(self):
         self.notebook.forget(self.mainFrame)
