@@ -17,18 +17,23 @@ def delete_worker(worker_id):
 def get_worker_full_info(worker_id):
     output = []
 
-    cursor.execute(f"""SELECT * FROM Workers JOIN FullInfo ON
+    cursor.execute(f""" SELECT * FROM Workers JOIN FullInfo ON
     Workers.id = FullInfo.worker_id WHERE Workers.id = {worker_id}""")
-    output.extend(cursor.fetchall())
+    info = cursor.fetchall()[0]
+    temp = []
+    for el in range(len(info)):
+        if el != 0 and el != 4 and el != 6 and el != 8:
+            temp.append(info[el])
+    output.append(temp)
 
-    # cursor.execute(f"""SELECT * FROM Education WHERE Education.worker_id = {worker_id}""")
-    # output.append(cursor.fetchall())
-    #
-    # cursor.execute(f"""SELECT * FROM PostGraduationEducation WHERE PostGraduationEducation.worker_id = {worker_id}""")
-    # output.append(cursor.fetchall())
-    #
-    # cursor.execute(f"""SELECT * FROM Family WHERE Family.worker_id = {worker_id}""")
-    # output.append(cursor.fetchall())
+    cursor.execute(f"""SELECT * FROM Education WHERE Education.worker_id = {worker_id}""")
+    output.append(cursor.fetchall())
+
+    cursor.execute(f"""SELECT * FROM PostGraduationEducation WHERE PostGraduationEducation.worker_id = {worker_id}""")
+    output.append(cursor.fetchall())
+
+    cursor.execute(f"""SELECT * FROM Family WHERE Family.worker_id = {worker_id}""")
+    output.append(cursor.fetchall())
 
     return output
 
