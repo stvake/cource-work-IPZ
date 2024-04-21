@@ -162,8 +162,9 @@ class Worker(ttk.Frame):
         self.info_page = FullWorkerInfo(self.notebook, self.name_text.get(1.0, END)[:-1], self.id)
 
     def delete(self):
-        db.delete_worker(self.id)
-        self.destroy()
+        # db.delete_worker(self.id)
+        # self.destroy()
+        pass
 
 
 class FullWorkerInfo:
@@ -188,18 +189,20 @@ class FullWorkerInfo:
         self.docsTab = None
 
         # Frames
-        self.firstSection = ttk.Labelframe(self.mainScrolledFrame.interior, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
+        self.firstSection = LabelFrame(self.mainScrolledFrame.interior, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
         self.firstSection.pack(fill=BOTH, padx=5, pady=5)
-        self.secondSection = ttk.Labelframe(self.mainScrolledFrame.interior, text="ІІ. ВІДОМОСТІ ПРО ВІЙСЬКОВИЙ ОБЛІК")
+        self.secondSection = LabelFrame(self.mainScrolledFrame.interior, text="ІІ. ВІДОМОСТІ ПРО ВІЙСЬКОВИЙ ОБЛІК")
         self.secondSection.pack(fill=BOTH, padx=5, pady=5)
-        self.thirdSection = ttk.Labelframe(self.mainScrolledFrame.interior,
-                                           text="ІІІ. ПРОФЕСІЙНА ОСВІТА НА ВИРОБНИЦТВІ "
-                                                "(ЗА РАХУНОК ""ПІДПРИЄМСТВА - РОБОТОДАВЦЯ)")
+        self.thirdSection = LabelFrame(self.mainScrolledFrame.interior,
+                                       text="ІІІ. ПРОФЕСІЙНА ОСВІТА НА ВИРОБНИЦТВІ "
+                                            "(ЗА РАХУНОК ""ПІДПРИЄМСТВА - РОБОТОДАВЦЯ)")
         self.thirdSection.pack(fill=BOTH, padx=5, pady=5)
-        self.fourthSection = ttk.Labelframe(self.mainScrolledFrame.interior, text="IV. ПРИЗНАЧЕННЯ І ПЕРЕВЕДЕННЯ")
+        self.fourthSection = LabelFrame(self.mainScrolledFrame.interior, text="IV. ПРИЗНАЧЕННЯ І ПЕРЕВЕДЕННЯ")
         self.fourthSection.pack(fill=BOTH, padx=5, pady=5)
-        self.fifthSection = ttk.Labelframe(self.mainScrolledFrame.interior, text="V. ВІДПУСТКИ")
+        self.fifthSection = LabelFrame(self.mainScrolledFrame.interior, text="V. ВІДПУСТКИ")
         self.fifthSection.pack(fill=BOTH, padx=5, pady=5)
+        self.sixthSection = Frame(self.mainScrolledFrame.interior)
+        self.sixthSection.pack(fill=BOTH, padx=5, pady=5)
 
         # Labels
         self.generalInformation = ttk.Label()
@@ -306,37 +309,41 @@ class FullWorkerInfo:
         self.militaryRecordSpecial_Label.grid(row=5, column=2, padx=5, pady=5, sticky=W)
 
         self.appointment_Label = ttk.Label(self.fourthSection, text="* Відповідно до Класифікатора професій "
-                                                                    "ДК 003-2005, затвердженого наказом Держстандарту"
-                                                                    "України від 26.12.2005 N 375,\n з урахуванням"
-                                                                    "позначки кваліфікаційного рівня"
+                                                                    "ДК 003-2005, затвердженого наказом Держстандарту "
+                                                                    "України від 26.12.2005 N 375,\n з урахуванням "
+                                                                    "позначки кваліфікаційного рівня "
                                                                     "(6 знаків, наприклад, код професії 'муляр'"
-                                                                    "- 7122.2). ")
+                                                                    "- 7122.2).")
         self.appointment_Label.grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky=W)
 
         self.additionalInfo_Label = ttk.Label(self.fifthSection, text="Додаткові відомості")
         self.additionalInfo_Label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
-        self.dismissalInfo_Label = ttk.Label(self.fifthSection, text="Дата і причина звільнення (підстава)")
-        self.dismissalInfo_Label.grid(row=3, column=0, padx=5, pady=5, sticky=W)
-        self.personnelServiceEmployee_Label = ttk.Label(self.fifthSection, text="Працівник кадрової служби")
-        self.personnelServiceEmployee_Label.grid(row=4, column=0, padx=5, pady=5, sticky=W)
-        self.workerSign_Label = ttk.Label(self.fifthSection, text="Підпис працівника")
-        self.workerSign_Label.grid(row=6, column=0, padx=5, pady=5, sticky=W)
-        self.position_Label = ttk.Label(self.fifthSection, text="(посада)")
-        self.position_Label.grid(row=5, column=1, padx=5, pady=5, sticky=W)
-        self.Sign_Label = ttk.Label(self.fifthSection, text="(підпис)")
-        self.Sign_Label.grid(row=5, column=2, padx=5, pady=5, sticky=W)
-        self.PIB_Label = ttk.Label(self.fifthSection, text="(П. І. Б)")
-        self.PIB_Label.grid(row=5, column=3, columnspan=2, padx=5, pady=5, sticky=W)
-        self.quotationMarks1_Label = ttk.Label(self.fifthSection, text='"')
-        self.quotationMarks1_Label.grid(row=6, column=3, padx=5, pady=5, sticky=W)
-        self.quotationMarks2_Label = ttk.Label(self.fifthSection, text='"')
-        self.quotationMarks2_Label.grid(row=6, column=5, padx=5, pady=5, sticky=W)
-        self.Date_Label = ttk.Label(self.fifthSection, text="(дата)")
-        self.Date_Label.grid(row=7, column=5, padx=5, pady=5, sticky=W)
-        self.twenty_Label = ttk.Label(self.fifthSection, text="20")
-        self.twenty_Label.grid(row=6, column=7, padx=5, pady=5, sticky=W)
-        self.year_Label = ttk.Label(self.fifthSection, text="року")
-        self.year_Label.grid(row=6, column=9, padx=5, pady=5, sticky=W)
+
+        self.dismissalInfo_Label = ttk.Label(self.sixthSection, text="Дата і причина звільнення (підстава)")
+        self.dismissalInfo_Label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
+
+        self.personnelServiceEmployee_Label = ttk.Label(self.sixthSection, text="Працівник кадрової служби")
+        self.personnelServiceEmployee_Label.grid(row=2, column=0, padx=5, pady=5, sticky=W)
+
+        self.position_Label = ttk.Label(self.sixthSection, text="(посада)")
+        self.position_Label.grid(row=3, column=1, padx=5, pady=(0, 5))
+        self.Sign_Label = ttk.Label(self.sixthSection, text="(підпис)")
+        self.Sign_Label.grid(row=3, column=2, padx=5, pady=(0, 5))
+        self.PIB_Label = ttk.Label(self.sixthSection, text="(П. І. Б)")
+        self.PIB_Label.grid(row=3, column=3, columnspan=3, padx=5, pady=(0, 5))
+
+        self.workerName_Label = ttk.Label(self.sixthSection, text="Підпис працівника")
+        self.workerName_Label.grid(row=4, column=0, padx=5, pady=5, sticky=W)
+        self.quotationMarks1_Label = ttk.Label(self.sixthSection, text='"')
+        self.quotationMarks1_Label.grid(row=4, column=2, padx=5, pady=5, sticky=W)
+        self.quotationMarks2_Label = ttk.Label(self.sixthSection, text='"')
+        self.quotationMarks2_Label.grid(row=4, column=2, padx=5, pady=5, sticky=E)
+        self.twenty_Label = ttk.Label(self.sixthSection, text="20")
+        self.twenty_Label.grid(row=4, column=4, padx=(5, 0), pady=5, sticky=W)
+        self.workerYear_Label = ttk.Label(self.sixthSection, text="року")
+        self.workerYear_Label.grid(row=4, column=4, padx=5, pady=5, sticky=E)
+        self.Date_Label = ttk.Label(self.sixthSection, text="(дата)")
+        self.Date_Label.grid(row=5, column=3, padx=5, pady=(0, 5))
 
         # Treeviews
         self.tables_firstSection = []
@@ -389,10 +396,10 @@ class FullWorkerInfo:
         self.education_table4.column('Type', width=147)
         self.education_table4.column('Form', width=147)
         self.education_table4.column('Document', width=147)
-        self.education_table4.grid(row=0, column=0, columnspan=6, padx=5)
+        self.education_table4.grid(row=0, column=0, columnspan=6, padx=5, pady=5)
 
         self.appointment_table = ttk.Treeview(self.fourthSection, columns=('Date', 'Name', 'ProfName', 'Code', 'Salary',
-                                                                         'Order', 'Sign'), show='headings', height=4)
+                                                                           'Order', 'Sign'), show='headings', height=4)
         self.appointment_table.heading('Date', text='Дата')
         self.appointment_table.heading('Name', text='Назва структурного підрозділу (код)')
         self.appointment_table.heading('ProfName', text='Назва професії, посади')
@@ -549,6 +556,32 @@ class FullWorkerInfo:
         self.militaryRecordSpecialty_Entry.grid(row=5, column=1, padx=5, pady=5, sticky=W)
         self.militaryRecordSpecial_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordSpecial_Entry.grid(row=5, column=3, padx=5, pady=5, sticky=W)
+
+        self.additionalInfo_Entry1 = ttk.Entry(self.fifthSection, justify='center', width=125)
+        self.additionalInfo_Entry1.grid(row=1, column=0, columnspan=7, padx=5, pady=5, sticky=E)
+        self.additionalInfo_Entry2 = ttk.Entry(self.fifthSection, justify='center')
+        self.additionalInfo_Entry2.grid(row=2, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
+
+        self.dismissalDate_Entry = ttk.Entry(self.sixthSection, justify='center')
+        self.dismissalDate_Entry.grid(row=1, column=1, padx=5, pady=5, sticky=NSEW)
+        self.dismissalReason_Entry = ttk.Entry(self.sixthSection, justify='center')
+        self.dismissalReason_Entry.grid(row=1, column=2, columnspan=4, padx=5, pady=5, sticky=NSEW)
+
+        self.position_Entry = ttk.Entry(self.sixthSection, justify='center')
+        self.position_Entry.grid(row=2, column=1, padx=5, pady=5, sticky=NSEW)
+        self.Sign_Entry = ttk.Entry(self.sixthSection, justify='center')
+        self.Sign_Entry.grid(row=2, column=2, padx=5, pady=5, sticky=NSEW)
+        self.PIB_Entry = ttk.Entry(self.sixthSection, justify='center', width=60)
+        self.PIB_Entry.grid(row=2, column=3, columnspan=3, padx=5, pady=5, sticky=E)
+
+        self.workerName_Entry = ttk.Entry(self.sixthSection, justify="center", width=40)
+        self.workerName_Entry.grid(row=4, column=0, columnspan=2, padx=5, pady=5, sticky=E)
+        self.workerSign_Entry = ttk.Entry(self.sixthSection, justify="center", width=18)
+        self.workerSign_Entry.grid(row=4, column=2, padx=5, pady=5)
+        self.workerDate_Entry = ttk.Entry(self.sixthSection, justify="center")
+        self.workerDate_Entry.grid(row=4, column=3, padx=5, pady=5, sticky=NSEW)
+        self.workerYear_Entry = ttk.Entry(self.sixthSection, justify="center", width=8)
+        self.workerYear_Entry.grid(row=4, column=4, padx=(0, 5), pady=5)
 
         # Buttons
         self.openDocsTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Відкрити вікно з документами",
