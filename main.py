@@ -305,6 +305,39 @@ class FullWorkerInfo:
         self.militaryRecordSpecial_Label = ttk.Label(self.secondSection, text="Перебування на спеціальному обліку")
         self.militaryRecordSpecial_Label.grid(row=5, column=2, padx=5, pady=5, sticky=W)
 
+        self.appointment_Label = ttk.Label(self.fourthSection, text="* Відповідно до Класифікатора професій "
+                                                                    "ДК 003-2005, затвердженого наказом Держстандарту"
+                                                                    "України від 26.12.2005 N 375,\n з урахуванням"
+                                                                    "позначки кваліфікаційного рівня"
+                                                                    "(6 знаків, наприклад, код професії 'муляр'"
+                                                                    "- 7122.2). ")
+        self.appointment_Label.grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky=W)
+
+        self.additionalInfo_Label = ttk.Label(self.fifthSection, text="Додаткові відомості")
+        self.additionalInfo_Label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
+        self.dismissalInfo_Label = ttk.Label(self.fifthSection, text="Дата і причина звільнення (підстава)")
+        self.dismissalInfo_Label.grid(row=3, column=0, padx=5, pady=5, sticky=W)
+        self.personnelServiceEmployee_Label = ttk.Label(self.fifthSection, text="Працівник кадрової служби")
+        self.personnelServiceEmployee_Label.grid(row=4, column=0, padx=5, pady=5, sticky=W)
+        self.workerSign_Label = ttk.Label(self.fifthSection, text="Підпис працівника")
+        self.workerSign_Label.grid(row=6, column=0, padx=5, pady=5, sticky=W)
+        self.position_Label = ttk.Label(self.fifthSection, text="(посада)")
+        self.position_Label.grid(row=5, column=1, padx=5, pady=5, sticky=W)
+        self.Sign_Label = ttk.Label(self.fifthSection, text="(підпис)")
+        self.Sign_Label.grid(row=5, column=2, padx=5, pady=5, sticky=W)
+        self.PIB_Label = ttk.Label(self.fifthSection, text="(П. І. Б)")
+        self.PIB_Label.grid(row=5, column=3, columnspan=2, padx=5, pady=5, sticky=W)
+        self.quotationMarks1_Label = ttk.Label(self.fifthSection, text='"')
+        self.quotationMarks1_Label.grid(row=6, column=3, padx=5, pady=5, sticky=W)
+        self.quotationMarks2_Label = ttk.Label(self.fifthSection, text='"')
+        self.quotationMarks2_Label.grid(row=6, column=5, padx=5, pady=5, sticky=W)
+        self.Date_Label = ttk.Label(self.fifthSection, text="(дата)")
+        self.Date_Label.grid(row=7, column=5, padx=5, pady=5, sticky=W)
+        self.twenty_Label = ttk.Label(self.fifthSection, text="20")
+        self.twenty_Label.grid(row=6, column=7, padx=5, pady=5, sticky=W)
+        self.year_Label = ttk.Label(self.fifthSection, text="року")
+        self.year_Label.grid(row=6, column=9, padx=5, pady=5, sticky=W)
+
         # Treeviews
         self.tables_firstSection = []
 
@@ -350,13 +383,47 @@ class FullWorkerInfo:
         self.education_table4.heading('Form', text='Форма навчання')
         self.education_table4.heading('Document', text='Назва документу, що посвідчує професійну освіту, ким виданий')
 
-        self.education_table4.column('Date', width=140)
-        self.education_table4.column('Name', width=140)
-        self.education_table4.column('Period', width=140)
-        self.education_table4.column('Type', width=140)
-        self.education_table4.column('Form', width=140)
-        self.education_table4.column('Document', width=140)
+        self.education_table4.column('Date', width=147)
+        self.education_table4.column('Name', width=147)
+        self.education_table4.column('Period', width=147)
+        self.education_table4.column('Type', width=147)
+        self.education_table4.column('Form', width=147)
+        self.education_table4.column('Document', width=147)
         self.education_table4.grid(row=0, column=0, columnspan=6, padx=5)
+
+        self.appointment_table = ttk.Treeview(self.fourthSection, columns=('Date', 'Name', 'ProfName', 'Code', 'Salary',
+                                                                         'Order', 'Sign'), show='headings', height=4)
+        self.appointment_table.heading('Date', text='Дата')
+        self.appointment_table.heading('Name', text='Назва структурного підрозділу (код)')
+        self.appointment_table.heading('ProfName', text='Назва професії, посади')
+        self.appointment_table.heading('Code', text='Код за КП*')
+        self.appointment_table.heading('Salary', text='Розряд (оклад)')
+        self.appointment_table.heading('Order', text='Підстава, наказ №')
+        self.appointment_table.heading('Sign', text='Підпис працівника')
+
+        self.appointment_table.column('Date', width=126)
+        self.appointment_table.column('Name', width=126)
+        self.appointment_table.column('ProfName', width=126)
+        self.appointment_table.column('Code', width=126)
+        self.appointment_table.column('Salary', width=126)
+        self.appointment_table.column('Order', width=126)
+        self.appointment_table.column('Sign', width=126)
+        self.appointment_table.grid(row=0, column=0, columnspan=6, padx=5)
+
+        self.vacation_table = ttk.Treeview(self.fifthSection, columns=('Type', 'Period', 'Start', 'End', 'Order'),
+                                           show='headings', height=4)
+        self.vacation_table.heading('Type', text='Вид відпустки ')
+        self.vacation_table.heading('Period', text='За який період')
+        self.vacation_table.heading('Start', text='початку відпустки')
+        self.vacation_table.heading('End', text='закінчення відпустки')
+        self.vacation_table.heading('Order', text='Підстава, наказ №')
+
+        self.vacation_table.column('Type', width=177)
+        self.vacation_table.column('Period', width=177)
+        self.vacation_table.column('Start', width=177)
+        self.vacation_table.column('End', width=177)
+        self.vacation_table.column('Order', width=177)
+        self.vacation_table.grid(row=0, column=0, columnspan=6, padx=5)
 
         # Entries
         self.entries_firstSection = []
@@ -467,10 +534,12 @@ class FullWorkerInfo:
         self.militaryRecordCompound_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordCompound_Entry.grid(row=3, column=1, padx=5, pady=5, sticky=W)
 
-        self.militaryRecordNameReg2_Entry = ttk.Entry(self.secondSection, justify='center', width=56)
-        self.militaryRecordNameReg2_Entry.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky=W)
+        self.militaryRecordCategories2_Entry = ttk.Entry(self.secondSection, justify='center', width=56)
+        self.militaryRecordCategories2_Entry.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky=W)
+        self.militaryRecordNameReg2_Entry = ttk.Entry(self.secondSection, justify='center', width=75)
+        self.militaryRecordNameReg2_Entry.grid(row=2, column=2, columnspan=2, padx=5, pady=5, sticky=W)
         self.militaryRecordNameLiving2_Entry = ttk.Entry(self.secondSection, justify='center', width=75)
-        self.militaryRecordNameLiving2_Entry.grid(row=2, column=2, columnspan=2, padx=5, pady=5, sticky=W)
+        self.militaryRecordNameLiving2_Entry.grid(row=4, column=2, columnspan=2, padx=5, pady=5, sticky=W)
 
         self.militaryRecordNameLiving_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordNameLiving_Entry.grid(row=3, column=3, padx=5, pady=5, sticky=W)
