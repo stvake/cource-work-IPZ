@@ -670,6 +670,8 @@ class FullWorkerInfo:
                 self.tables_other[i].insert(parent='', index=END, values=row[1:])
 
     def close_tab(self):
+        info = [i.get() for i in self.entries_general]
+        db.update_info(self.id, info)
         self.notebook.forget(self.mainFrame)
 
     def open_docs_tab(self):

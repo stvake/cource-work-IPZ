@@ -50,6 +50,23 @@ def get_worker_full_info(worker_id):
     return output
 
 
+def update_info(worker_id, info):
+    cursor.execute("PRAGMA table_info(Workers)")
+    columns = [column[1] for column in cursor.fetchall() if column[1] not in ['id', 'Email', 'Post', 'Photo']]
+    cursor.execute("PRAGMA table_info(FullInfo)")
+    columns.extend(column[1] for column in cursor.fetchall() if column[1] != 'worker_id')
+
+    new_info = [i for i in zip(columns, info)]
+
+    for i in range(len(new_info)):
+        if i <= 3:
+            cursor.execute(f"UPDATE Workers SET {new_info[i][0]}='{new_info[i][1]}' WHERE id = {worker_id}")
+            connection.commit()
+        elif i > 3:
+            cursor.execute(f"UPDATE FullInfo SET {new_info[i][0]}='{new_info[i][1]}' WHERE worker_id = {worker_id}")
+            connection.commit()
+
+
 # print(get_all_workers())
 
 # print(get_worker_full_info(1))
