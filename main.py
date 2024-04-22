@@ -90,6 +90,53 @@ class VerticalScrolledFrame(ttk.Frame):
         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
 
+class EditableTable(ttk.Treeview):
+    def __init__(self, parent, **kw):
+        super().__init__(parent, **kw)
+
+        self.bind("<Double-1>", self._on_double_click)
+
+    def _on_double_click(self, event):
+        region_clicked = self.identify_region(event.x, event.y)
+
+        if region_clicked != 'cell':
+            return
+
+        column = self.identify_column(event.x)
+        column_index = int(column[1:]) - 1
+
+        selected_iid = self.focus()
+        selected_values = self.item(selected_iid).get('values')
+        selected_item = selected_values[column_index]
+        item_box = self.bbox(selected_iid, column)
+
+        entry_edit = ttk.Entry(self)
+        entry_edit.editing_column_index = column_index
+        entry_edit.editing_item_iid = selected_iid
+        entry_edit.place(x=item_box[0], y=item_box[1], w=item_box[2], h=item_box[3])
+        entry_edit.insert(END, selected_item)
+        entry_edit.select_range(0, END)
+        entry_edit.focus()
+
+        entry_edit.bind("<FocusOut>", self._on_focus_out)
+        entry_edit.bind("<Return>", self._on_enter_pressed)
+
+    def _on_focus_out(self, event):
+        event.widget.destroy()
+
+    def _on_enter_pressed(self, event):
+        new_value = event.widget.get()
+
+        selected_iid = event.widget.editing_item_iid
+        column_index = event.widget.editing_column_index
+
+        current_values = list(self.item(selected_iid, 'values'))
+        current_values[column_index] = new_value
+        self.item(selected_iid, values=current_values)
+
+        event.widget.destroy()
+
+
 class Worker(ttk.Frame):
     def __init__(self, worker_id, parent, notebook):
         super().__init__(parent)
@@ -355,24 +402,24 @@ class FullWorkerInfo:
         self.tables_firstSection = []
         self.tables_other = []
 
-        self.education_table1 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
-                                             height=4)
+        self.education_table1 = EditableTable(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
+                                              height=4)
         self.education_table1.heading('Name', text='Назва освітнього закладу')
         self.education_table1.heading('Diploma', text='Диплом (свідоцтво), серія, номер')
         self.education_table1.heading('year', text='Рік закінчення')
         self.education_table1.grid(row=4, column=0, columnspan=6, padx=5, sticky=NSEW)
         self.tables_firstSection.append(self.education_table1)
 
-        self.education_table2 = ttk.Treeview(self.firstSection, columns=('Spec', 'Cual', 'Form'), show='headings',
-                                             height=4)
+        self.education_table2 = EditableTable(self.firstSection, columns=('Spec', 'Cual', 'Form'), show='headings',
+                                              height=4)
         self.education_table2.heading('Spec', text='Спеціальність (професія) за дипломом (свідоцтвом)')
         self.education_table2.heading('Cual', text='Кваліфікація за дипломом (свідоцтвом)')
         self.education_table2.heading('Form', text='Форма навчання')
         self.education_table2.grid(row=5, column=0, columnspan=6, padx=5, sticky=NSEW)
         self.tables_firstSection.append(self.education_table2)
 
-        self.education_table3 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year', 'degree'),
-                                             show='headings', height=4)
+        self.education_table3 = EditableTable(self.firstSection, columns=('Name', 'Diploma', 'year', 'degree'),
+                                              show='headings', height=4)
         self.education_table3.heading('Name', text='Назва освітнього, наукового  закладу')
         self.education_table3.heading('Diploma', text='Диплом, номер, дата видачі')
         self.education_table3.heading('year', text='Рік закінчення')
@@ -380,17 +427,17 @@ class FullWorkerInfo:
         self.education_table3.grid(row=8, column=0, columnspan=6, padx=5, sticky=NSEW)
         self.tables_firstSection.append(self.education_table3)
 
-        self.family_table = ttk.Treeview(self.firstSection, columns=('Connection', 'PIB', 'BirthDate'), show='headings',
-                                         height=4)
+        self.family_table = EditableTable(self.firstSection, columns=('Connection', 'PIB', 'BirthDate'),
+                                          show='headings', height=4)
         self.family_table.heading('Connection', text="Ступінь родинного зв'язку (склад сім'ї)")
         self.family_table.heading('PIB', text='ПІБ')
         self.family_table.heading('BirthDate', text='Рік народження')
         self.family_table.grid(row=17, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
         self.tables_firstSection.append(self.family_table)
 
-        self.professionalEducation_table = ttk.Treeview(self.thirdSection,
-                                                        columns=('Date', 'Name', 'Period', 'Type', 'Form',
-                                                                 'Document'), show='headings', height=4)
+        self.professionalEducation_table = EditableTable(self.thirdSection,
+                                                         columns=('Date', 'Name', 'Period', 'Type', 'Form',
+                                                                  'Document'), show='headings', height=4)
         self.professionalEducation_table.heading('Date', text='Дата')
         self.professionalEducation_table.heading('Name', text='Назва структурного підрозділу')
         self.professionalEducation_table.heading('Period', text='Період навчання')
@@ -408,8 +455,9 @@ class FullWorkerInfo:
         self.professionalEducation_table.grid(row=0, column=0, columnspan=6, padx=5, pady=5)
         self.tables_other.append(self.professionalEducation_table)
 
-        self.appointment_table = ttk.Treeview(self.fourthSection, columns=('Date', 'Name', 'ProfName', 'Code', 'Salary',
-                                                                           'Order', 'Sign'), show='headings', height=4)
+        self.appointment_table = EditableTable(self.fourthSection,
+                                               columns=('Date', 'Name', 'ProfName', 'Code', 'Salary',
+                                                        'Order', 'Sign'), show='headings', height=4)
         self.appointment_table.heading('Date', text='Дата')
         self.appointment_table.heading('Name', text='Назва структурного підрозділу (код)')
         self.appointment_table.heading('ProfName', text='Назва професії, посади')
@@ -428,8 +476,8 @@ class FullWorkerInfo:
         self.appointment_table.grid(row=0, column=0, columnspan=6, padx=5)
         self.tables_other.append(self.appointment_table)
 
-        self.vacation_table = ttk.Treeview(self.fifthSection, columns=('Type', 'Period', 'Start', 'End', 'Order'),
-                                           show='headings', height=4)
+        self.vacation_table = EditableTable(self.fifthSection, columns=('Type', 'Period', 'Start', 'End', 'Order'),
+                                            show='headings', height=4)
         self.vacation_table.heading('Type', text='Вид відпустки ')
         self.vacation_table.heading('Period', text='За який період')
         self.vacation_table.heading('Start', text='початку відпустки')
@@ -694,6 +742,21 @@ class FullWorkerInfo:
         self.worker.email_text.config(state=DISABLED)
         self.worker.birth_date_text.config(state=DISABLED)
         self.worker.post_text.config(state=DISABLED)
+
+        # def get_all_rows(table):
+        #     output = []
+        #     cycle = True
+        #     i = 1
+        #     try:
+        #         while cycle:
+        #             output.append(table.item(f'I00{i}').get('values'))
+        #             i += 1
+        #     except TclError:
+        #         cycle = False
+        #     return output
+        #
+        # for row in get_all_rows(self.tables_firstSection[0]):
+        #     print(row)
 
         self.notebook.forget(self.mainFrame)
 
