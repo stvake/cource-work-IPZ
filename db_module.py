@@ -4,8 +4,13 @@ connection = sqlite3.connect('HumanResourceDepartment.db')
 cursor = connection.cursor()
 
 
-def get_all_workers():
-    cursor.execute("SELECT * FROM Workers")
+def get_workers_quantity():
+    cursor.execute('SELECT COUNT(*) FROM Workers')
+    return cursor.fetchone()[0]
+
+
+def get_worker_info(worker_id):
+    cursor.execute(f"SELECT * FROM Workers WHERE id = {worker_id}")
     return cursor.fetchall()
 
 

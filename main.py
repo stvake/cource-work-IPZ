@@ -36,27 +36,8 @@ class App(Tk):
         self.destroy()
 
     def get_all_workers(self):
-        workers = db.get_all_workers()
-        for x in workers:
-            worker = Worker(self.frame.interior, self.notebook)
-            worker.name_text.config(state=NORMAL)
-            worker.email_text.config(state=NORMAL)
-            worker.birth_date_text.config(state=NORMAL)
-            worker.post_text.config(state=NORMAL)
-
-            worker.id = x[0]
-            worker.name_text.insert(1.0, f"{x[1]} {x[2]} {x[3]}")
-            worker.email_text.insert(1.0, f"{x[4]}")
-            worker.birth_date_text.insert(1.0, f"{x[5]}")
-            worker.post_text.insert(1.0, f"{x[6]}")
-
-            img = Image.open(BytesIO(x[7]))
-            worker.photo = ImageTk.PhotoImage(img)
-            worker.photo_label.config(image=worker.photo)
-
-            worker.name_text.config(state=DISABLED)
-            worker.birth_date_text.config(state=DISABLED)
-            worker.post_text.config(state=DISABLED)
+        for i in range(db.get_workers_quantity()):
+            Worker(i+1, self.frame.interior, self.notebook)
 
     def add_worker(self):
         # worker = Worker(self.frame.interior)
@@ -110,12 +91,12 @@ class VerticalScrolledFrame(ttk.Frame):
 
 
 class Worker(ttk.Frame):
-    def __init__(self, parent, notebook):
+    def __init__(self, worker_id, parent, notebook):
         super().__init__(parent)
 
         self.notebook = notebook
 
-        self.id = None
+        self.id = worker_id
 
         self.info_page = None
 
@@ -158,8 +139,31 @@ class Worker(ttk.Frame):
         self.button_delete = ttk.Button(self.buttons_frame, text="Видалити", command=self.delete)
         self.button_delete.grid(row=2, column=1, sticky=W, padx=5, pady=5)
 
+        self.get_info()
+
+    def get_info(self):
+        for x in db.get_worker_info(self.id):
+            self.name_text.config(state=NORMAL)
+            self.email_text.config(state=NORMAL)
+            self.birth_date_text.config(state=NORMAL)
+            self.post_text.config(state=NORMAL)
+
+            self.name_text.insert(1.0, f"{x[1]} {x[2]} {x[3]}")
+            self.email_text.insert(1.0, f"{x[4]}")
+            self.birth_date_text.insert(1.0, f"{x[5]}")
+            self.post_text.insert(1.0, f"{x[6]}")
+
+            img = Image.open(BytesIO(x[7]))
+            self.photo = ImageTk.PhotoImage(img)
+            self.photo_label.config(image=self.photo)
+
+            self.name_text.config(state=DISABLED)
+            self.email_text.config(state=DISABLED)
+            self.birth_date_text.config(state=DISABLED)
+            self.post_text.config(state=DISABLED)
+
     def more_info(self):
-        self.info_page = FullWorkerInfo(self.notebook, self.name_text.get(1.0, END)[:-1], self.id)
+        self.info_page = FullWorkerInfo(self.notebook, self)
 
     def delete(self):
         # db.delete_worker(self.id)
@@ -168,10 +172,12 @@ class Worker(ttk.Frame):
 
 
 class FullWorkerInfo:
-    def __init__(self, notebook, name, worker_id):
-        self.id = worker_id
+    def __init__(self, notebook, worker):
+        self.worker = worker
 
-        self.name = name
+        self.id = worker.id
+
+        self.name = worker.name_text.get(1.0, END)[:-1]
 
         self.notebook = notebook
         self.mainFrame = ttk.Frame(notebook)
@@ -624,7 +630,7 @@ class FullWorkerInfo:
                                           command=self.close_tab)
         self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
-        notebook.insert("end", self.mainFrame, text=name)
+        notebook.insert("end", self.mainFrame, text=self.name)
 
         self.get_info_from_db(self.id)
 
@@ -672,6 +678,23 @@ class FullWorkerInfo:
     def close_tab(self):
         info = [i.get() for i in self.entries_general]
         db.update_info(self.id, info)
+
+        self.worker.name_text.config(state=NORMAL)
+        self.worker.email_text.config(state=NORMAL)
+        self.worker.birth_date_text.config(state=NORMAL)
+        self.worker.post_text.config(state=NORMAL)
+
+        self.worker.name_text.delete(1.0, END)
+        self.worker.birth_date_text.delete(1.0, END)
+
+        self.worker.name_text.insert(END, info[0])
+        self.worker.birth_date_text.insert(END, info[3])
+
+        self.worker.name_text.config(state=DISABLED)
+        self.worker.email_text.config(state=DISABLED)
+        self.worker.birth_date_text.config(state=DISABLED)
+        self.worker.post_text.config(state=DISABLED)
+
         self.notebook.forget(self.mainFrame)
 
     def open_docs_tab(self):
