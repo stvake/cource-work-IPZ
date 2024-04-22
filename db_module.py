@@ -35,6 +35,18 @@ def get_worker_full_info(worker_id):
     cursor.execute(f"""SELECT * FROM Family WHERE Family.worker_id = {worker_id}""")
     output.append(cursor.fetchall())
 
+    cursor.execute(f"""SELECT * FROM Military WHERE Military.worker_id = {worker_id}""")
+    output.append(cursor.fetchall()[0][1:])
+
+    cursor.execute(f"""SELECT * FROM ProfessionalEducation WHERE ProfessionalEducation.worker_id = {worker_id}""")
+    output.append(cursor.fetchall())
+
+    cursor.execute(f"""SELECT * FROM Appointment WHERE Appointment.worker_id = {worker_id}""")
+    output.append(cursor.fetchall())
+
+    cursor.execute(f"""SELECT * FROM Vacation WHERE Vacation.worker_id = {worker_id}""")
+    output.append(cursor.fetchall())
+
     return output
 
 

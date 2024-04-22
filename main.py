@@ -316,37 +316,38 @@ class FullWorkerInfo:
                                                                     "- 7122.2).")
         self.appointment_Label.grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky=W)
 
-        self.additionalInfo_Label = ttk.Label(self.fifthSection, text="Додаткові відомості")
-        self.additionalInfo_Label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
+        self.additionalInfo_Label = ttk.Label(self.sixthSection, text="Додаткові відомості")
+        self.additionalInfo_Label.grid(row=0, column=0, padx=5, pady=5, sticky=W)
 
         self.dismissalInfo_Label = ttk.Label(self.sixthSection, text="Дата і причина звільнення (підстава)")
-        self.dismissalInfo_Label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
+        self.dismissalInfo_Label.grid(row=2, column=0, padx=5, pady=5, sticky=W)
 
         self.personnelServiceEmployee_Label = ttk.Label(self.sixthSection, text="Працівник кадрової служби")
-        self.personnelServiceEmployee_Label.grid(row=2, column=0, padx=5, pady=5, sticky=W)
+        self.personnelServiceEmployee_Label.grid(row=3, column=0, padx=5, pady=5, sticky=W)
 
         self.position_Label = ttk.Label(self.sixthSection, text="(посада)")
-        self.position_Label.grid(row=3, column=1, padx=5, pady=(0, 5))
+        self.position_Label.grid(row=4, column=1, padx=5, pady=(0, 5))
         self.Sign_Label = ttk.Label(self.sixthSection, text="(підпис)")
-        self.Sign_Label.grid(row=3, column=2, padx=5, pady=(0, 5))
+        self.Sign_Label.grid(row=4, column=2, padx=5, pady=(0, 5))
         self.PIB_Label = ttk.Label(self.sixthSection, text="(П. І. Б)")
-        self.PIB_Label.grid(row=3, column=3, columnspan=3, padx=5, pady=(0, 5))
+        self.PIB_Label.grid(row=4, column=3, columnspan=3, padx=5, pady=(0, 5))
 
         self.workerName_Label = ttk.Label(self.sixthSection, text="Підпис працівника")
-        self.workerName_Label.grid(row=4, column=0, padx=5, pady=5, sticky=W)
+        self.workerName_Label.grid(row=5, column=0, padx=5, pady=5, sticky=W)
         self.quotationMarks1_Label = ttk.Label(self.sixthSection, text='"')
-        self.quotationMarks1_Label.grid(row=4, column=2, padx=5, pady=5, sticky=W)
+        self.quotationMarks1_Label.grid(row=5, column=2, padx=5, pady=5, sticky=W)
         self.quotationMarks2_Label = ttk.Label(self.sixthSection, text='"')
-        self.quotationMarks2_Label.grid(row=4, column=2, padx=5, pady=5, sticky=E)
+        self.quotationMarks2_Label.grid(row=5, column=2, padx=5, pady=5, sticky=E)
         self.twenty_Label = ttk.Label(self.sixthSection, text="20")
-        self.twenty_Label.grid(row=4, column=4, padx=(5, 0), pady=5, sticky=W)
+        self.twenty_Label.grid(row=5, column=4, padx=(5, 0), pady=5, sticky=W)
         self.workerYear_Label = ttk.Label(self.sixthSection, text="року")
-        self.workerYear_Label.grid(row=4, column=4, padx=5, pady=5, sticky=E)
+        self.workerYear_Label.grid(row=5, column=4, padx=5, pady=5, sticky=E)
         self.Date_Label = ttk.Label(self.sixthSection, text="(дата)")
-        self.Date_Label.grid(row=5, column=3, padx=5, pady=(0, 5))
+        self.Date_Label.grid(row=6, column=3, padx=5, pady=(0, 5))
 
         # Treeviews
         self.tables_firstSection = []
+        self.tables_other = []
 
         self.education_table1 = ttk.Treeview(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
                                              height=4)
@@ -381,22 +382,25 @@ class FullWorkerInfo:
         self.family_table.grid(row=17, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
         self.tables_firstSection.append(self.family_table)
 
-        self.education_table4 = ttk.Treeview(self.thirdSection, columns=('Date', 'Name', 'Period', 'Type', 'Form',
-                                                                         'Document'), show='headings', height=4)
-        self.education_table4.heading('Date', text='Дата')
-        self.education_table4.heading('Name', text='Назва структурного підрозділу')
-        self.education_table4.heading('Period', text='Період навчання')
-        self.education_table4.heading('Type', text='Вид навчання')
-        self.education_table4.heading('Form', text='Форма навчання')
-        self.education_table4.heading('Document', text='Назва документу, що посвідчує професійну освіту, ким виданий')
+        self.professionalEducation_table = ttk.Treeview(self.thirdSection,
+                                                        columns=('Date', 'Name', 'Period', 'Type', 'Form',
+                                                                 'Document'), show='headings', height=4)
+        self.professionalEducation_table.heading('Date', text='Дата')
+        self.professionalEducation_table.heading('Name', text='Назва структурного підрозділу')
+        self.professionalEducation_table.heading('Period', text='Період навчання')
+        self.professionalEducation_table.heading('Type', text='Вид навчання')
+        self.professionalEducation_table.heading('Form', text='Форма навчання')
+        self.professionalEducation_table.heading('Document', text='Назва документу, що посвідчує професійну освіту, '
+                                                                  'ким виданий')
 
-        self.education_table4.column('Date', width=147)
-        self.education_table4.column('Name', width=147)
-        self.education_table4.column('Period', width=147)
-        self.education_table4.column('Type', width=147)
-        self.education_table4.column('Form', width=147)
-        self.education_table4.column('Document', width=147)
-        self.education_table4.grid(row=0, column=0, columnspan=6, padx=5, pady=5)
+        self.professionalEducation_table.column('Date', width=147)
+        self.professionalEducation_table.column('Name', width=147)
+        self.professionalEducation_table.column('Period', width=147)
+        self.professionalEducation_table.column('Type', width=147)
+        self.professionalEducation_table.column('Form', width=147)
+        self.professionalEducation_table.column('Document', width=147)
+        self.professionalEducation_table.grid(row=0, column=0, columnspan=6, padx=5, pady=5)
+        self.tables_other.append(self.professionalEducation_table)
 
         self.appointment_table = ttk.Treeview(self.fourthSection, columns=('Date', 'Name', 'ProfName', 'Code', 'Salary',
                                                                            'Order', 'Sign'), show='headings', height=4)
@@ -416,6 +420,7 @@ class FullWorkerInfo:
         self.appointment_table.column('Order', width=126)
         self.appointment_table.column('Sign', width=126)
         self.appointment_table.grid(row=0, column=0, columnspan=6, padx=5)
+        self.tables_other.append(self.appointment_table)
 
         self.vacation_table = ttk.Treeview(self.fifthSection, columns=('Type', 'Period', 'Start', 'End', 'Order'),
                                            show='headings', height=4)
@@ -430,30 +435,32 @@ class FullWorkerInfo:
         self.vacation_table.column('Start', width=177)
         self.vacation_table.column('End', width=177)
         self.vacation_table.column('Order', width=177)
-        self.vacation_table.grid(row=0, column=0, columnspan=6, padx=5)
+        self.vacation_table.grid(row=0, column=0, columnspan=6, padx=5, pady=5)
+        self.tables_other.append(self.vacation_table)
 
         # Entries
-        self.entries_firstSection = []
+        self.entries_general = []
+        self.entries_secondSection = []
 
         self.lastName_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.lastName_Entry.grid(row=0, column=1, sticky=W, padx=5, pady=5)
-        self.entries_firstSection.append(self.lastName_Entry)
+        self.entries_general.append(self.lastName_Entry)
         self.firstName_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.firstName_Entry.grid(row=0, column=3, sticky=W, padx=5, pady=5)
-        self.entries_firstSection.append(self.firstName_Entry)
+        self.entries_general.append(self.firstName_Entry)
         self.patronymic_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.patronymic_Entry.grid(row=0, column=5, sticky=W, padx=5, pady=5)
-        self.entries_firstSection.append(self.patronymic_Entry)
+        self.entries_general.append(self.patronymic_Entry)
         self.birthDate_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.birthDate_Entry.grid(row=1, column=1, sticky=W, padx=5, pady=5)
-        self.entries_firstSection.append(self.birthDate_Entry)
+        self.entries_general.append(self.birthDate_Entry)
         self.nationality_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.nationality_Entry.grid(row=1, column=3, sticky=W, padx=5, pady=5)
-        self.entries_firstSection.append(self.nationality_Entry)
+        self.entries_general.append(self.nationality_Entry)
 
         self.education_Entry = ttk.Entry(self.firstSection, justify='center')
         self.education_Entry.grid(row=3, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
-        self.entries_firstSection.append(self.education_Entry)
+        self.entries_general.append(self.education_Entry)
 
         self.graduateSchool_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
         self.graduateSchool_Entry.grid(row=7, column=1, sticky=W, padx=5, pady=5)
@@ -464,124 +471,150 @@ class FullWorkerInfo:
 
         self.lastWork_Entry = ttk.Entry(self.firstSection, width=30, justify='center')
         self.lastWork_Entry.grid(row=9, column=1, sticky=W, padx=5, pady=5)
-        self.entries_firstSection.append(self.lastWork_Entry)
+        self.entries_general.append(self.lastWork_Entry)
         self.lastPost_Entry = ttk.Entry(self.firstSection, width=30, justify='center')
         self.lastPost_Entry.grid(row=9, column=3, sticky=W, padx=5, pady=5)
-        self.entries_firstSection.append(self.lastPost_Entry)
+        self.entries_general.append(self.lastPost_Entry)
 
         self.workExpDate_Entry = ttk.Entry(self.firstSection, width=18, justify='center')
         self.workExpDate_Entry.grid(row=10, column=1, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.workExpDate_Entry)
+        self.entries_general.append(self.workExpDate_Entry)
         self.workExpDays_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
         self.workExpDays_Entry.grid(row=10, column=2, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.workExpDays_Entry)
+        self.entries_general.append(self.workExpDays_Entry)
         self.workExpMonths_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
         self.workExpMonths_Entry.grid(row=10, column=3, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.workExpMonths_Entry)
+        self.entries_general.append(self.workExpMonths_Entry)
         self.workExpYears_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
         self.workExpYears_Entry.grid(row=10, column=3, padx=5, pady=5, sticky=E)
-        self.entries_firstSection.append(self.workExpYears_Entry)
+        self.entries_general.append(self.workExpYears_Entry)
 
         self.workBonusDays_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
         self.workBonusDays_Entry.grid(row=11, column=2, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.workBonusDays_Entry)
+        self.entries_general.append(self.workBonusDays_Entry)
         self.workBonusMonths_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
         self.workBonusMonths_Entry.grid(row=11, column=3, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.workBonusMonths_Entry)
+        self.entries_general.append(self.workBonusMonths_Entry)
         self.workBonusYears_Entry = ttk.Entry(self.firstSection, width=10, justify='center')
         self.workBonusYears_Entry.grid(row=11, column=3, padx=5, pady=5, sticky=E)
-        self.entries_firstSection.append(self.workBonusYears_Entry)
+        self.entries_general.append(self.workBonusYears_Entry)
 
         self.workFireDate_Entry = ttk.Entry(self.firstSection, width=20, justify='center')
         self.workFireDate_Entry.grid(row=13, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.workFireDate_Entry)
+        self.entries_general.append(self.workFireDate_Entry)
         self.workFireReason_Entry = ttk.Entry(self.firstSection, width=100, justify='center')
         self.workFireReason_Entry.grid(row=13, column=1, columnspan=4, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.workFireReason_Entry)
+        self.entries_general.append(self.workFireReason_Entry)
 
         self.pension_Entry = ttk.Entry(self.firstSection, width=124, justify='center')
         self.pension_Entry.grid(row=15, columnspan=6, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.pension_Entry)
+        self.entries_general.append(self.pension_Entry)
 
         self.family_Entry = ttk.Entry(self.firstSection, justify='center')
         self.family_Entry.grid(row=16, column=1, columnspan=5, padx=5, pady=5, sticky=NSEW)
-        self.entries_firstSection.append(self.family_Entry)
+        self.entries_general.append(self.family_Entry)
 
         self.actualResidence_Entry = ttk.Entry(self.firstSection, justify='center')
         self.actualResidence_Entry.grid(row=19, columnspan=6, padx=5, pady=5, sticky=NSEW)
-        self.entries_firstSection.append(self.actualResidence_Entry)
+        self.entries_general.append(self.actualResidence_Entry)
 
         self.registeredResidence_Entry1 = ttk.Entry(self.firstSection, justify='center', width=95)
         self.registeredResidence_Entry1.grid(row=20, column=1, columnspan=5, padx=5, pady=5, sticky=E)
-        self.entries_firstSection.append(self.registeredResidence_Entry1)
+        self.entries_general.append(self.registeredResidence_Entry1)
         self.registeredResidence_Entry2 = ttk.Entry(self.firstSection, justify='center', width=45)
         self.registeredResidence_Entry2.grid(row=21, column=0, columnspan=2, padx=5, pady=5, sticky=W)
-        # self.entries.append(self.registeredResidence_Entry2)
+        self.entries_general.append(self.registeredResidence_Entry2)
         self.passportSeries_Entry = ttk.Entry(self.firstSection, justify='center', width=11)
         self.passportSeries_Entry.grid(row=21, column=2, padx=5, pady=5, sticky=E)
-        self.entries_firstSection.append(self.passportSeries_Entry)
+        self.entries_general.append(self.passportSeries_Entry)
         self.passportNumber_Entry = ttk.Entry(self.firstSection, justify='center', width=25)
         self.passportNumber_Entry.grid(row=21, column=3, padx=5, pady=5, sticky=E)
-        self.entries_firstSection.append(self.passportNumber_Entry)
+        self.entries_general.append(self.passportNumber_Entry)
         self.passportIssuedBy_Entry = ttk.Entry(self.firstSection, justify='center')
         self.passportIssuedBy_Entry.grid(row=22, column=0, columnspan=4, padx=5, pady=5, sticky=NSEW)
-        self.entries_firstSection.append(self.passportIssuedBy_Entry)
+        self.entries_general.append(self.passportIssuedBy_Entry)
         self.passportIssueDate_Entry = ttk.Entry(self.firstSection, justify='center')
         self.passportIssueDate_Entry.grid(row=22, column=5, padx=5, pady=5, sticky=W)
-        self.entries_firstSection.append(self.passportIssueDate_Entry)
+        self.entries_general.append(self.passportIssueDate_Entry)
 
         self.militaryRecordGroup_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordGroup_Entry.grid(row=0, column=1, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordGroup_Entry)
         self.militaryRecordSuitability_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordSuitability_Entry.grid(row=0, column=3, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordSuitability_Entry)
+
         self.militaryRecordCategories_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordCategories_Entry.grid(row=1, column=1, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordCategories_Entry)
         self.militaryRecordNameReg_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordNameReg_Entry.grid(row=1, column=3, padx=5, pady=5, sticky=W)
-        self.militaryRecordCompound_Entry = ttk.Entry(self.secondSection, justify='center')
-        self.militaryRecordCompound_Entry.grid(row=3, column=1, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordNameReg_Entry)
 
         self.militaryRecordCategories2_Entry = ttk.Entry(self.secondSection, justify='center', width=56)
         self.militaryRecordCategories2_Entry.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordCategories2_Entry)
         self.militaryRecordNameReg2_Entry = ttk.Entry(self.secondSection, justify='center', width=75)
         self.militaryRecordNameReg2_Entry.grid(row=2, column=2, columnspan=2, padx=5, pady=5, sticky=W)
-        self.militaryRecordNameLiving2_Entry = ttk.Entry(self.secondSection, justify='center', width=75)
-        self.militaryRecordNameLiving2_Entry.grid(row=4, column=2, columnspan=2, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordNameReg2_Entry)
 
+        self.militaryRecordCompound_Entry = ttk.Entry(self.secondSection, justify='center')
+        self.militaryRecordCompound_Entry.grid(row=3, column=1, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordCompound_Entry)
         self.militaryRecordNameLiving_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordNameLiving_Entry.grid(row=3, column=3, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordNameLiving_Entry)
+
         self.militaryRecordRank_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordRank_Entry.grid(row=4, column=1, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordRank_Entry)
+        self.militaryRecordNameLiving2_Entry = ttk.Entry(self.secondSection, justify='center', width=75)
+        self.militaryRecordNameLiving2_Entry.grid(row=4, column=2, columnspan=2, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordNameLiving2_Entry)
+
         self.militaryRecordSpecialty_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordSpecialty_Entry.grid(row=5, column=1, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordSpecialty_Entry)
         self.militaryRecordSpecial_Entry = ttk.Entry(self.secondSection, justify='center')
         self.militaryRecordSpecial_Entry.grid(row=5, column=3, padx=5, pady=5, sticky=W)
+        self.entries_secondSection.append(self.militaryRecordSpecial_Entry)
 
-        self.additionalInfo_Entry1 = ttk.Entry(self.fifthSection, justify='center', width=125)
-        self.additionalInfo_Entry1.grid(row=1, column=0, columnspan=7, padx=5, pady=5, sticky=E)
-        self.additionalInfo_Entry2 = ttk.Entry(self.fifthSection, justify='center')
-        self.additionalInfo_Entry2.grid(row=2, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
+        self.additionalInfo_Entry1 = ttk.Entry(self.sixthSection, justify='center', width=120)
+        self.additionalInfo_Entry1.grid(row=0, column=0, columnspan=6, padx=5, pady=5, sticky=E)
+        self.entries_general.append(self.additionalInfo_Entry1)
+        self.additionalInfo_Entry2 = ttk.Entry(self.sixthSection, justify='center')
+        self.additionalInfo_Entry2.grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
+        self.entries_general.append(self.additionalInfo_Entry2)
 
         self.dismissalDate_Entry = ttk.Entry(self.sixthSection, justify='center')
-        self.dismissalDate_Entry.grid(row=1, column=1, padx=5, pady=5, sticky=NSEW)
+        self.dismissalDate_Entry.grid(row=2, column=1, padx=5, pady=5, sticky=NSEW)
+        self.entries_general.append(self.dismissalDate_Entry)
         self.dismissalReason_Entry = ttk.Entry(self.sixthSection, justify='center')
-        self.dismissalReason_Entry.grid(row=1, column=2, columnspan=4, padx=5, pady=5, sticky=NSEW)
+        self.dismissalReason_Entry.grid(row=2, column=2, columnspan=4, padx=5, pady=5, sticky=NSEW)
+        self.entries_general.append(self.dismissalReason_Entry)
 
         self.position_Entry = ttk.Entry(self.sixthSection, justify='center')
-        self.position_Entry.grid(row=2, column=1, padx=5, pady=5, sticky=NSEW)
+        self.position_Entry.grid(row=3, column=1, padx=5, pady=5, sticky=NSEW)
+        self.entries_general.append(self.position_Entry)
         self.Sign_Entry = ttk.Entry(self.sixthSection, justify='center')
-        self.Sign_Entry.grid(row=2, column=2, padx=5, pady=5, sticky=NSEW)
+        self.Sign_Entry.grid(row=3, column=2, padx=5, pady=5, sticky=NSEW)
+        self.entries_general.append(self.Sign_Entry)
         self.PIB_Entry = ttk.Entry(self.sixthSection, justify='center', width=60)
-        self.PIB_Entry.grid(row=2, column=3, columnspan=3, padx=5, pady=5, sticky=E)
+        self.PIB_Entry.grid(row=3, column=3, columnspan=3, padx=5, pady=5, sticky=E)
+        self.entries_general.append(self.PIB_Entry)
 
-        self.workerName_Entry = ttk.Entry(self.sixthSection, justify="center", width=40)
-        self.workerName_Entry.grid(row=4, column=0, columnspan=2, padx=5, pady=5, sticky=E)
+        self.workerName_Entry = ttk.Entry(self.sixthSection, justify="center", width=35)
+        self.workerName_Entry.grid(row=5, column=0, columnspan=2, padx=5, pady=5, sticky=E)
+        self.entries_general.append(self.workerName_Entry)
         self.workerSign_Entry = ttk.Entry(self.sixthSection, justify="center", width=18)
-        self.workerSign_Entry.grid(row=4, column=2, padx=5, pady=5)
+        self.workerSign_Entry.grid(row=5, column=2, padx=5, pady=5)
+        self.entries_general.append(self.workerSign_Entry)
         self.workerDate_Entry = ttk.Entry(self.sixthSection, justify="center")
-        self.workerDate_Entry.grid(row=4, column=3, padx=5, pady=5, sticky=NSEW)
+        self.workerDate_Entry.grid(row=5, column=3, padx=5, pady=5, sticky=NSEW)
+        self.entries_general.append(self.workerDate_Entry)
         self.workerYear_Entry = ttk.Entry(self.sixthSection, justify="center", width=8)
-        self.workerYear_Entry.grid(row=4, column=4, padx=(0, 5), pady=5)
+        self.workerYear_Entry.grid(row=5, column=4, padx=(0, 5), pady=5)
+        self.entries_general.append(self.workerYear_Entry)
 
         # Buttons
         self.openDocsTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Відкрити вікно з документами",
@@ -601,14 +634,14 @@ class FullWorkerInfo:
         for i in range(len(info[0])):
             if i < 4:
                 if info[0][i] is not None:
-                    self.entries_firstSection[i].insert(END, info[0][i])
+                    self.entries_general[i].insert(END, info[0][i])
             elif i == 4:
                 img = Image.open(BytesIO(info[0][i]))
                 self.photo = ImageTk.PhotoImage(img)
                 self.photo_label.config(image=self.photo)
             elif i > 4:
                 if info[0][i] is not None:
-                    self.entries_firstSection[i - 1].insert(END, info[0][i])
+                    self.entries_general[i - 1].insert(END, info[0][i])
 
         for row in info[1]:
             self.tables_firstSection[0].insert(parent='', index=END, values=row[1:])
@@ -627,6 +660,14 @@ class FullWorkerInfo:
 
         for row in info[3]:
             self.tables_firstSection[3].insert(parent='', index=END, values=row[1:])
+
+        for i in range(len(info[4])):
+            if info[4][i] is not None:
+                self.entries_secondSection[i].insert(END, info[4][i])
+
+        for i in range(len(self.tables_other)):
+            for row in info[5 + i]:
+                self.tables_other[i].insert(parent='', index=END, values=row[1:])
 
     def close_tab(self):
         self.notebook.forget(self.mainFrame)
