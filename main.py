@@ -20,20 +20,55 @@ class App(Tk):
 
         self.main_tab = ttk.Frame(self.notebook)
 
-        self.add_worker_button = ttk.Button(self.main_tab, text='Додати', command=self.add_worker)
-        self.add_worker_button.pack(anchor=W, padx=5, pady=5)
+        self.worker_Button = ttk.Button(self.main_tab, text="Список всіх робітників", width=25,
+                                        command=self.open_all_workers)
+        self.listOfAllUnits_Button = ttk.Button(self.main_tab, text="Список підрозділів", width=25,
+                                                command=self.open_all_units)
+        self.position_Button = ttk.Button(self.main_tab, text="Список посад", width=25,
+                                          command=self.open_all_position)
+        self.search_Button = ttk.Button(self.main_tab, text="Пошук", width=25,
+                                        command=self.open_search)
 
-        self.frame = VerticalScrolledFrame(self.main_tab)
-        self.frame.pack(expand=True, fill=BOTH)
+        self.worker_Button.pack()
+        self.listOfAllUnits_Button.pack()
+        self.position_Button.pack()
+        self.search_Button.pack()
 
-        self.notebook.add(self.main_tab, text="Список робітників")
+        self.notebook.add(self.main_tab, text="Головна сторінка")
         self.notebook.pack(padx=5, pady=5, expand=True)
-
-        self.get_all_workers()
 
     def close_app(self):
         db.connection.close()
         self.destroy()
+
+    def open_all_workers(self):
+        self.allWorkersTab = all_workers(self.notebook)
+
+    def open_all_units(self):
+        self.allUnitsTab = all_units(self.notebook)
+
+    def open_all_position(self):
+        self.allPositionTab = all_positions(self.notebook)
+
+    def open_search(self):
+        self.searchTab = search(self.notebook)
+
+
+class all_workers:
+    def __init__(self, notebook):
+        self.notebook = notebook
+
+        self.mainFrame = ttk.Frame(self.notebook)
+
+        self.add_worker_button = ttk.Button(self.mainFrame, text='Додати', command=self.add_worker)
+        self.add_worker_button.pack(anchor=W, padx=5, pady=5)
+
+        self.frame = VerticalScrolledFrame(self.mainFrame)
+        self.frame.pack(expand=True, fill=BOTH)
+
+        self.get_all_workers()
+
+        self.notebook.insert("end", self.mainFrame, text="Список робітників")
 
     def get_all_workers(self):
         for i in range(db.get_workers_quantity()):
@@ -48,6 +83,41 @@ class App(Tk):
     # def save_worker_to_db(self, worker):
     #     ...
 
+
+class all_units:
+    def __init__(self, notebook):
+        self.notebook = notebook
+
+        self.mainFrame = ttk.Frame(self.notebook)
+
+        self.frame = VerticalScrolledFrame(self.mainFrame)
+        self.frame.pack(expand=True, fill=BOTH)
+
+        self.notebook.insert("end", self.mainFrame, text="Список підрозділів")
+
+
+class all_positions:
+    def __init__(self, notebook):
+        self.notebook = notebook
+
+        self.mainFrame = ttk.Frame(self.notebook)
+
+        self.frame = VerticalScrolledFrame(self.mainFrame)
+        self.frame.pack(expand=True, fill=BOTH)
+
+        self.notebook.insert("end", self.mainFrame, text="Список посад")
+
+
+class search:
+    def __init__(self, notebook):
+        self.notebook = notebook
+
+        self.mainFrame = ttk.Frame(self.notebook)
+
+        self.frame = VerticalScrolledFrame(self.mainFrame)
+        self.frame.pack(expand=True, fill=BOTH)
+
+        self.notebook.insert("end", self.mainFrame, text="Пошук")
 
 class VerticalScrolledFrame(ttk.Frame):
     def __init__(self, parent):
@@ -681,9 +751,6 @@ class FullWorkerInfo:
         self.entries_general.append(self.workerYear_Entry)
 
         # Buttons
-        self.openDocsTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Відкрити вікно з документами",
-                                             command=self.open_docs_tab)
-        self.openDocsTab_Button.pack(fill=BOTH, padx=5, pady=5)
         self.closeTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Зберегти та закрити вкладку",
                                           command=self.close_tab)
         self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
@@ -793,24 +860,6 @@ class FullWorkerInfo:
                 data.append(row)
             db.update_table(self.id, 1, t, data)
 
-        self.notebook.forget(self.mainFrame)
-
-    def open_docs_tab(self):
-        self.docsTab = DocumentsInfo(self.notebook, self.name)
-
-
-class DocumentsInfo:
-    def __init__(self, notebook, name):
-        self.notebook = notebook
-
-        self.mainFrame = ttk.Frame(notebook)
-
-        notebook.insert("end", self.mainFrame, text=name + " док.")
-
-        self.close_tab_Button = ttk.Button(self.mainFrame, text="Зберегти та закрити", command=self.close_tab)
-        self.close_tab_Button.pack()
-
-    def close_tab(self):
         self.notebook.forget(self.mainFrame)
 
 
