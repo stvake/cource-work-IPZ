@@ -119,6 +119,7 @@ class EditableTable(ttk.Treeview):
         entry_edit.focus()
 
         entry_edit.bind("<FocusOut>", self._on_focus_out)
+        entry_edit.bind("<Escape>", self._on_focus_out)
         entry_edit.bind("<Return>", self._on_enter_pressed)
 
     def _on_focus_out(self, event):
@@ -135,6 +136,12 @@ class EditableTable(ttk.Treeview):
         self.item(selected_iid, values=current_values)
 
         event.widget.destroy()
+
+
+class CustomEntry(ttk.Entry):
+    def __init__(self, master, **kw):
+        super().__init__(master, **kw)
+        self.associated_row = None
 
 
 class Worker(ttk.Frame):
@@ -410,10 +417,10 @@ class FullWorkerInfo:
         self.education_table1.grid(row=4, column=0, columnspan=6, padx=5, sticky=NSEW)
         self.tables_firstSection.append(self.education_table1)
 
-        self.education_table2 = EditableTable(self.firstSection, columns=('Spec', 'Cual', 'Form'), show='headings',
-                                              height=4)
+        self.education_table2 = EditableTable(self.firstSection, columns=('Spec', 'Qualification', 'Form'),
+                                              show='headings', height=4)
         self.education_table2.heading('Spec', text='Спеціальність (професія) за дипломом (свідоцтвом)')
-        self.education_table2.heading('Cual', text='Кваліфікація за дипломом (свідоцтвом)')
+        self.education_table2.heading('Qualification', text='Кваліфікація за дипломом (свідоцтвом)')
         self.education_table2.heading('Form', text='Форма навчання')
         self.education_table2.grid(row=5, column=0, columnspan=6, padx=5, sticky=NSEW)
         self.tables_firstSection.append(self.education_table2)
@@ -516,12 +523,15 @@ class FullWorkerInfo:
         self.education_Entry.grid(row=3, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
         self.entries_general.append(self.education_Entry)
 
-        self.graduateSchool_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
+        self.graduateSchool_Entry = CustomEntry(self.firstSection, width=3, justify='center')
         self.graduateSchool_Entry.grid(row=7, column=1, sticky=W, padx=5, pady=5)
-        self.adjunct_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
+        self.graduateSchool_Entry.associated_row = None
+        self.adjunct_Entry = CustomEntry(self.firstSection, width=3, justify='center')
         self.adjunct_Entry.grid(row=7, column=3, sticky=W, padx=5, pady=5)
-        self.doctoralStudies_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
+        self.adjunct_Entry.associated_row = None
+        self.doctoralStudies_Entry = CustomEntry(self.firstSection, width=3, justify='center')
         self.doctoralStudies_Entry.grid(row=7, column=5, sticky=W, padx=5, pady=5)
+        self.doctoralStudies_Entry.associated_row = None
 
         self.lastWork_Entry = ttk.Entry(self.firstSection, width=30, justify='center')
         self.lastWork_Entry.grid(row=9, column=1, sticky=W, padx=5, pady=5)
@@ -703,14 +713,17 @@ class FullWorkerInfo:
         for row in info[1]:
             self.tables_firstSection[1].insert(parent='', index=END, values=row[4:])
 
-        for row in info[2]:
-            if row[1] == 1:
+        for row in range(len(info[2])):
+            if info[2][row][1] == 1:
                 self.graduateSchool_Entry.insert(END, "X")
-            elif row[1] == 2:
+                self.graduateSchool_Entry.associated_row = row
+            elif info[2][row][1] == 2:
                 self.adjunct_Entry.insert(END, "X")
-            elif row[1] == 3:
+                self.adjunct_Entry.associated_row = row
+            elif info[2][row][1] == 3:
                 self.doctoralStudies_Entry.insert(END, "X")
-            self.tables_firstSection[2].insert(parent='', index=END, values=row[2:])
+                self.doctoralStudies_Entry.associated_row = row
+            self.tables_firstSection[2].insert(parent='', index=END, values=info[2][row][2:])
 
         for row in info[3]:
             self.tables_firstSection[3].insert(parent='', index=END, values=row[1:])
@@ -743,20 +756,42 @@ class FullWorkerInfo:
         self.worker.birth_date_text.config(state=DISABLED)
         self.worker.post_text.config(state=DISABLED)
 
-        # def get_all_rows(table):
-        #     output = []
-        #     cycle = True
-        #     i = 1
-        #     try:
-        #         while cycle:
-        #             output.append(table.item(f'I00{i}').get('values'))
-        #             i += 1
-        #     except TclError:
-        #         cycle = False
-        #     return output
-        #
-        # for row in get_all_rows(self.tables_firstSection[0]):
-        #     print(row)
+        def get_all_rows(table):
+            output = []
+            n = 1
+            try:
+                while True:
+                    output.append(table.item(f'I00{n}').get('values'))
+                    n += 1
+            except TclError:
+                return output
+
+        for t in range(len(self.tables_firstSection)):
+            data = []
+            if t == 0:
+                for row in zip(get_all_rows(self.tables_firstSection[t]), get_all_rows(self.tables_firstSection[t+1])):
+                    data.append(row[0])
+            elif t == 1:
+                continue
+            elif t == 2:
+                check_box = [self.graduateSchool_Entry.associated_row,
+                             self.adjunct_Entry.associated_row,
+                             self.doctoralStudies_Entry.associated_row]
+                for row in get_all_rows(self.tables_firstSection[t]):
+                    data.append(row)
+                for i in range(len(check_box)):
+                    if check_box[i] is not None:
+                        data[check_box[i]] = [i + 1] + data[check_box[i]]
+            else:
+                for row in get_all_rows(self.tables_firstSection[t]):
+                    data.append(row)
+            db.update_table(self.id, 0, t, data)
+
+        for t in range(len(self.tables_other)):
+            data = []
+            for row in get_all_rows(self.tables_other[t]):
+                data.append(row)
+            db.update_table(self.id, 1, t, data)
 
         self.notebook.forget(self.mainFrame)
 

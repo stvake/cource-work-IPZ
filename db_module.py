@@ -72,8 +72,49 @@ def update_info(worker_id, info):
             connection.commit()
 
 
-# print(get_all_workers())
-
-# print(get_worker_full_info(1))
-# for i in get_worker_full_info(1):
-#     print(i)
+def update_table(worker_id, tables_list, table_number, data):
+    if tables_list == 0:
+        if table_number == 0:
+            cursor.execute(f"DELETE FROM Education WHERE worker_id = {worker_id}")
+            connection.commit()
+            for row in data:
+                cursor.execute(f"INSERT INTO Education "
+                               f"(worker_id, UniName, Diploma, GraduationYear, Specialty, Qualification, EducationForm)"
+                               f"VALUES {tuple([worker_id] + row)}")
+                connection.commit()
+        elif table_number == 2:
+            cursor.execute(f"DELETE FROM PostGraduationEducation WHERE worker_id = {worker_id}")
+            connection.commit()
+            for row in data:
+                cursor.execute(f"INSERT INTO PostGraduationEducation (worker_id, PostGraduate, PostGradUniName, "
+                               f"PostGradDiploma, PostGradGradYear, PostGradDegree) VALUES {tuple([worker_id] + row)}")
+                connection.commit()
+        elif table_number == 3:
+            cursor.execute(f"DELETE FROM Family WHERE worker_id = {worker_id}")
+            connection.commit()
+            for row in data:
+                cursor.execute(f"INSERT INTO Family (worker_id, member, PIB, BirthDate) VALUES "
+                               f"{tuple([worker_id] + row)}")
+                connection.commit()
+    else:
+        if table_number == 0:
+            cursor.execute(f"DELETE FROM ProfessionalEducation WHERE worker_id = {worker_id}")
+            connection.commit()
+            for row in data:
+                cursor.execute(f"INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form, Document)"
+                               f"VALUES {tuple([worker_id] + row)}")
+                connection.commit()
+        elif table_number == 1:
+            cursor.execute(f"DELETE FROM Appointment WHERE worker_id = {worker_id}")
+            connection.commit()
+            for row in data:
+                cursor.execute(f"INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, Salary, "
+                               f"OrderBasis, Sign) VALUES {tuple([worker_id] + row)}")
+                connection.commit()
+        elif table_number == 2:
+            cursor.execute(f"DELETE FROM Vacation WHERE worker_id = {worker_id}")
+            connection.commit()
+            for row in data:
+                cursor.execute(f"INSERT INTO Vacation (worker_id, Type, Period, Start, End, OrderBasis) VALUES "
+                               f"{tuple([worker_id] + row)}")
+                connection.commit()
