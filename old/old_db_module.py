@@ -1,6 +1,6 @@
 import sqlite3
 
-connection = sqlite3.connect('HumanResourceDepartment.db')
+connection = sqlite3.connect('../HumanResourceDepartment.db')
 cursor = connection.cursor()
 
 
