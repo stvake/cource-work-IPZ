@@ -2,7 +2,6 @@ from tkinter import *
 import tkinter.ttk as ttk
 from MVC.Views.vertical_scrolled_frame import VerticalScrolledFrame
 from MVC.Views.editable_table import EditableTable
-from MVC.Views.custom_entry import CustomEntry
 
 
 class FullWorkerInfoView:
@@ -190,7 +189,7 @@ class FullWorkerInfoView:
         self.tables_other = []
 
         self.education_table1 = EditableTable(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
-                                              height=4)
+                                              height=10)
         self.education_table1.heading('Name', text='Назва освітнього закладу')
         self.education_table1.heading('Diploma', text='Диплом (свідоцтво), серія, номер')
         self.education_table1.heading('year', text='Рік закінчення')
@@ -198,7 +197,7 @@ class FullWorkerInfoView:
         self.tables_firstSection.append(self.education_table1)
 
         self.education_table2 = EditableTable(self.firstSection, columns=('Spec', 'Qualification', 'Form'),
-                                              show='headings', height=4)
+                                              show='headings', height=10)
         self.education_table2.heading('Spec', text='Спеціальність (професія) за дипломом (свідоцтвом)')
         self.education_table2.heading('Qualification', text='Кваліфікація за дипломом (свідоцтвом)')
         self.education_table2.heading('Form', text='Форма навчання')
@@ -206,7 +205,7 @@ class FullWorkerInfoView:
         self.tables_firstSection.append(self.education_table2)
 
         self.education_table3 = EditableTable(self.firstSection, columns=('Name', 'Diploma', 'year', 'degree'),
-                                              show='headings', height=4)
+                                              show='headings', height=10)
         self.education_table3.heading('Name', text='Назва освітнього, наукового  закладу')
         self.education_table3.heading('Diploma', text='Диплом, номер, дата видачі')
         self.education_table3.heading('year', text='Рік закінчення')
@@ -215,7 +214,7 @@ class FullWorkerInfoView:
         self.tables_firstSection.append(self.education_table3)
 
         self.family_table = EditableTable(self.firstSection, columns=('Connection', 'PIB', 'BirthDate'),
-                                          show='headings', height=4)
+                                          show='headings', height=10)
         self.family_table.heading('Connection', text="Ступінь родинного зв'язку (склад сім'ї)")
         self.family_table.heading('PIB', text='ПІБ')
         self.family_table.heading('BirthDate', text='Рік народження')
@@ -224,7 +223,7 @@ class FullWorkerInfoView:
 
         self.professionalEducation_table = EditableTable(self.thirdSection,
                                                          columns=('Date', 'Name', 'Period', 'Type', 'Form',
-                                                                  'Document'), show='headings', height=4)
+                                                                  'Document'), show='headings', height=10)
         self.professionalEducation_table.heading('Date', text='Дата')
         self.professionalEducation_table.heading('Name', text='Назва структурного підрозділу')
         self.professionalEducation_table.heading('Period', text='Період навчання')
@@ -244,7 +243,7 @@ class FullWorkerInfoView:
 
         self.appointment_table = EditableTable(self.fourthSection,
                                                columns=('Date', 'Name', 'ProfName', 'Code', 'Salary',
-                                                        'Order', 'Sign'), show='headings', height=4)
+                                                        'Order', 'Sign'), show='headings', height=10)
         self.appointment_table.heading('Date', text='Дата')
         self.appointment_table.heading('Name', text='Назва структурного підрозділу (код)')
         self.appointment_table.heading('ProfName', text='Назва професії, посади')
@@ -264,7 +263,7 @@ class FullWorkerInfoView:
         self.tables_other.append(self.appointment_table)
 
         self.vacation_table = EditableTable(self.fifthSection, columns=('Type', 'Period', 'Start', 'End', 'Order'),
-                                            show='headings', height=4)
+                                            show='headings', height=10)
         self.vacation_table.heading('Type', text='Вид відпустки ')
         self.vacation_table.heading('Period', text='За який період')
         self.vacation_table.heading('Start', text='початку відпустки')
@@ -303,15 +302,12 @@ class FullWorkerInfoView:
         self.education_Entry.grid(row=3, column=0, columnspan=6, padx=5, pady=5, sticky=NSEW)
         self.entries_general.append(self.education_Entry)
 
-        self.graduateSchool_Entry = CustomEntry(self.firstSection, width=3, justify='center')
+        self.graduateSchool_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
         self.graduateSchool_Entry.grid(row=7, column=1, sticky=W, padx=5, pady=5)
-        self.graduateSchool_Entry.associated_row = None
-        self.adjunct_Entry = CustomEntry(self.firstSection, width=3, justify='center')
+        self.adjunct_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
         self.adjunct_Entry.grid(row=7, column=3, sticky=W, padx=5, pady=5)
-        self.adjunct_Entry.associated_row = None
-        self.doctoralStudies_Entry = CustomEntry(self.firstSection, width=3, justify='center')
+        self.doctoralStudies_Entry = ttk.Entry(self.firstSection, width=3, justify='center')
         self.doctoralStudies_Entry.grid(row=7, column=5, sticky=W, padx=5, pady=5)
-        self.doctoralStudies_Entry.associated_row = None
 
         self.lastWork_Entry = ttk.Entry(self.firstSection, width=30, justify='center')
         self.lastWork_Entry.grid(row=9, column=1, sticky=W, padx=5, pady=5)

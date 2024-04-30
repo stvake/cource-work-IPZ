@@ -7,6 +7,7 @@ class EditableTable(ttk.Treeview):
         super().__init__(parent, **kw)
 
         self.bind("<Double-1>", self._on_double_click)
+        self.bind("<Delete>", self._on_delete_pressed)
 
     def _on_double_click(self, event):
         region_clicked = self.identify_region(event.x, event.y)
@@ -49,3 +50,11 @@ class EditableTable(ttk.Treeview):
         self.item(selected_iid, values=current_values)
 
         event.widget.destroy()
+
+    def _on_delete_pressed(self, event):
+        selected_iid = self.focus()
+        selected_values = self.item(selected_iid).get('values')
+        new_values = []
+        for x in selected_values:
+            new_values.append('')
+        self.item(selected_iid, values=new_values)

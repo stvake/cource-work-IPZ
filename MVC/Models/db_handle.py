@@ -84,7 +84,7 @@ class HandleDataBaseModel:
                 self.connection.commit()
                 for row in data:
                     self.cursor.execute(f"INSERT INTO PostGraduationEducation ("
-                                        f"worker_id, PostGraduate, PostGradUniName, "
+                                        f"worker_id, PostGradUniName, "
                                         f"PostGradDiploma, PostGradGradYear, PostGradDegree)"
                                         f"VALUES {tuple([worker_id] + row)}")
                     self.connection.commit()

@@ -25,27 +25,38 @@ class FullWorkerInfoController:
             elif i > 4:
                 if info[0][i] is not None:
                     self.full_worker_info.entries_general[i - 1].insert(END, info[0][i])
-
         for row in info[1]:
-            self.full_worker_info.tables_firstSection[0].insert(parent='', index=END, values=row[1:])
+            self.full_worker_info.tables_firstSection[0].insert(parent='', index=END, values=row[1:4])
+        if '' not in self.full_worker_info.tables_firstSection[0].get_children()[-1]:
+            self.full_worker_info.tables_firstSection[0].insert(parent='', index=END, values=('', '', ''))
+            self.full_worker_info.tables_firstSection[0].insert(parent='', index=END, values=('', '', ''))
 
         for row in info[1]:
             self.full_worker_info.tables_firstSection[1].insert(parent='', index=END, values=row[4:])
+        if '' not in self.full_worker_info.tables_firstSection[1].get_children()[-1]:
+            self.full_worker_info.tables_firstSection[1].insert(parent='', index=END, values=('', '', ''))
+            self.full_worker_info.tables_firstSection[1].insert(parent='', index=END, values=('', '', ''))
 
         for row in range(len(info[2])):
-            if info[2][row][1] == 1:
+            if info[2][row][-1] == 'Аспірантура':
                 self.full_worker_info.graduateSchool_Entry.insert(END, "X")
                 self.full_worker_info.graduateSchool_Entry.associated_row = row
-            elif info[2][row][1] == 2:
+            elif info[2][row][-1] == "Ад'юнктура" or info[2][row][-1] == "Ад'юнктура":
                 self.full_worker_info.adjunct_Entry.insert(END, "X")
                 self.full_worker_info.adjunct_Entry.associated_row = row
-            elif info[2][row][1] == 3:
+            elif info[2][row][-1] == 'Докторантура':
                 self.full_worker_info.doctoralStudies_Entry.insert(END, "X")
                 self.full_worker_info.doctoralStudies_Entry.associated_row = row
-            self.full_worker_info.tables_firstSection[2].insert(parent='', index=END, values=info[2][row][2:])
+            self.full_worker_info.tables_firstSection[2].insert(parent='', index=END, values=info[2][row][1:])
+        if '' not in self.full_worker_info.tables_firstSection[2].get_children()[-1]:
+            self.full_worker_info.tables_firstSection[2].insert(parent='', index=END, values=('', '', '', ''))
+            self.full_worker_info.tables_firstSection[2].insert(parent='', index=END, values=('', '', '', ''))
 
         for row in info[3]:
             self.full_worker_info.tables_firstSection[3].insert(parent='', index=END, values=row[1:])
+        if '' not in self.full_worker_info.tables_firstSection[3].get_children()[-1]:
+            self.full_worker_info.tables_firstSection[3].insert(parent='', index=END, values=('', '', ''))
+            self.full_worker_info.tables_firstSection[3].insert(parent='', index=END, values=('', '', ''))
 
         for i in range(len(info[4])):
             if info[4][i] is not None:
@@ -54,6 +65,15 @@ class FullWorkerInfoController:
         for i in range(len(self.full_worker_info.tables_other)):
             for row in info[5 + i]:
                 self.full_worker_info.tables_other[i].insert(parent='', index=END, values=row[1:])
+        if '' not in self.full_worker_info.tables_other[0].get_children()[-1]:
+            self.full_worker_info.tables_other[0].insert(parent='', index=END, values=('', '', '', '', '', ''))
+            self.full_worker_info.tables_other[0].insert(parent='', index=END, values=('', '', '', '', '', ''))
+        if '' not in self.full_worker_info.tables_other[1].get_children()[-1]:
+            self.full_worker_info.tables_other[1].insert(parent='', index=END, values=('', '', '', '', '', '', ''))
+            self.full_worker_info.tables_other[1].insert(parent='', index=END, values=('', '', '', '', '', '', ''))
+        if '' not in self.full_worker_info.tables_other[2].get_children()[-1]:
+            self.full_worker_info.tables_other[2].insert(parent='', index=END, values=('', '', '', '', ''))
+            self.full_worker_info.tables_other[2].insert(parent='', index=END, values=('', '', '', '', ''))
 
     def close_tab(self):
         info = [i.get() for i in self.full_worker_info.entries_general]
@@ -90,18 +110,9 @@ class FullWorkerInfoController:
             if t == 0:
                 for row in zip(get_all_rows(self.full_worker_info.tables_firstSection[t]),
                                get_all_rows(self.full_worker_info.tables_firstSection[t+1])):
-                    data.append(row[0])
+                    data.append(row[0] + row[1])
             elif t == 1:
                 continue
-            elif t == 2:
-                check_box = [self.full_worker_info.graduateSchool_Entry.associated_row,
-                             self.full_worker_info.adjunct_Entry.associated_row,
-                             self.full_worker_info.doctoralStudies_Entry.associated_row]
-                for row in get_all_rows(self.full_worker_info.tables_firstSection[t]):
-                    data.append(row)
-                for i in range(len(check_box)):
-                    if check_box[i] is not None:
-                        data[check_box[i]] = [i + 1] + data[check_box[i]]
             else:
                 for row in get_all_rows(self.full_worker_info.tables_firstSection[t]):
                     data.append(row)
