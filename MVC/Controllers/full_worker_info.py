@@ -86,9 +86,16 @@ class FullWorkerInfoController:
 
         self.full_worker_info.worker.name_text.delete(1.0, END)
         self.full_worker_info.worker.birth_date_text.delete(1.0, END)
+        self.full_worker_info.worker.post_text.delete(1.0, END)
 
         self.full_worker_info.worker.name_text.insert(END, f"{info[0]} {info[1]} {info[2]}")
         self.full_worker_info.worker.birth_date_text.insert(END, info[3])
+        indexes = self.full_worker_info.appointment_table.get_children()
+        values = []
+        for i in indexes:
+            values.append(self.full_worker_info.appointment_table.item(i).get('values'))
+        sorted_values = sorted(values, key=lambda x: x[0])
+        self.full_worker_info.worker.post_text.insert(END, sorted_values[-1][2])
 
         self.full_worker_info.worker.name_text.config(state=DISABLED)
         self.full_worker_info.worker.email_text.config(state=DISABLED)

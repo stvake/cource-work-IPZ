@@ -12,7 +12,11 @@ class HandleDataBaseModel:
 
     def get_worker_info(self, worker_id):
         self.cursor.execute(f"SELECT * FROM Workers WHERE id = {worker_id}")
-        return self.cursor.fetchall()
+        info = list(self.cursor.fetchone())
+        self.cursor.execute(f"SELECT * FROM Appointment WHERE worker_id = {worker_id} ORDER BY Date DESC")
+        info.append(self.cursor.fetchall()[0][3])
+        info = tuple(info)
+        return info
 
     def get_worker_full_info(self, worker_id):
         output = []
@@ -22,7 +26,7 @@ class HandleDataBaseModel:
         info = self.cursor.fetchall()[0]
         temp = []
         for el in range(len(info)):
-            if el != 0 and el != 4 and el != 6 and el != 8:
+            if el != 0 and el != 4 and el != 7:
                 temp.append(info[el])
         output.append(temp)
 
