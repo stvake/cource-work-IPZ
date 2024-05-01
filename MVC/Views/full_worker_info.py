@@ -25,8 +25,6 @@ class FullWorkerInfoView:
         self.photo_label = ttk.Label(self.photo_frame)
         self.photo_label.pack(padx=2, pady=2)
 
-        self.docsTab = None
-
         # Frames
         self.firstSection = LabelFrame(self.mainScrolledFrame.interior, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
         self.firstSection.pack(fill=BOTH, padx=5, pady=5)

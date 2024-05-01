@@ -1,6 +1,6 @@
-from MVC.Views.main import View
+from MVC.Views.View import View
 from MVC.Models.db_handle import HandleDataBaseModel
-from MVC.Controllers.main import Controller
+from MVC.Controllers.Controller import Controller
 
 
 def main():

@@ -1,5 +1,4 @@
 from MVC.Views.app import App
-
 from MVC.Views.home import HomeView
 from MVC.Views.all_workers import AllWorkersView
 from MVC.Views.all_units import AllUnitsView
@@ -7,6 +6,7 @@ from MVC.Views.all_positions import AllPositionsView
 from MVC.Views.search import SearchView
 from MVC.Views.worker import WorkerView
 from MVC.Views.full_worker_info import FullWorkerInfoView
+from MVC.Views.add_new_worker import AddNewWorkerView
 
 
 class View:
@@ -20,6 +20,7 @@ class View:
             'Units': AllUnitsView(self.app.notebook),
             'Positions': AllPositionsView(self.app.notebook),
             'Search': SearchView(self.app.notebook),
+            'AddNewWorker': AddNewWorkerView(self.app.notebook),
         }
 
     def create_tab(self, worker_id, view_type, *args):
@@ -27,6 +28,9 @@ class View:
             self.worker_tabs[worker_id] = WorkerView(*args)
         elif view_type == 'FullWorkerInfo':
             self.full_info_tabs[worker_id] = FullWorkerInfoView(*args)
+
+    def add_new_worker(self):
+        self.tabs['AddNewWorker'].add_tab()
 
     def start_app(self):
         self.app.mainloop()

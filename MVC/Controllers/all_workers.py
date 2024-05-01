@@ -4,6 +4,7 @@ class AllWorkersController:
         self.view = view
         self.tab = self.view.tabs['Workers']
         self.workers = {}
+        self.tab.add_worker_button.config(command=self.add_worker)
         self.get_all_workers()
 
     def get_all_workers(self):
@@ -17,4 +18,4 @@ class AllWorkersController:
             )
 
     def add_worker(self):
-        ...
+        self.view.add_new_worker()

@@ -3,6 +3,7 @@ from MVC.Controllers.all_positions import PositionsController
 from MVC.Controllers.all_units import UnitsController
 from MVC.Controllers.all_workers import AllWorkersController
 from MVC.Controllers.worker import WorkerController
+from MVC.Controllers.add_new_worker import AddNewWorker
 
 
 class Controller:
@@ -14,6 +15,7 @@ class Controller:
         self.all_positions_controller = PositionsController(model, view)
         self.all_units_controller = UnitsController(model, view)
         self.all_workers_controller = AllWorkersController(model, view)
+        self.add_new_worker_controller = AddNewWorker(model, view)
 
         self.workers_controllers = {}
         for worker in self.view.worker_tabs.items():

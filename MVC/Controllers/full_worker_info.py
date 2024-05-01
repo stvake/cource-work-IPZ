@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter.messagebox import *
 from PIL import Image, ImageTk
 from io import BytesIO
 
@@ -9,10 +10,19 @@ class FullWorkerInfoController:
         self.view = view
         self.full_worker_info = self.view.full_info_tabs[worker_id]
         self.full_worker_info.closeTab_Button.config(command=self.close_tab)
+        self.ready_to_save = 1
         self.get_info_from_db(worker_id)
 
     def get_info_from_db(self, worker_id):
         info = self.model.get_worker_full_info(worker_id)
+
+        def insert_blank_rows(table, values):
+            r = 1
+            while '' in table.item(table.get_children()[-r]).get('values'):
+                r += 1
+            r = 3 - (r - 1)
+            for el in range(r):
+                table.insert(parent='', index=END, values=values)
 
         for i in range(len(info[0])):
             if i < 4:
@@ -27,15 +37,13 @@ class FullWorkerInfoController:
                     self.full_worker_info.entries_general[i - 1].insert(END, info[0][i])
         for row in info[1]:
             self.full_worker_info.tables_firstSection[0].insert(parent='', index=END, values=row[1:4])
-        if '' not in self.full_worker_info.tables_firstSection[0].get_children()[-1]:
-            self.full_worker_info.tables_firstSection[0].insert(parent='', index=END, values=('', '', ''))
-            self.full_worker_info.tables_firstSection[0].insert(parent='', index=END, values=('', '', ''))
+
+        insert_blank_rows(self.full_worker_info.tables_firstSection[0], ('', '', ''))
 
         for row in info[1]:
             self.full_worker_info.tables_firstSection[1].insert(parent='', index=END, values=row[4:])
-        if '' not in self.full_worker_info.tables_firstSection[1].get_children()[-1]:
-            self.full_worker_info.tables_firstSection[1].insert(parent='', index=END, values=('', '', ''))
-            self.full_worker_info.tables_firstSection[1].insert(parent='', index=END, values=('', '', ''))
+
+        insert_blank_rows(self.full_worker_info.tables_firstSection[1], ('', '', ''))
 
         for row in range(len(info[2])):
             if info[2][row][-1] == 'Аспірантура':
@@ -48,15 +56,13 @@ class FullWorkerInfoController:
                 self.full_worker_info.doctoralStudies_Entry.insert(END, "X")
                 self.full_worker_info.doctoralStudies_Entry.associated_row = row
             self.full_worker_info.tables_firstSection[2].insert(parent='', index=END, values=info[2][row][1:])
-        if '' not in self.full_worker_info.tables_firstSection[2].get_children()[-1]:
-            self.full_worker_info.tables_firstSection[2].insert(parent='', index=END, values=('', '', '', ''))
-            self.full_worker_info.tables_firstSection[2].insert(parent='', index=END, values=('', '', '', ''))
+
+        insert_blank_rows(self.full_worker_info.tables_firstSection[2], ('', '', '', ''))
 
         for row in info[3]:
             self.full_worker_info.tables_firstSection[3].insert(parent='', index=END, values=row[1:])
-        if '' not in self.full_worker_info.tables_firstSection[3].get_children()[-1]:
-            self.full_worker_info.tables_firstSection[3].insert(parent='', index=END, values=('', '', ''))
-            self.full_worker_info.tables_firstSection[3].insert(parent='', index=END, values=('', '', ''))
+
+        insert_blank_rows(self.full_worker_info.tables_firstSection[3], ('', '', ''))
 
         for i in range(len(info[4])):
             if info[4][i] is not None:
@@ -65,15 +71,10 @@ class FullWorkerInfoController:
         for i in range(len(self.full_worker_info.tables_other)):
             for row in info[5 + i]:
                 self.full_worker_info.tables_other[i].insert(parent='', index=END, values=row[1:])
-        if '' not in self.full_worker_info.tables_other[0].get_children()[-1]:
-            self.full_worker_info.tables_other[0].insert(parent='', index=END, values=('', '', '', '', '', ''))
-            self.full_worker_info.tables_other[0].insert(parent='', index=END, values=('', '', '', '', '', ''))
-        if '' not in self.full_worker_info.tables_other[1].get_children()[-1]:
-            self.full_worker_info.tables_other[1].insert(parent='', index=END, values=('', '', '', '', '', '', ''))
-            self.full_worker_info.tables_other[1].insert(parent='', index=END, values=('', '', '', '', '', '', ''))
-        if '' not in self.full_worker_info.tables_other[2].get_children()[-1]:
-            self.full_worker_info.tables_other[2].insert(parent='', index=END, values=('', '', '', '', ''))
-            self.full_worker_info.tables_other[2].insert(parent='', index=END, values=('', '', '', '', ''))
+
+        insert_blank_rows(self.full_worker_info.tables_other[0], ('', '', '', '', '', ''))
+        insert_blank_rows(self.full_worker_info.tables_other[1], ('', '', '', '', '', '', ''))
+        insert_blank_rows(self.full_worker_info.tables_other[2], ('', '', '', '', ''))
 
     def close_tab(self):
         info = [i.get() for i in self.full_worker_info.entries_general]
@@ -123,12 +124,37 @@ class FullWorkerInfoController:
             else:
                 for row in get_all_rows(self.full_worker_info.tables_firstSection[t]):
                     data.append(row)
-            self.model.update_table(self.full_worker_info.id, 0, t, data)
+
+            quantity_of_empty_elements = 0
+            for d in data:
+                if '' in d and d.count('') != len(d):
+                    quantity_of_empty_elements += 1
+
+            if quantity_of_empty_elements != 0:
+                if self.ready_to_save:
+                    showwarning("Зауваження", "Правильно заповніть поля.")
+                    self.ready_to_save = 0
+            else:
+                self.model.update_table(self.full_worker_info.id, 0, t, data)
+                self.ready_to_save = 1
 
         for t in range(len(self.full_worker_info.tables_other)):
             data = []
             for row in get_all_rows(self.full_worker_info.tables_other[t]):
                 data.append(row)
-            self.model.update_table(self.full_worker_info.id, 1, t, data)
 
-        self.full_worker_info.notebook.forget(self.full_worker_info.mainFrame)
+            quantity_of_empty_elements = 0
+            for d in data:
+                if '' in d and d.count('') != len(d):
+                    quantity_of_empty_elements += 1
+
+            if quantity_of_empty_elements != 0:
+                if self.ready_to_save:
+                    showwarning("Зауваження", "Правильно заповніть поля.")
+                    self.ready_to_save = 0
+            else:
+                self.model.update_table(self.full_worker_info.id, 1, t, data)
+                self.ready_to_save = 1
+
+        if self.ready_to_save:
+            self.full_worker_info.notebook.forget(self.full_worker_info.mainFrame)
