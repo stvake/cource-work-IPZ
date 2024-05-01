@@ -12,8 +12,13 @@ class EditableTable(ttk.Treeview):
     def _on_double_click(self, event):
         region_clicked = self.identify_region(event.x, event.y)
 
-        if region_clicked != 'cell':
+        if region_clicked == 'heading':
             return
+
+        elif region_clicked == 'nothing':
+            new_item = self.insert('', 'end', values=['' for _ in range(len(self['columns']))])
+            self.selection_set(new_item)
+            self.focus(new_item)
 
         column = self.identify_column(event.x)
         column_index = int(column[1:]) - 1

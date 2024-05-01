@@ -11,25 +11,19 @@ class FullWorkerInfoController:
         self.full_worker_info = self.view.full_info_tabs[worker_id]
         self.full_worker_info.closeTab_Button.config(command=self.close_tab)
         self.ready_to_save = 1
+        self.image_data = None
         self.get_info_from_db(worker_id)
 
     def get_info_from_db(self, worker_id):
         info = self.model.get_worker_full_info(worker_id)
-
-        def insert_blank_rows(table, values):
-            r = 1
-            while '' in table.item(table.get_children()[-r]).get('values'):
-                r += 1
-            r = 3 - (r - 1)
-            for el in range(r):
-                table.insert(parent='', index=END, values=values)
 
         for i in range(len(info[0])):
             if i < 4:
                 if info[0][i] is not None:
                     self.full_worker_info.entries_general[i].insert(END, info[0][i])
             elif i == 4:
-                img = Image.open(BytesIO(info[0][i]))
+                self.image_data = info[0][i]
+                img = Image.open(BytesIO(self.image_data))
                 self.full_worker_info.photo = ImageTk.PhotoImage(img)
                 self.full_worker_info.photo_label.config(image=self.full_worker_info.photo)
             elif i > 4:
@@ -38,12 +32,8 @@ class FullWorkerInfoController:
         for row in info[1]:
             self.full_worker_info.tables_firstSection[0].insert(parent='', index=END, values=row[1:4])
 
-        insert_blank_rows(self.full_worker_info.tables_firstSection[0], ('', '', ''))
-
         for row in info[1]:
             self.full_worker_info.tables_firstSection[1].insert(parent='', index=END, values=row[4:])
-
-        insert_blank_rows(self.full_worker_info.tables_firstSection[1], ('', '', ''))
 
         for row in range(len(info[2])):
             if info[2][row][-1] == 'Аспірантура':
@@ -57,12 +47,8 @@ class FullWorkerInfoController:
                 self.full_worker_info.doctoralStudies_Entry.associated_row = row
             self.full_worker_info.tables_firstSection[2].insert(parent='', index=END, values=info[2][row][1:])
 
-        insert_blank_rows(self.full_worker_info.tables_firstSection[2], ('', '', '', ''))
-
         for row in info[3]:
             self.full_worker_info.tables_firstSection[3].insert(parent='', index=END, values=row[1:])
-
-        insert_blank_rows(self.full_worker_info.tables_firstSection[3], ('', '', ''))
 
         for i in range(len(info[4])):
             if info[4][i] is not None:
@@ -72,16 +58,14 @@ class FullWorkerInfoController:
             for row in info[5 + i]:
                 self.full_worker_info.tables_other[i].insert(parent='', index=END, values=row[1:])
 
-        insert_blank_rows(self.full_worker_info.tables_other[0], ('', '', '', '', '', ''))
-        insert_blank_rows(self.full_worker_info.tables_other[1], ('', '', '', '', '', '', ''))
-        insert_blank_rows(self.full_worker_info.tables_other[2], ('', '', '', '', ''))
-
     def close_tab(self):
         info = [i.get() for i in self.full_worker_info.entries_general]
-        self.model.update_info(self.full_worker_info.id, info)
+        info.insert(4, self.image_data)
+        mil_info = [i.get() for i in self.full_worker_info.entries_secondSection]
+
+        self.model.update_info(self.full_worker_info.id, info, mil_info)
 
         self.full_worker_info.worker.name_text.config(state=NORMAL)
-        self.full_worker_info.worker.email_text.config(state=NORMAL)
         self.full_worker_info.worker.birth_date_text.config(state=NORMAL)
         self.full_worker_info.worker.post_text.config(state=NORMAL)
 
@@ -99,7 +83,6 @@ class FullWorkerInfoController:
         self.full_worker_info.worker.post_text.insert(END, sorted_values[-1][2])
 
         self.full_worker_info.worker.name_text.config(state=DISABLED)
-        self.full_worker_info.worker.email_text.config(state=DISABLED)
         self.full_worker_info.worker.birth_date_text.config(state=DISABLED)
         self.full_worker_info.worker.post_text.config(state=DISABLED)
 

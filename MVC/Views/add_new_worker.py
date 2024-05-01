@@ -20,8 +20,8 @@ class AddNewWorkerView:
         self.image_label = ttk.Label(self.image_frame, text="Завантажте\nфото\nнового\nробітника",
                                      font=('Arial', 14), justify=CENTER)
         self.image_label.pack(padx=2, pady=2)
-        self.photo_button = ttk.Button(self.photo_frame, text='Завантажити фото')
-        self.photo_button.pack(padx=2, pady=5)
+        self.add_photo_button = ttk.Button(self.photo_frame, text='Завантажити фото')
+        self.add_photo_button.pack(padx=2, pady=5)
 
         # Frames
         self.firstSection = LabelFrame(self.mainScrolledFrame.interior, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
@@ -453,8 +453,8 @@ class AddNewWorkerView:
         self.entries_general.append(self.workerYear_Entry)
 
         # Buttons
-        self.closeTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Зберегти та закрити вкладку")
-        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
+        self.saveButton = ttk.Button(self.mainScrolledFrame.interior, text="Зберегти та закрити вкладку")
+        self.saveButton.pack(fill=BOTH, padx=5, pady=5)
 
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text='Додати нового робітника')

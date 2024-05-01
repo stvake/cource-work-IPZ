@@ -26,8 +26,6 @@ class WorkerView(ttk.Frame):
 
         self.name_label = ttk.Label(self.info_frame, text="ПІБ:")
         self.name_label.grid(row=0, column=0, sticky=W, padx=5, pady=5)
-        self.email_label = ttk.Label(self.info_frame, text="Email:")
-        self.email_label.grid(row=1, column=0, sticky=W, padx=5, pady=5)
         self.birth_date_label = ttk.Label(self.info_frame, text="Дата народження:")
         self.birth_date_label.grid(row=2, column=0, sticky=W, padx=5, pady=5)
         self.post_label = ttk.Label(self.info_frame, text="Посада:")
@@ -35,8 +33,6 @@ class WorkerView(ttk.Frame):
 
         self.name_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
         self.name_text.grid(row=0, column=1, sticky=W, padx=5, pady=5)
-        self.email_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
-        self.email_text.grid(row=1, column=1, sticky=W, padx=5, pady=5)
         self.birth_date_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
         self.birth_date_text.grid(row=2, column=1, sticky=W, padx=5, pady=5)
         self.post_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
