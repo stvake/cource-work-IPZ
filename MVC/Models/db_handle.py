@@ -7,8 +7,8 @@ class HandleDataBaseModel:
         self.cursor = self.connection.cursor()
 
     def get_workers_quantity(self):
-        self.cursor.execute('SELECT COUNT(*) FROM Workers')
-        return self.cursor.fetchone()[0]
+        self.cursor.execute('SELECT id FROM Workers')
+        return self.cursor.fetchall()[-1][0]
 
     def get_worker_info(self, worker_id):
         self.cursor.execute(f"SELECT * FROM Workers WHERE id = {worker_id}")
@@ -169,8 +169,10 @@ class HandleDataBaseModel:
     def delete_worker(self, worker_id):
         try:
             self.cursor.execute(f"select name from sqlite_master where type='table'")
-            for x in self.cursor.fetchall():
-                self.cursor.execute(f"delete from {x[0]} where id={worker_id}")
+            tables = self.cursor.fetchall()
+            for x in tables:
+                self.cursor.execute(f"pragma table_info({x[0]})")
+                self.cursor.execute(f"delete from {x[0]} where {self.cursor.fetchall()[0][1]}={worker_id}")
                 self.connection.commit()
-        except sqlite3.Error:
+        except sqlite3.Error as e:
             self.connection.rollback()

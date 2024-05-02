@@ -6,13 +6,14 @@ from MVC.Controllers.full_worker_info import FullWorkerInfoController
 
 
 class WorkerController:
-    def __init__(self, model, view, worker_id):
+    def __init__(self, all_workers_controller, model, view, worker_id):
+        self.all_workers_controller = all_workers_controller
         self.model = model
         self.view = view
         self.worker = self.view.worker_tabs[worker_id]
         self.worker.button_view.config(command=self.more_info)
-        # self.worker.button_delete.config(command=self.delete_worker)
-        self.full_worker_infos = {}
+        self.worker.button_delete.config(command=self.delete_worker)
+        self.full_worker_info = {}
         self.get_info()
 
     def get_info(self):
@@ -36,8 +37,10 @@ class WorkerController:
 
     def more_info(self):
         self.view.create_tab(self.worker.id, 'FullWorkerInfo', self.worker.notebook, self.worker)
-        self.full_worker_infos[self.worker.id] = FullWorkerInfoController(self.model, self.view, self.worker.id)
+        self.full_worker_info[self.worker.id] = FullWorkerInfoController(self.model, self.view, self.worker.id)
 
-    # def delete_worker(self):
-    #     self.model.delete_worker(self.worker.id)
-    #     self.view.destroy()
+    def delete_worker(self):
+        self.model.delete_worker(self.worker.id)
+        self.full_worker_info.clear()
+        self.all_workers_controller.workers_controllers.pop(str(self.worker.id))
+        self.worker.destroy()

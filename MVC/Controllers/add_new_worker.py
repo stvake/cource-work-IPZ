@@ -2,9 +2,12 @@ from tkinter.filedialog import askopenfilename
 from tkinter import *
 from tkinter.messagebox import showwarning
 
+from MVC.Controllers.worker import WorkerController
 
-class AddNewWorker:
-    def __init__(self, model, view):
+
+class AddNewWorkerController:
+    def __init__(self, main_controller, model, view):
+        self.main_controller = main_controller
         self.model = model
         self.view = view
         self.tab = self.view.tabs['AddNewWorker']
@@ -85,4 +88,13 @@ class AddNewWorker:
                 self.ready_to_save = 1
 
         if self.ready_to_save:
+            self.view.create_tab(
+                self.id,
+                'Worker',
+                self.id,
+                self.view.tabs['Workers'].frame.interior,
+                self.view.tabs['Workers'].notebook
+            )
+            self.main_controller.all_workers_controller.workers_controllers[self.id] = (
+                WorkerController(self.main_controller.all_workers_controller, self.model, self.view, self.id))
             self.tab.notebook.forget(self.tab.mainFrame)
