@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 from io import BytesIO
 
 from MVC.Controllers.full_worker_info import FullWorkerInfoController
+from MVC.Controllers.worker_project import WorkerProjectsController
 
 
 class WorkerController:
@@ -13,7 +14,9 @@ class WorkerController:
         self.worker = self.view.worker_tabs[worker_id]
         self.worker.button_view.config(command=self.more_info)
         self.worker.button_delete.config(command=self.delete_worker)
+        self.worker.button_projects.config(command=self.open_projects)
         self.full_worker_info = {}
+        self.worker_projects_info = {}
         self.get_info()
 
     def get_info(self):
@@ -44,3 +47,7 @@ class WorkerController:
         self.full_worker_info.clear()
         self.all_workers_controller.workers_controllers.pop(str(self.worker.id))
         self.worker.destroy()
+
+    def open_projects(self):
+        self.view.create_tab(self.worker.id, 'OpenProjects', self.worker.notebook, self.worker)
+        self.worker_projects_info[self.worker.id] = WorkerProjectsController(self.model, self.view, self.worker.id)

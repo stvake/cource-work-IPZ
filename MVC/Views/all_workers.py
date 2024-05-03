@@ -9,8 +9,17 @@ class AllWorkersView:
 
         self.mainFrame = ttk.Frame(self.notebook)
 
-        self.add_worker_button = ttk.Button(self.mainFrame, text='Додати')
-        self.add_worker_button.pack(anchor=W, padx=5, pady=5)
+        self.sort_button_frame = ttk.Frame(self.mainFrame)
+        self.sort_button_frame.pack(fill=BOTH)
+
+        self.add_worker_button = ttk.Button(self.sort_button_frame, text='Додати')
+        self.add_worker_button.pack(anchor=W, padx=5, pady=5, side=LEFT)
+        self.sort_firstname = ttk.Button(self.sort_button_frame, text="Відсортувати за ім'ям")
+        self.sort_firstname.pack(anchor=E, padx=5, pady=5, side=RIGHT)
+        self.sort_lastname = ttk.Button(self.sort_button_frame, text="Відсортувати за прізвищем")
+        self.sort_lastname.pack(anchor=E, padx=5, pady=5, side=RIGHT)
+        self.sort_salary = ttk.Button(self.sort_button_frame, text="Відсортувати за заробітньою платою")
+        self.sort_salary.pack(anchor=E, padx=5, pady=5, side=RIGHT)
 
         self.frame = VerticalScrolledFrame(self.mainFrame)
         self.frame.pack(expand=True, fill=BOTH)

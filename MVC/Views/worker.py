@@ -12,7 +12,7 @@ class WorkerView(ttk.Frame):
         self.info_page = None
 
         self.config(relief=GROOVE)
-        self.pack(padx=5, pady=5, anchor=W)
+        self.pack(padx=5, pady=5)
 
         self.photo = None
         self.photo_frame = ttk.Frame(self, relief=GROOVE)
@@ -30,6 +30,8 @@ class WorkerView(ttk.Frame):
         self.birth_date_label.grid(row=2, column=0, sticky=W, padx=5, pady=5)
         self.post_label = ttk.Label(self.info_frame, text="Посада:")
         self.post_label.grid(row=3, column=0, sticky=W, padx=5, pady=5)
+        self.salary_label = ttk.Label(self.info_frame, text="Заробітння плата:")
+        self.salary_label.grid(row=4, column=0, sticky=W, padx=5, pady=5)
 
         self.name_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
         self.name_text.grid(row=0, column=1, sticky=W, padx=5, pady=5)
@@ -37,6 +39,8 @@ class WorkerView(ttk.Frame):
         self.birth_date_text.grid(row=2, column=1, sticky=W, padx=5, pady=5)
         self.post_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
         self.post_text.grid(row=3, column=1, sticky=W, padx=5, pady=5)
+        self.salary_text = Text(self.info_frame, state=DISABLED, height=1, width=35)
+        self.salary_text.grid(row=4, column=1, sticky=W, padx=5, pady=5)
 
         self.buttons_frame = ttk.Frame(self)
         self.buttons_frame.pack(side=BOTTOM, fill=BOTH, padx=5, pady=5)
@@ -45,3 +49,5 @@ class WorkerView(ttk.Frame):
         self.button_view.grid(row=2, column=0, sticky=W, padx=5, pady=5)
         self.button_delete = ttk.Button(self.buttons_frame, text="Видалити")
         self.button_delete.grid(row=2, column=1, sticky=W, padx=5, pady=5)
+        self.button_projects = ttk.Button(self.buttons_frame, text="Переглянути проекти")
+        self.button_projects.grid(row=1, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5, )

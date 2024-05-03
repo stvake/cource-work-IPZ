@@ -10,6 +10,7 @@ class FullWorkerInfoController:
         self.view = view
         self.full_worker_info = self.view.full_info_tabs[worker_id]
         self.full_worker_info.closeTab_Button.config(command=self.close_tab)
+        self.full_worker_info.closeTabWithoutSave_Button.config(command=self.close_tab_without_save)
         self.ready_to_save = 1
         self.image_data = None
         self.get_info_from_db(worker_id)
@@ -143,3 +144,6 @@ class FullWorkerInfoController:
 
         if self.ready_to_save:
             self.full_worker_info.notebook.forget(self.full_worker_info.mainFrame)
+
+    def close_tab_without_save(self):
+        self.full_worker_info.notebook.forget(self.full_worker_info.mainFrame)

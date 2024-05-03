@@ -458,4 +458,7 @@ class FullWorkerInfoView:
         self.closeTab_Button = ttk.Button(self.mainScrolledFrame.interior, text="Зберегти та закрити вкладку")
         self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
+        self.closeTabWithoutSave_Button = ttk.Button(self.mainScrolledFrame.interior, text="Закрити без збереження")
+        self.closeTabWithoutSave_Button.pack(fill=BOTH, padx=5, pady=5)
+
         self.notebook.insert("end", self.mainFrame, text=self.name)

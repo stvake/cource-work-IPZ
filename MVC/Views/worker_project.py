@@ -1,0 +1,36 @@
+from tkinter import *
+import tkinter.ttk as ttk
+from MVC.Views.vertical_scrolled_frame import VerticalScrolledFrame
+from MVC.Views.editable_table import EditableTable
+
+
+class WorkerProjectView:
+    def __init__(self, notebook, worker):
+        self.worker = worker
+
+        self.id = worker.id
+
+        self.name = worker.name_text.get(1.0, END)[:-1]
+
+        self.notebook = notebook
+        self.mainFrame = ttk.Frame(notebook)
+
+        self.mainScrolledFrame = VerticalScrolledFrame(self.mainFrame)
+        self.mainScrolledFrame.pack(side=RIGHT, fill=BOTH, expand=True)
+
+        self.projects_table = EditableTable(self.mainScrolledFrame, columns=('ID', 'name', 'cost', 'start', 'end'),
+                                              show='headings', height=10)
+        self.projects_table.heading('ID', text='№')
+        self.projects_table.heading('name', text='Назва проекту')
+        self.projects_table.heading('cost', text='Вартість проекту')
+        self.projects_table.heading('start', text='Дата початку проекту')
+        self.projects_table.heading('end', text='Дата закінчення проекту')
+        self.projects_table.pack(padx=5, pady=5)
+
+        self.closeTab_Button = ttk.Button(self.mainScrolledFrame, text="Зберегти та закрити вкладку")
+        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
+
+        self.closeTabWithoutSave_Button = ttk.Button(self.mainScrolledFrame, text="Закрити вкладку без збереження")
+        self.closeTabWithoutSave_Button.pack(fill=BOTH, padx=5, pady=5)
+
+        self.notebook.insert("end", self.mainFrame, text="Проекти " + self.name)
