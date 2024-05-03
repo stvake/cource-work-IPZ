@@ -2,7 +2,6 @@ from MVC.Controllers.home import HomeController
 from MVC.Controllers.all_positions import PositionsController
 from MVC.Controllers.all_units import UnitsController
 from MVC.Controllers.all_workers import AllWorkersController
-from MVC.Controllers.worker import WorkerController
 from MVC.Controllers.search import SearchController
 from MVC.Controllers.add_new_worker import AddNewWorkerController
 

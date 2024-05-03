@@ -117,6 +117,7 @@ class FullWorkerInfoController:
                 if self.ready_to_save:
                     showwarning("Зауваження", "Правильно заповніть поля.")
                     self.ready_to_save = 0
+                    return
             else:
                 self.model.update_table(self.full_worker_info.id, 0, t, data)
                 self.ready_to_save = 1
@@ -135,6 +136,7 @@ class FullWorkerInfoController:
                 if self.ready_to_save:
                     showwarning("Зауваження", "Правильно заповніть поля.")
                     self.ready_to_save = 0
+                    return
             else:
                 self.model.update_table(self.full_worker_info.id, 1, t, data)
                 self.ready_to_save = 1

@@ -7,7 +7,7 @@ class HandleDataBaseModel:
         self.cursor = self.connection.cursor()
 
     def get_workers_quantity(self):
-        self.cursor.execute('SELECT id FROM Workers')
+        self.cursor.execute('SELECT id FROM Workers order by id')
         return self.cursor.fetchall()[-1][0]
 
     def get_worker_info(self, worker_id):
@@ -130,24 +130,29 @@ class HandleDataBaseModel:
                     self.connection.commit()
                     for row in data:
                         self.cursor.execute(
-                            f"INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form, Document)"
+                            f"INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form,Document)"
                             f"VALUES {tuple([worker_id] + row)}")
                         self.connection.commit()
                 elif table_number == 1:
-                    self.cursor.execute(f"DELETE FROM Appointment WHERE worker_id = {worker_id}")
-                    self.connection.commit()
-                    for row in data:
+                    if len(data) != 0:
+                        self.cursor.execute(f"DELETE FROM Appointment WHERE worker_id = {worker_id}")
+                        self.connection.commit()
+                        for row in data:
+                            self.cursor.execute(f"INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, "
+                                                f"Salary, OrderBasis, Sign) VALUES {tuple([worker_id] + row)}")
+                            self.connection.commit()
+                    else:
                         self.cursor.execute(f"INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, Salary, "
-                                            f"OrderBasis, Sign) VALUES {tuple([worker_id] + row)}")
+                                            f"OrderBasis, Sign) VALUES {tuple([worker_id]+['' for _ in range(7)])}")
                         self.connection.commit()
                 elif table_number == 2:
                     self.cursor.execute(f"DELETE FROM Vacation WHERE worker_id = {worker_id}")
                     self.connection.commit()
                     for row in data:
-                        self.cursor.execute(f"INSERT INTO Vacation (worker_id, Type, Period, Start, End, OrderBasis) "
+                        self.cursor.execute(f"INSERT INTO Vacation(worker_id, Type, Period, Start, End, OrderBasis)"
                                             f"VALUES {tuple([worker_id] + row)}")
-                        self.connection.commit()
-        except sqlite3.Error:
+        except sqlite3.Error as e:
+            print(e)
             self.connection.rollback()
 
     def create_new_worker(self):
@@ -174,5 +179,5 @@ class HandleDataBaseModel:
                 self.cursor.execute(f"pragma table_info({x[0]})")
                 self.cursor.execute(f"delete from {x[0]} where {self.cursor.fetchall()[0][1]}={worker_id}")
                 self.connection.commit()
-        except sqlite3.Error as e:
+        except sqlite3.Error:
             self.connection.rollback()
