@@ -206,8 +206,8 @@ class HandleDataBaseModel:
 
                 row = [int(collaborators[0])] + row[:-1] + [",".join(collaborators[1:])]
 
-                self.cursor.execute(f'insert into WorkersProjects('
-                                    f') VALUES {tuple(row)}')
+                self.cursor.execute(f'insert into WorkersProjects(mainworker_id, id, name, cost, start, end, '
+                                    f'collaborators) VALUES {tuple(row)}')
             self.connection.commit()
         except sqlite3.Error:
             self.connection.rollback()
