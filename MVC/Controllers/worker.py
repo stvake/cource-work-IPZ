@@ -16,7 +16,7 @@ class WorkerController:
         self.worker.button_delete.config(command=self.delete_worker)
         self.worker.button_projects.config(command=self.open_projects)
         self.full_worker_info = {}
-        self.worker_projects_info = {}
+        self.worker_projects = {}
         self.get_info()
 
     def get_info(self):
@@ -50,4 +50,4 @@ class WorkerController:
 
     def open_projects(self):
         self.view.create_tab(self.worker.id, 'OpenProjects', self.worker.notebook, self.worker)
-        self.worker_projects_info[self.worker.id] = WorkerProjectsController(self.model, self.view, self.worker.id)
+        self.worker_projects[self.worker.id] = WorkerProjectsController(self, self.model, self.view, self.worker.id)

@@ -24,6 +24,9 @@ class AllWorkersView:
         self.frame = VerticalScrolledFrame(self.mainFrame)
         self.frame.pack(expand=True, fill=BOTH)
 
+        self.close_button = ttk.Button(self.frame.interior, text="Закрити вкладку")
+        self.close_button.pack(padx=5, pady=5, side=BOTTOM, fill=BOTH)
+
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text="Список робітників")
         self.notebook.select(self.mainFrame)

@@ -8,6 +8,7 @@ class HomeController:
     def _bind(self):
         self.tab.workers_Button.config(command=self.open_workers)
         self.tab.listOfAllUnits_Button.config(command=self.open_units)
+        self.tab.listOfAllProjects_Button.config(command=self.open_projects)
         self.tab.position_Button.config(command=self.open_positions)
         self.tab.search_Button.config(command=self.open_search)
 
@@ -16,6 +17,9 @@ class HomeController:
 
     def open_units(self):
         self.view.tabs['Units'].add_tab()
+
+    def open_projects(self):
+        self.view.tabs['AllProjects'].add_tab()
 
     def open_positions(self):
         self.view.tabs['Positions'].add_tab()

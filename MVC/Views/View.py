@@ -4,6 +4,7 @@ from MVC.Views.all_workers import AllWorkersView
 from MVC.Views.all_units import AllUnitsView
 from MVC.Views.all_positions import AllPositionsView
 from MVC.Views.search import SearchView
+from MVC.Views.all_projects import AllProjectsView
 from MVC.Views.worker import WorkerView
 from MVC.Views.full_worker_info import FullWorkerInfoView
 from MVC.Views.add_new_worker import AddNewWorkerView
@@ -23,6 +24,7 @@ class View:
             'Positions': AllPositionsView(self.app.notebook),
             'Search': SearchView(self.app.notebook),
             'AddNewWorker': AddNewWorkerView(self.app.notebook),
+            'AllProjects': AllProjectsView(self.app.notebook),
         }
 
     def create_tab(self, worker_id, view_type, *args):

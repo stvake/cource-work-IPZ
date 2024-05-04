@@ -8,6 +8,7 @@ class AllWorkersController:
         self.tab = self.view.tabs['Workers']
         self.workers_controllers = {}
         self.tab.add_worker_button.config(command=self.add_worker)
+        self.tab.close_button.config(command=self.close_tab)
         self.get_all_workers()
 
     def get_all_workers(self):
@@ -24,3 +25,6 @@ class AllWorkersController:
 
     def add_worker(self):
         self.view.add_new_worker()
+
+    def close_tab(self):
+        self.tab.notebook.forget(self.tab.mainFrame)

@@ -58,8 +58,4 @@ class EditableTable(ttk.Treeview):
 
     def _on_delete_pressed(self, event):
         selected_iid = self.focus()
-        selected_values = self.item(selected_iid).get('values')
-        new_values = []
-        for x in selected_values:
-            new_values.append('')
-        self.item(selected_iid, values=new_values)
+        self.delete(selected_iid)

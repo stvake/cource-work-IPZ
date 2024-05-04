@@ -98,61 +98,51 @@ class HandleDataBaseModel:
 
     def update_table(self, worker_id, tables_list, table_number, data):
         try:
+            self.connection.execute("begin transaction")
             if tables_list == 0:
                 if table_number == 0:
                     self.cursor.execute(f"DELETE FROM Education WHERE worker_id = {worker_id}")
-                    self.connection.commit()
                     for row in data:
                         self.cursor.execute(f"INSERT INTO Education ("
                                             f"worker_id, UniName, Diploma, GraduationYear, "
                                             f"Specialty, Qualification, EducationForm)"
                                             f"VALUES {tuple([worker_id] + row)}")
-                        self.connection.commit()
+                    self.connection.commit()
                 elif table_number == 2:
                     self.cursor.execute(f"DELETE FROM PostGraduationEducation WHERE worker_id = {worker_id}")
-                    self.connection.commit()
                     for row in data:
                         self.cursor.execute(f"INSERT INTO PostGraduationEducation ("
                                             f"worker_id, PostGradUniName, "
                                             f"PostGradDiploma, PostGradGradYear, PostGradDegree)"
                                             f"VALUES {tuple([worker_id] + row)}")
-                        self.connection.commit()
+                    self.connection.commit()
                 elif table_number == 3:
                     self.cursor.execute(f"DELETE FROM Family WHERE worker_id = {worker_id}")
-                    self.connection.commit()
                     for row in data:
                         self.cursor.execute(f"INSERT INTO Family (worker_id, member, PIB, BirthDate) VALUES "
                                             f"{tuple([worker_id] + row)}")
-                        self.connection.commit()
+                    self.connection.commit()
             else:
                 if table_number == 0:
                     self.cursor.execute(f"DELETE FROM ProfessionalEducation WHERE worker_id = {worker_id}")
-                    self.connection.commit()
                     for row in data:
                         self.cursor.execute(
                             f"INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form,Document)"
                             f"VALUES {tuple([worker_id] + row)}")
-                        self.connection.commit()
+                    self.connection.commit()
                 elif table_number == 1:
-                    if len(data) != 0:
-                        self.cursor.execute(f"DELETE FROM Appointment WHERE worker_id = {worker_id}")
-                        self.connection.commit()
-                        for row in data:
-                            self.cursor.execute(f"INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, "
-                                                f"Salary, OrderBasis, Sign) VALUES {tuple([worker_id] + row)}")
-                            self.connection.commit()
-                    else:
-                        self.cursor.execute(f"INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, Salary, "
-                                            f"OrderBasis, Sign) VALUES {tuple([worker_id]+['' for _ in range(7)])}")
-                        self.connection.commit()
+                    self.cursor.execute(f"DELETE FROM Appointment WHERE worker_id = {worker_id}")
+                    for row in data:
+                        self.cursor.execute(f"INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, "
+                                            f"Salary, OrderBasis, Sign) VALUES {tuple([worker_id] + row)}")
+                    self.connection.commit()
                 elif table_number == 2:
                     self.cursor.execute(f"DELETE FROM Vacation WHERE worker_id = {worker_id}")
-                    self.connection.commit()
                     for row in data:
                         self.cursor.execute(f"INSERT INTO Vacation(worker_id, Type, Period, Start, End, OrderBasis)"
                                             f"VALUES {tuple([worker_id] + row)}")
-        except sqlite3.Error as e:
-            print(e)
+                    self.connection.commit()
+        except sqlite3.Error:
             self.connection.rollback()
 
     def create_new_worker(self):
@@ -173,11 +163,74 @@ class HandleDataBaseModel:
 
     def delete_worker(self, worker_id):
         try:
+            self.connection.execute("begin transaction")
             self.cursor.execute(f"select name from sqlite_master where type='table'")
             tables = self.cursor.fetchall()
             for x in tables:
                 self.cursor.execute(f"pragma table_info({x[0]})")
                 self.cursor.execute(f"delete from {x[0]} where {self.cursor.fetchall()[0][1]}={worker_id}")
-                self.connection.commit()
+            self.connection.commit()
+        except sqlite3.Error:
+            self.connection.rollback()
+
+    def get_worker_projects(self, worker_id):
+        self.cursor.execute(f"select * from WorkersProjects where MainWorker_id = {worker_id}")
+        info = self.cursor.fetchall()
+        output = []
+        for i in info:
+            collaborators = [", ".join([" ".join(self.get_worker_name(j)) for j in i[-1].split(',')])]
+            output.append(tuple(list(i[:-1]) + collaborators))
+        return output
+
+    def get_all_projects(self):
+        self.cursor.execute(f"select * from WorkersProjects order by id")
+        return self.cursor.fetchall()
+
+    def get_worker_name(self, worker_id):
+        self.cursor.execute(f"select LastName, FirstName from Workers where id = {worker_id}")
+        return self.cursor.fetchall()[0]
+
+    def update_projects_table(self, data):
+        try:
+            self.connection.execute("begin transaction")
+            self.cursor.execute('delete from WorkersProjects')
+            for row in data:
+                collaborators = []
+                for worker in row[-1].split(', '):
+                    worker = worker.split(" ")
+                    self.cursor.execute(f'select id from Workers '
+                                        f'where LastName = ? and FirstName = ?', (worker[0], worker[1],))
+                    collaborators.append(self.cursor.fetchall()[0][0])
+                for i in range(len(collaborators)):
+                    collaborators[i] = str(collaborators[i])
+
+                row = [int(collaborators[0])] + row[:-1] + [",".join(collaborators[1:])]
+
+                self.cursor.execute(f'insert into WorkersProjects('
+                                    f') VALUES {tuple(row)}')
+            self.connection.commit()
+        except sqlite3.Error:
+            self.connection.rollback()
+
+    def update_worker_project_table(self, data, worker_id):
+        try:
+            self.connection.execute("begin transaction")
+            self.cursor.execute(f'delete from WorkersProjects where MainWorker_id = {worker_id}')
+            for row in data:
+                collaborators = []
+                for worker in row[-1].split(', '):
+                    worker = worker.split(" ")
+                    self.cursor.execute(f'select id from Workers '
+                                        f'where LastName = ? and FirstName = ?', (worker[0], worker[1],))
+                    collaborators.append(self.cursor.fetchall()[0][0])
+                for i in range(len(collaborators)):
+                    collaborators[i] = str(collaborators[i])
+
+                row = [worker_id] + row[:-1] + [",".join(collaborators)]
+
+                print(row)
+                self.cursor.execute(f'insert into WorkersProjects('
+                                    f'mainworker_id, id, name, cost, start, end, collaborators) VALUES {tuple(row)}')
+            self.connection.commit()
         except sqlite3.Error:
             self.connection.rollback()

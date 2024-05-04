@@ -8,11 +8,13 @@ class HomeView:
 
         self.workers_Button = ttk.Button(self.main_tab, text="Список всіх робітників", width=25)
         self.listOfAllUnits_Button = ttk.Button(self.main_tab, text="Список підрозділів", width=25)
+        self.listOfAllProjects_Button = ttk.Button(self.main_tab, text="Список проектів", width=25)
         self.position_Button = ttk.Button(self.main_tab, text="Список посад", width=25)
         self.search_Button = ttk.Button(self.main_tab, text="Пошук", width=25)
 
         self.workers_Button.pack()
         self.listOfAllUnits_Button.pack()
+        self.listOfAllProjects_Button.pack()
         self.position_Button.pack()
         self.search_Button.pack()
 
