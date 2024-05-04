@@ -26,3 +26,4 @@ class AllWorkersView:
 
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text="Список робітників")
+        self.notebook.select(self.mainFrame)

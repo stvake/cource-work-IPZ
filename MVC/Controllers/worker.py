@@ -40,7 +40,7 @@ class WorkerController:
 
     def more_info(self):
         self.view.create_tab(self.worker.id, 'FullWorkerInfo', self.worker.notebook, self.worker)
-        self.full_worker_info[self.worker.id] = FullWorkerInfoController(self.model, self.view, self.worker.id)
+        self.full_worker_info[self.worker.id] = FullWorkerInfoController(self, self.model, self.view, self.worker.id)
 
     def delete_worker(self):
         self.model.delete_worker(self.worker.id)

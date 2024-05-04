@@ -1,4 +1,4 @@
-from MVC.Controllers.full_worker_info import FullWorkerInfoController
+# from MVC.Controllers.full_worker_info import FullWorkerInfoController
 
 
 class PositionsController:
@@ -33,8 +33,8 @@ class PositionsController:
     def open_best_worker_info(self):
         self.worker_id = self.find_best_worker(self.post_id)
         self.worker = self.view.worker_tabs[self.worker_id]
-        self.view.create_tab(self.worker_id, 'FullWorkerInfo', self.worker.notebook, self.worker)
-        self.full_worker_info[self.worker_id] = FullWorkerInfoController(self.model, self.view, self.worker_id)
+        # self.view.create_tab(self.worker_id, 'FullWorkerInfo', self.worker.notebook, self.worker)
+        # self.full_worker_info[self.worker_id] = FullWorkerInfoController(self.model, self.view, self.worker_id)
 
     def open_best_posts(self):
         pass

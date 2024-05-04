@@ -36,3 +36,4 @@ class AllPositionsView:
 
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text="Список посад")
+        self.notebook.select(self.mainFrame)

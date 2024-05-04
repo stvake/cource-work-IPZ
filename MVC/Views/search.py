@@ -14,3 +14,4 @@ class SearchView:
 
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text="Пошук")
+        self.notebook.select(self.mainFrame)

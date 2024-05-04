@@ -5,15 +5,17 @@ from io import BytesIO
 
 
 class FullWorkerInfoController:
-    def __init__(self, model, view, worker_id):
+    def __init__(self, worker_controller, model, view, worker_id):
+        self.worker_controller = worker_controller
         self.model = model
         self.view = view
-        self.full_worker_info = self.view.full_info_tabs[worker_id]
+        self.worker_id = worker_id
+        self.full_worker_info = self.view.full_info_tabs[self.worker_id]
         self.full_worker_info.closeTab_Button.config(command=self.close_tab)
         self.full_worker_info.closeTabWithoutSave_Button.config(command=self.close_tab_without_save)
         self.ready_to_save = 1
         self.image_data = None
-        self.get_info_from_db(worker_id)
+        self.get_info_from_db(self.worker_id)
 
     def get_info_from_db(self, worker_id):
         info = self.model.get_worker_full_info(worker_id)
@@ -143,7 +145,9 @@ class FullWorkerInfoController:
                 self.ready_to_save = 1
 
         if self.ready_to_save:
+            self.worker_controller.full_worker_info.pop(str(self.worker_id))
             self.full_worker_info.notebook.forget(self.full_worker_info.mainFrame)
 
     def close_tab_without_save(self):
+        self.worker_controller.full_worker_info.pop(self.worker_id)
         self.full_worker_info.notebook.forget(self.full_worker_info.mainFrame)

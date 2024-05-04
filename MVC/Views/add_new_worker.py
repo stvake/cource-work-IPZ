@@ -458,3 +458,4 @@ class AddNewWorkerView:
 
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text='Додати нового робітника')
+        self.notebook.select(self.mainFrame)

@@ -14,3 +14,4 @@ class AllUnitsView:
 
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text="Список підрозділів")
+        self.notebook.select(self.mainFrame)
