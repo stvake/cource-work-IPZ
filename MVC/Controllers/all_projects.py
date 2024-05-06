@@ -2,9 +2,11 @@ from tkinter import TclError
 
 
 class AllProjectsController:
-    def __init__(self, model, view):
+    def __init__(self, main_controller, model, view):
+        self.main_controller = main_controller
         self.model = model
         self.view = view
+        self.view.tabs['AllProjects'] = self.view.create_tab('AllProjects')
         self.tab = self.view.tabs['AllProjects']
         self.tab.closeTab_Button.config(command=self.close_tab)
         self.tab.closeTabWithoutSave_Button.config(command=self.close_tab_without_save)
@@ -30,6 +32,8 @@ class AllProjectsController:
         data = get_all_rows(self.tab.projects_table)
         self.model.update_projects_table(data)
         self.tab.notebook.forget(self.tab.mainFrame)
+        self.main_controller.all_projects = None
 
     def close_tab_without_save(self):
         self.tab.notebook.forget(self.tab.mainFrame)
+        self.main_controller.all_projects = None

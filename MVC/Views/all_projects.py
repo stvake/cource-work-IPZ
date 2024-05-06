@@ -14,7 +14,7 @@ class AllProjectsView:
         self.frame.pack(expand=True, fill=BOTH)
 
         self.projects_table = EditableTable(self.frame, columns=('ID', 'name', 'cost', 'start', 'end', 'collaborators'),
-                                            show='headings', height=10)
+                                            show='headings', height=10, allow_delete=False)
         self.projects_table.heading('ID', text='№')
         self.projects_table.heading('name', text='Назва проекту')
         self.projects_table.heading('cost', text='Вартість проекту')

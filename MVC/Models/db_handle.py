@@ -193,7 +193,6 @@ class HandleDataBaseModel:
     def update_projects_table(self, data):
         try:
             self.connection.execute("begin transaction")
-            self.cursor.execute('delete from WorkersProjects')
             for row in data:
                 collaborators = []
                 for worker in row[-1].split(', '):
@@ -215,11 +214,15 @@ class HandleDataBaseModel:
     def update_worker_project_table(self, data, worker_id):
         try:
             self.connection.execute("begin transaction")
+            k = 0
+            self.cursor.execute(f"select count(*) from WorkersProjects where MainWorker_id = {worker_id}")
+            old_rows = self.cursor.fetchone()[0]
             self.cursor.execute(f'delete from WorkersProjects where MainWorker_id = {worker_id}')
             for row in data:
+                k += 1
                 collaborators = []
                 for worker in row[-1].split(', '):
-                    worker = worker.split(" ")
+                    worker = worker.split(' ')
                     self.cursor.execute(f'select id from Workers '
                                         f'where LastName = ? and FirstName = ?', (worker[0], worker[1],))
                     collaborators.append(self.cursor.fetchall()[0][0])
@@ -228,9 +231,16 @@ class HandleDataBaseModel:
 
                 row = [worker_id] + row[:-1] + [",".join(collaborators)]
 
-                print(row)
-                self.cursor.execute(f'insert into WorkersProjects('
-                                    f'mainworker_id, id, name, cost, start, end, collaborators) VALUES {tuple(row)}')
+                if k <= old_rows:
+                    self.cursor.execute(f'insert into WorkersProjects('
+                                        f'mainworker_id, id, name, cost, start, end, collaborators) '
+                                        f'VALUES {tuple(row)}')
+                else:
+                    self.cursor.execute(f'select id from WorkersProjects order by id')
+                    row[1] = self.cursor.fetchall()[-1][0] + 1
+                    self.cursor.execute(f'insert into WorkersProjects('
+                                        f'mainworker_id, id, name, cost, start, end, collaborators) '
+                                        f'VALUES {tuple(row)}')
             self.connection.commit()
         except sqlite3.Error:
             self.connection.rollback()

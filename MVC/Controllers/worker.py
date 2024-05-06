@@ -39,7 +39,7 @@ class WorkerController:
         self.worker.post_text.config(state=DISABLED)
 
     def more_info(self):
-        self.view.create_tab(self.worker.id, 'FullWorkerInfo', self.worker.notebook, self.worker)
+        self.view.create_tab('FullWorkerInfo', self.worker.id, self.worker.notebook, self.worker)
         self.full_worker_info[self.worker.id] = FullWorkerInfoController(self, self.model, self.view, self.worker.id)
 
     def delete_worker(self):
@@ -49,5 +49,5 @@ class WorkerController:
         self.worker.destroy()
 
     def open_projects(self):
-        self.view.create_tab(self.worker.id, 'OpenProjects', self.worker.notebook, self.worker)
+        self.view.create_tab('OpenProjects', self.worker.id, self.worker.notebook, self.worker)
         self.worker_projects[self.worker.id] = WorkerProjectsController(self, self.model, self.view, self.worker.id)

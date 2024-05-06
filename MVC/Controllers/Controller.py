@@ -14,13 +14,25 @@ class Controller:
         self.model = model
 
         self.app = AppController(model, view)
-        self.home_controller = HomeController(model, view)
-        self.all_positions_controller = PositionsController(model, view)
-        self.all_units_controller = UnitsController(model, view)
-        self.all_workers_controller = AllWorkersController(model, view)
-        self.all_projects = AllProjectsController(model, view)
-        self.search_controller = SearchController(model, view)
+        self.home_controller = HomeController(self, model, view)
         self.add_new_worker_controller = AddNewWorkerController(self, model, view)
+        self.all_positions_controller = None
+        self.all_units_controller = None
+        self.all_workers_controller = AllWorkersController(self, self.model, self.view)
+        self.all_projects = None
+        self.search_controller = None
+
+    def create_all_positions_controller(self):
+        self.all_positions_controller = PositionsController(self.model, self.view)
+
+    def create_all_units_controller(self):
+        self.all_units_controller = UnitsController(self, self.model, self.view)
+
+    def create_all_projects_controller(self):
+        self.all_projects = AllProjectsController(self, self.model, self.view)
+
+    def create_search_controller(self):
+        self.search_controller = SearchController(self, self.model, self.view)
 
     def start(self):
         self.view.start_app()

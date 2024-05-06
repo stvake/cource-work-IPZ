@@ -5,6 +5,7 @@ class PositionsController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.view.tabs['Positions'] = self.view.create_tab('Positions')
         self.tab = self.view.tabs['Positions']
         self.tab.closeTab_Button.config(command=self.close_tab)
         self.tab.closeTabWithoutSave_Button.config(command=self.close_tab_without_save)

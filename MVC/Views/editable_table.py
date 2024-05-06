@@ -3,11 +3,14 @@ import tkinter.ttk as ttk
 
 
 class EditableTable(ttk.Treeview):
-    def __init__(self, parent, **kw):
+    def __init__(self, parent, non_editable_columns=None, allow_delete=True, **kw):
         super().__init__(parent, **kw)
+        self.non_editable_columns = non_editable_columns if non_editable_columns else []
+        self.allow_delete = allow_delete
 
         self.bind("<Double-1>", self._on_double_click)
-        self.bind("<Delete>", self._on_delete_pressed)
+        if self.allow_delete:
+            self.bind("<Delete>", self._on_delete_pressed)
 
     def _on_double_click(self, event):
         region_clicked = self.identify_region(event.x, event.y)
@@ -22,6 +25,9 @@ class EditableTable(ttk.Treeview):
 
         column = self.identify_column(event.x)
         column_index = int(column[1:]) - 1
+
+        if column_index in self.non_editable_columns:
+            return
 
         selected_iid = self.focus()
         selected_values = self.item(selected_iid).get('values')

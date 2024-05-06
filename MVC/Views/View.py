@@ -19,21 +19,25 @@ class View:
         self.worker_projects_tabs = {}
         self.tabs = {
             'Home': HomeView(self.app.notebook),
-            'Workers': AllWorkersView(self.app.notebook),
-            'Units': AllUnitsView(self.app.notebook),
-            'Positions': AllPositionsView(self.app.notebook),
-            'Search': SearchView(self.app.notebook),
             'AddNewWorker': AddNewWorkerView(self.app.notebook),
-            'AllProjects': AllProjectsView(self.app.notebook),
+            'Workers': AllWorkersView(self.app.notebook)
         }
 
-    def create_tab(self, worker_id, view_type, *args):
-        if view_type == 'Worker':
-            self.worker_tabs[worker_id] = WorkerView(*args)
-        elif view_type == 'FullWorkerInfo':
-            self.full_info_tabs[worker_id] = FullWorkerInfoView(*args)
-        elif view_type == 'OpenProjects':
-            self.worker_projects_tabs[worker_id] = WorkerProjectView(*args)
+    def create_tab(self, *args):
+        if args[0] == 'Units':
+            return AllUnitsView(self.app.notebook)
+        elif args[0] == 'Positions':
+            return AllPositionsView(self.app.notebook)
+        elif args[0] == 'Search':
+            return SearchView(self.app.notebook)
+        elif args[0] == 'AllProjects':
+            return AllProjectsView(self.app.notebook)
+        elif args[0] == 'Worker':
+            self.worker_tabs[args[1]] = WorkerView(*args[2:])
+        elif args[0] == 'FullWorkerInfo':
+            self.full_info_tabs[args[1]] = FullWorkerInfoView(*args[2:])
+        elif args[0] == 'OpenProjects':
+            self.worker_projects_tabs[args[1]] = WorkerProjectView(*args[2:])
 
     def add_new_worker(self):
         self.tabs['AddNewWorker'].add_tab()

@@ -2,7 +2,8 @@ from MVC.Controllers.worker import WorkerController
 
 
 class AllWorkersController:
-    def __init__(self, model, view):
+    def __init__(self, main_controller, model, view):
+        self.main_controller = main_controller
         self.model = model
         self.view = view
         self.tab = self.view.tabs['Workers']
@@ -15,8 +16,8 @@ class AllWorkersController:
         for i in range(self.model.get_workers_quantity()):
             if self.model.if_exists('Workers', 'id', i+1):
                 self.view.create_tab(
-                    i+1,
                     'Worker',
+                    i+1,
                     i+1,
                     self.view.tabs['Workers'].frame.interior,
                     self.view.tabs['Workers'].notebook
