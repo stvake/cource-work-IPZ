@@ -26,7 +26,7 @@ class AddNewWorkerController:
             self.tab.image_label.config(text='', image=self.tab.photo)
 
     def save_worker(self):
-        if self.photo_path == 0:
+        if not self.photo_path:
             self.ready_to_save = 0
             showwarning("Зауваження", "Завантажте фото працівника.")
             return

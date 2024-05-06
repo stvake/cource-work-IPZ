@@ -26,7 +26,7 @@ class WorkerProjectView:
         self.projects_table.heading('cost', text='Вартість проекту')
         self.projects_table.heading('start', text='Дата початку проекту')
         self.projects_table.heading('end', text='Дата закінчення проекту')
-        self.projects_table.heading('collaborators', text='Інші учасники проекту')
+        self.projects_table.heading('collaborators', text='Учасники проекту')
 
         self.projects_table.column('ID', width=30)
         self.projects_table.column('name', width=150)

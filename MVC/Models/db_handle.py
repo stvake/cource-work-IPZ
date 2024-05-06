@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 
 
 class HandleDataBaseModel:
@@ -12,7 +13,7 @@ class HandleDataBaseModel:
 
     def get_worker_info(self, worker_id):
         self.cursor.execute(f"SELECT * FROM Workers WHERE id = {worker_id}")
-        info = list(self.cursor.fetchone())
+        info = list(self.cursor.fetchone())[:-1]
         self.cursor.execute(f"SELECT * FROM Appointment WHERE worker_id = {worker_id} ORDER BY Date DESC")
         info.append(self.cursor.fetchall()[0][3])
         info = tuple(info)
@@ -27,7 +28,7 @@ class HandleDataBaseModel:
         info = self.cursor.fetchall()[0]
         temp = []
         for el in range(len(info)):
-            if el != 0 and el != 6:
+            if el != 0 and el != 6 and el != 7:
                 temp.append(info[el])
         output.append(temp)
 
@@ -148,8 +149,8 @@ class HandleDataBaseModel:
     def create_new_worker(self):
         self.cursor.execute("select * from Workers order by id desc")
         output = self.cursor.fetchall()[0][0] + 1
-        self.cursor.execute(f"insert into Workers (id, LastName, FirstName, Patronymic, BirthDate, Photo) "
-                            f"values ({output}, '', '', '', '', '')")
+        self.cursor.execute(f"insert into Workers (id, LastName, FirstName, Patronymic, BirthDate, Photo, unit_id) "
+                            f"values ({output}, '', '', '', '', '', '')")
         self.connection.commit()
         return output
 
@@ -164,8 +165,9 @@ class HandleDataBaseModel:
     def delete_worker(self, worker_id):
         try:
             self.connection.execute("begin transaction")
-            self.cursor.execute(f"select name from sqlite_master where type='table'")
+            self.cursor.execute(f"select name from sqlite_master where type='table' and name!='WorkersProjects'")
             tables = self.cursor.fetchall()
+            print(tables)
             for x in tables:
                 self.cursor.execute(f"pragma table_info({x[0]})")
                 self.cursor.execute(f"delete from {x[0]} where {self.cursor.fetchall()[0][1]}={worker_id}")
@@ -175,36 +177,16 @@ class HandleDataBaseModel:
 
     def get_worker_projects(self, worker_id):
         self.cursor.execute(f"select * from WorkersProjects where MainWorker_id = {worker_id}")
-        info = self.cursor.fetchall()
-        output = []
-        for i in info:
-            collaborators = [", ".join([" ".join(self.get_worker_name(j)) for j in i[-1].split(',')])]
-            output.append(tuple(list(i[:-1]) + collaborators))
-        return output
+        return self.cursor.fetchall()
 
     def get_all_projects(self):
         self.cursor.execute(f"select * from WorkersProjects order by id")
         return self.cursor.fetchall()
 
-    def get_worker_name(self, worker_id):
-        self.cursor.execute(f"select LastName, FirstName from Workers where id = {worker_id}")
-        return self.cursor.fetchall()[0]
-
     def update_projects_table(self, data):
         try:
             self.connection.execute("begin transaction")
             for row in data:
-                collaborators = []
-                for worker in row[-1].split(', '):
-                    worker = worker.split(" ")
-                    self.cursor.execute(f'select id from Workers '
-                                        f'where LastName = ? and FirstName = ?', (worker[0], worker[1],))
-                    collaborators.append(self.cursor.fetchall()[0][0])
-                for i in range(len(collaborators)):
-                    collaborators[i] = str(collaborators[i])
-
-                row = [int(collaborators[0])] + row[:-1] + [",".join(collaborators[1:])]
-
                 self.cursor.execute(f'insert into WorkersProjects(mainworker_id, id, name, cost, start, end, '
                                     f'collaborators) VALUES {tuple(row)}')
             self.connection.commit()
@@ -220,17 +202,7 @@ class HandleDataBaseModel:
             self.cursor.execute(f'delete from WorkersProjects where MainWorker_id = {worker_id}')
             for row in data:
                 k += 1
-                collaborators = []
-                for worker in row[-1].split(', '):
-                    worker = worker.split(' ')
-                    self.cursor.execute(f'select id from Workers '
-                                        f'where LastName = ? and FirstName = ?', (worker[0], worker[1],))
-                    collaborators.append(self.cursor.fetchall()[0][0])
-                for i in range(len(collaborators)):
-                    collaborators[i] = str(collaborators[i])
-
-                row = [worker_id] + row[:-1] + [",".join(collaborators)]
-
+                row = [worker_id] + row
                 if k <= old_rows:
                     self.cursor.execute(f'insert into WorkersProjects('
                                         f'mainworker_id, id, name, cost, start, end, collaborators) '
@@ -243,4 +215,43 @@ class HandleDataBaseModel:
                                         f'VALUES {tuple(row)}')
             self.connection.commit()
         except sqlite3.Error:
+            self.connection.rollback()
+
+    def get_units(self):
+        try:
+            self.connection.execute("begin transaction")
+            rows = []
+            self.cursor.execute(f'select id from Units')
+            ids = self.cursor.fetchall()
+            for i in range(len(ids)):
+                row = []
+                self.cursor.execute(f'select id, Name from Units')
+                row.extend([j for j in self.cursor.fetchall()[i]])
+                self.cursor.execute(f'select count(*) from Workers where unit_id = {ids[i][0]}')
+                row.append(self.cursor.fetchone()[0])
+
+                self.cursor.execute(f'select projects_id from Units where id = {ids[i][0]}')
+                k = 0
+                cost = 0
+                projects = self.cursor.fetchone()[0]
+
+                for p in projects.split(','):
+                    self.cursor.execute(f'select End from WorkersProjects where id = {p}')
+                    end_date = datetime.datetime.strptime(self.cursor.fetchone()[0], "%d-%m-%Y").date()
+                    current_date = datetime.date.today().strftime("%Y-%m-%d")
+                    formatted_date = datetime.datetime.strptime(current_date, "%Y-%m-%d").date()
+                    if end_date > formatted_date:
+                        k += 1
+
+                    self.cursor.execute(f'select Cost from WorkersProjects where id = {p}')
+                    cost += self.cursor.fetchone()[0]
+
+                row.append(k)
+                row.append(len(projects.split(',')))
+                row.append(cost)
+                rows.append(row)
+
+            return rows
+        except sqlite3.Error as e:
+            print(e)
             self.connection.rollback()
