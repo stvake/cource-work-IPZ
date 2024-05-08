@@ -1,4 +1,5 @@
 from tkinter import TclError
+from tkinter.messagebox import showwarning
 
 
 class AllProjectsController:
@@ -28,7 +29,9 @@ class AllProjectsController:
             except TclError:
                 return output
         data = get_all_rows(self.tab.projects_table)
-        self.model.update_projects_table(data)
+        if self.model.update_projects_table(data):
+            showwarning("Зауваження", "Правильно заповніть поля.")
+            return
         self.tab.notebook.forget(self.tab.mainFrame)
         self.main_controller.all_projects = None
 

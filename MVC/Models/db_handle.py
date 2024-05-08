@@ -63,20 +63,16 @@ class HandleDataBaseModel:
 
     def update_info(self, worker_id, info, mil_info):
         try:
+            self.connection.execute("begin transaction")
             if self.if_exists('Workers', 'id', worker_id):
                 self.cursor.execute(f"delete from Workers where id = {worker_id}")
-                self.connection.commit()
                 self.cursor.execute(f"delete from FullInfo where worker_id = {worker_id}")
-                self.connection.commit()
                 self.cursor.execute(f"delete from Military where worker_id = {worker_id}")
-                self.connection.commit()
 
             self.cursor.execute(f"insert into Workers (id, LastName, FirstName, Patronymic, BirthDate)"
                                 f"values {tuple([worker_id] + info[0:4])}")
-            self.connection.commit()
             self.cursor.execute(f"update Workers set Photo = ? where id={worker_id}",
                                 (sqlite3.Binary(info[4]),))
-            self.connection.commit()
             self.cursor.execute(f"insert into FullInfo (worker_id, Nationality, Education, LastWork, LastWorkPost, "
                                 f"WorkExperienceDate, WorkExperienceDays, WorkExperienceMonths, WorkExperienceYears, "
                                 f"WorkBonusDays, WorkBonusMonths, WorkBonusYears, OldFireDate, OldFireReason, Pension, "
@@ -86,16 +82,16 @@ class HandleDataBaseModel:
                                 f"PersonnelServiceEmployeeSign, PersonnelServiceEmployeePIB, EmployeePIB, EmployeeSign,"
                                 f"EmployeeFireDate, EmployeeFireYear)"
                                 f"values {tuple([worker_id]+info[5:])}")
-            self.connection.commit()
             self.cursor.execute(f"insert into Military (worker_id, AccountingGroup, Suitability, AccountingCategory, "
                                 f"CommitteeNameRegistration, AccountingCategory_cont, CommitteeNameRegistration_cont, "
                                 f"Compound, CommitteeNameLiving, Rank, CommitteeNameLiving_cont, Specialty, "
                                 f"SpecialAccounting)"
                                 f"values {tuple([worker_id] + mil_info)}")
             self.connection.commit()
-        except sqlite3.Error as error:
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
-            print(error)
+            return e
 
     def update_table(self, worker_id, tables_list, table_number, data):
         try:
@@ -108,7 +104,6 @@ class HandleDataBaseModel:
                                             f"worker_id, UniName, Diploma, GraduationYear, "
                                             f"Specialty, Qualification, EducationForm)"
                                             f"VALUES {tuple([worker_id] + row)}")
-                    self.connection.commit()
                 elif table_number == 2:
                     self.cursor.execute(f"DELETE FROM PostGraduationEducation WHERE worker_id = {worker_id}")
                     for row in data:
@@ -116,13 +111,11 @@ class HandleDataBaseModel:
                                             f"worker_id, PostGradUniName, "
                                             f"PostGradDiploma, PostGradGradYear, PostGradDegree)"
                                             f"VALUES {tuple([worker_id] + row)}")
-                    self.connection.commit()
                 elif table_number == 3:
                     self.cursor.execute(f"DELETE FROM Family WHERE worker_id = {worker_id}")
                     for row in data:
                         self.cursor.execute(f"INSERT INTO Family (worker_id, member, PIB, BirthDate) VALUES "
                                             f"{tuple([worker_id] + row)}")
-                    self.connection.commit()
             else:
                 if table_number == 0:
                     self.cursor.execute(f"DELETE FROM ProfessionalEducation WHERE worker_id = {worker_id}")
@@ -130,36 +123,42 @@ class HandleDataBaseModel:
                         self.cursor.execute(
                             f"INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form,Document)"
                             f"VALUES {tuple([worker_id] + row)}")
-                    self.connection.commit()
                 elif table_number == 1:
                     self.cursor.execute(f"DELETE FROM Appointment WHERE worker_id = {worker_id}")
                     for row in data:
                         self.cursor.execute(f"INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, "
                                             f"Salary, OrderBasis, Sign) VALUES {tuple([worker_id] + row)}")
-                    self.connection.commit()
                 elif table_number == 2:
                     self.cursor.execute(f"DELETE FROM Vacation WHERE worker_id = {worker_id}")
                     for row in data:
                         self.cursor.execute(f"INSERT INTO Vacation(worker_id, Type, Period, Start, End, OrderBasis)"
                                             f"VALUES {tuple([worker_id] + row)}")
-                    self.connection.commit()
-        except sqlite3.Error:
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+            return e
 
     def create_new_worker(self):
-        self.cursor.execute("select * from Workers order by id desc")
-        output = self.cursor.fetchall()[0][0] + 1
-        self.cursor.execute(f"insert into Workers (id, LastName, FirstName, Patronymic, BirthDate, Photo, unit_id) "
-                            f"values ({output}, '', '', '', '', '', '')")
-        self.connection.commit()
-        return output
+        try:
+            self.connection.execute("begin transaction")
+            self.cursor.execute("select * from Workers order by id desc")
+            output = self.cursor.fetchall()[0][0] + 1
+            self.cursor.execute(f"insert into Workers (id, LastName, FirstName, Patronymic, BirthDate, Photo, unit_id) "
+                                f"values ({output}, '', '', '', '', '', '')")
+            self.connection.commit()
+            return output
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()
 
     def upload_image(self, worker_id, image_data):
         try:
             self.cursor.execute(f"update Workers set Photo = ? where id={worker_id}",
                                 (sqlite3.Binary(image_data),))
             self.connection.commit()
-        except sqlite3.Error:
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
 
     def delete_worker(self, worker_id):
@@ -172,7 +171,8 @@ class HandleDataBaseModel:
                 self.cursor.execute(f"pragma table_info({x[0]})")
                 self.cursor.execute(f"delete from {x[0]} where {self.cursor.fetchall()[0][1]}={worker_id}")
             self.connection.commit()
-        except sqlite3.Error:
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
 
     def get_worker_projects(self, worker_id):
@@ -190,8 +190,10 @@ class HandleDataBaseModel:
                 self.cursor.execute(f'insert into WorkersProjects(mainworker_id, id, name, cost, start, end, '
                                     f'collaborators) VALUES {tuple(row)}')
             self.connection.commit()
-        except sqlite3.Error:
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+            return e
 
     def update_worker_project_table(self, data, worker_id):
         try:
@@ -214,12 +216,13 @@ class HandleDataBaseModel:
                                         f'mainworker_id, id, name, cost, start, end, collaborators) '
                                         f'VALUES {tuple(row)}')
             self.connection.commit()
-        except sqlite3.Error:
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+            return e
 
     def get_units(self):
         try:
-            self.connection.execute("begin transaction")
             rows = []
             self.cursor.execute(f'select id from Units')
             ids = self.cursor.fetchall()
@@ -253,5 +256,5 @@ class HandleDataBaseModel:
 
             return rows
         except sqlite3.Error as e:
-            print(e)
+            print(f"\033[91m{e}\033[0m")
             self.connection.rollback()

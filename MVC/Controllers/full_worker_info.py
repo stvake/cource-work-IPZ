@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter.messagebox import *
+from tkinter.messagebox import showwarning
 from PIL import Image, ImageTk
 from io import BytesIO
 
@@ -66,7 +66,9 @@ class FullWorkerInfoController:
         info.insert(4, self.image_data)
         mil_info = [i.get() for i in self.full_worker_info.entries_secondSection]
 
-        self.model.update_info(self.full_worker_info.id, info, mil_info)
+        if self.model.update_info(self.full_worker_info.id, info, mil_info):
+            showwarning("Зауваження", "Правильно заповніть поля.")
+            return
 
         self.full_worker_info.worker.name_text.config(state=NORMAL)
         self.full_worker_info.worker.birth_date_text.config(state=NORMAL)
@@ -122,7 +124,9 @@ class FullWorkerInfoController:
                     self.ready_to_save = 0
                     return
             else:
-                self.model.update_table(self.full_worker_info.id, 0, t, data)
+                if self.model.update_table(self.full_worker_info.id, 0, t, data):
+                    showwarning("Зауваження", "Правильно заповніть поля.")
+                    return
                 self.ready_to_save = 1
 
         for t in range(len(self.full_worker_info.tables_other)):
@@ -141,11 +145,13 @@ class FullWorkerInfoController:
                     self.ready_to_save = 0
                     return
             else:
-                self.model.update_table(self.full_worker_info.id, 1, t, data)
+                if self.model.update_table(self.full_worker_info.id, 1, t, data):
+                    showwarning("Зауваження", "Правильно заповніть поля.")
+                    return
                 self.ready_to_save = 1
 
         if self.ready_to_save:
-            self.worker_controller.full_worker_info.pop(str(self.worker_id))
+            self.worker_controller.full_worker_info.pop(self.worker_id)
             self.full_worker_info.notebook.forget(self.full_worker_info.mainFrame)
 
     def close_tab_without_save(self):

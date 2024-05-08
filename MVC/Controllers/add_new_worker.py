@@ -38,7 +38,9 @@ class AddNewWorkerController:
                 info = [i.get() for i in self.tab.entries_general]
                 info.insert(4, image_data)
                 mil_info = [i.get() for i in self.tab.entries_secondSection]
-                self.model.update_info(self.id, info, mil_info)
+                if self.model.update_info(self.id, info, mil_info):
+                    showwarning("Зауваження", "Правильно заповніть поля.")
+                    return
 
             def get_all_rows(table):
                 output = []
@@ -72,7 +74,9 @@ class AddNewWorkerController:
                         showwarning("Зауваження", "Правильно заповніть поля.")
                         self.ready_to_save = 0
                 else:
-                    self.model.update_table(self.id, 0, t, data)
+                    if self.model.update_table(self.id, 0, t, data):
+                        showwarning("Зауваження", "Правильно заповніть поля.")
+                        return
                     self.ready_to_save = 1
 
             for t in range(len(self.tab.tables_other)):
@@ -90,7 +94,9 @@ class AddNewWorkerController:
                         showwarning("Зауваження", "Правильно заповніть поля.")
                         self.ready_to_save = 0
                 else:
-                    self.model.update_table(self.id, 1, t, data)
+                    if self.model.update_table(self.id, 1, t, data):
+                        showwarning("Зауваження", "Правильно заповніть поля.")
+                        return
                     self.ready_to_save = 1
 
             if self.ready_to_save:

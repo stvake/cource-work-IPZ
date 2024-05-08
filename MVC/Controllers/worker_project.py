@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter.messagebox import *
+from tkinter.messagebox import showwarning
 
 
 class WorkerProjectsController:
@@ -30,7 +30,9 @@ class WorkerProjectsController:
             except TclError:
                 return output
         data = get_all_rows(self.worker_projects_info.projects_table)
-        self.model.update_worker_project_table(data, self.worker_id)
+        if self.model.update_worker_project_table(data, self.worker_id):
+            showwarning("Зауваження", "Правильно заповніть поля.")
+            return
         self.worker_controller.worker_projects.pop(self.worker_id)
         self.worker_projects_info.notebook.forget(self.worker_projects_info.mainFrame)
 
