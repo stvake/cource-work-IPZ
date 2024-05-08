@@ -223,6 +223,7 @@ class HandleDataBaseModel:
 
     def get_units(self):
         try:
+            self.connection.execute("begin transaction")
             rows = []
             self.cursor.execute(f'select id from Units')
             ids = self.cursor.fetchall()
@@ -252,9 +253,32 @@ class HandleDataBaseModel:
                 row.append(k)
                 row.append(len(projects.split(',')))
                 row.append(cost)
+                row.append(projects)
                 rows.append(row)
 
+            self.cursor.execute('delete from Units')
+            for row in rows:
+                self.cursor.execute(f'insert into Units(id, Name, WorkersQuantity, UnfinishedProjectsQuantity, '
+                                    f'AllProjectsQuantity, TotalCost, projects_id) values {tuple(row)}')
+            self.connection.commit()
             return rows
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+
+    def get_unit_workers(self, unit_name):
+        self.cursor.execute(f"select id from Units where Name = '{unit_name}'")
+        unit_id = self.cursor.fetchone()[0]
+        self.cursor.execute(f"select * from Workers where unit_id = {unit_id}")
+        workers = [i[1]+' '+i[2]+' '+i[3] for i in self.cursor.fetchall()]
+        return workers
+
+    def get_unit_projects(self, unit_name):
+        self.cursor.execute(f"select projects_id from Units where Name = '{unit_name}'")
+        projects = self.cursor.fetchone()[0].split(',')
+        output = []
+        for project in projects:
+            self.cursor.execute(f"select id, Name, Cost, Start, End, Collaborators from WorkersProjects "
+                                f"where id = {project}")
+            output.append(self.cursor.fetchone())
+        return output

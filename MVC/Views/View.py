@@ -8,7 +8,8 @@ from MVC.Views.all_projects import AllProjectsView
 from MVC.Views.worker import WorkerView
 from MVC.Views.full_worker_info import FullWorkerInfoView
 from MVC.Views.add_new_worker import AddNewWorkerView
-from MVC.Views.worker_project import WorkerProjectView
+from MVC.Views.worker_projects import WorkerProjectView
+from MVC.Views.unit_projects import UnitProjectsView
 
 
 class View:
@@ -17,6 +18,7 @@ class View:
         self.worker_tabs = {}
         self.full_info_tabs = {}
         self.worker_projects_tabs = {}
+        self.unit_projects_tabs = {}
         self.tabs = {
             'Home': HomeView(self.app.notebook),
             'AddNewWorker': AddNewWorkerView(self.app.notebook),
@@ -38,6 +40,8 @@ class View:
             self.full_info_tabs[args[1]] = FullWorkerInfoView(*args[2:])
         elif args[0] == 'OpenProjects':
             self.worker_projects_tabs[args[1]] = WorkerProjectView(*args[2:])
+        elif args[0] == 'UnitProjects':
+            self.unit_projects_tabs[args[1]] = UnitProjectsView(*args[2:])
 
     def add_new_worker(self):
         self.tabs['AddNewWorker'].add_tab()

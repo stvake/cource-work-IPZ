@@ -35,7 +35,7 @@ class WorkerProjectView:
         self.projects_table.column('end', width=150)
         self.projects_table.column('collaborators', width=395)
 
-        self.projects_table.pack(padx=5, pady=5)
+        self.projects_table.pack(padx=5, pady=5, fill=BOTH)
 
         self.closeTab_Button = ttk.Button(self.mainScrolledFrame, text="Зберегти та закрити вкладку")
         self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)

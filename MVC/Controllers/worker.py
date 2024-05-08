@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 from io import BytesIO
 
 from MVC.Controllers.full_worker_info import FullWorkerInfoController
-from MVC.Controllers.worker_project import WorkerProjectsController
+from MVC.Controllers.worker_projects import WorkerProjectsController
 
 
 class WorkerController:
