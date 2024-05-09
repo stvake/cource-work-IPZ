@@ -18,7 +18,7 @@ class AllUnitsView:
 
         self.units_table = EditableTable(self.frame, columns=('Name', 'number_of_workers', 'number_of_active_projects',
                                                               'number_of_all_projects', 'projects_cost'),
-                                         show='headings', height=10, allow_delete=False)
+                                         show='headings', height=10)
         self.units_table.heading('Name', text='Назва підрозділу')
         self.units_table.heading('number_of_workers', text='Кількість робітників')
         self.units_table.heading('number_of_active_projects', text='Кількість незавершених проектів')

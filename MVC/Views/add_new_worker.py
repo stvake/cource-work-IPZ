@@ -459,6 +459,5 @@ class AddNewWorkerView:
         self.cancelButton = ttk.Button(self.mainScrolledFrame.interior, text="Відмінити та закрити вкладку")
         self.cancelButton.pack(fill=BOTH, padx=5, pady=5)
 
-    def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text='Додати нового робітника')
         self.notebook.select(self.mainFrame)

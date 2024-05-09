@@ -14,7 +14,7 @@ class HomeController:
         self.tab.search_Button.config(command=self.open_search)
 
     def open_workers(self):
-        # self.main_controller.create_all_workers_controller()
+        self.main_controller.create_all_workers_controller()
         self.view.tabs['Workers'].add_tab()
 
     def open_units(self):

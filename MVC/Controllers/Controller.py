@@ -15,10 +15,10 @@ class Controller:
 
         self.app = AppController(model, view)
         self.home_controller = HomeController(self, model, view)
-        self.add_new_worker_controller = AddNewWorkerController(self, model, view)
+        self.add_new_worker_controller = None
         self.all_positions_controller = None
         self.all_units_controller = None
-        self.all_workers_controller = AllWorkersController(self, self.model, self.view)
+        self.all_workers_controller = None
         self.all_projects = None
         self.search_controller = None
 
@@ -27,6 +27,12 @@ class Controller:
 
     def create_all_units_controller(self):
         self.all_units_controller = UnitsController(self, self.model, self.view)
+
+    def create_all_workers_controller(self):
+        self.all_workers_controller = AllWorkersController(self, self.model, self.view)
+
+    def create_add_new_worker_controller(self):
+        self.all_workers_controller = AddNewWorkerController(self, self.model, self.view)
 
     def create_all_projects_controller(self):
         self.all_projects = AllProjectsController(self, self.model, self.view)

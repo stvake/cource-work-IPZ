@@ -18,7 +18,7 @@ class AllWorkersView:
         self.sort_firstname.pack(anchor=E, padx=5, pady=5, side=RIGHT)
         self.sort_lastname = ttk.Button(self.sort_button_frame, text="Відсортувати за прізвищем")
         self.sort_lastname.pack(anchor=E, padx=5, pady=5, side=RIGHT)
-        self.sort_salary = ttk.Button(self.sort_button_frame, text="Відсортувати за заробітньою платою")
+        self.sort_salary = ttk.Button(self.sort_button_frame, text="Відсортувати за заробітною платою")
         self.sort_salary.pack(anchor=E, padx=5, pady=5, side=RIGHT)
 
         self.frame = VerticalScrolledFrame(self.mainFrame)

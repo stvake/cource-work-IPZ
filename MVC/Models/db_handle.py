@@ -269,8 +269,8 @@ class HandleDataBaseModel:
     def get_unit_workers(self, unit_name):
         self.cursor.execute(f"select id from Units where Name = '{unit_name}'")
         unit_id = self.cursor.fetchone()[0]
-        self.cursor.execute(f"select * from Workers where unit_id = {unit_id}")
-        workers = [i[1]+' '+i[2]+' '+i[3] for i in self.cursor.fetchall()]
+        self.cursor.execute(f"select id from Workers where unit_id = {unit_id}")
+        workers = [i[0] for i in self.cursor.fetchall()]
         return workers
 
     def get_unit_projects(self, unit_name):

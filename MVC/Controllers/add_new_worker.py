@@ -10,6 +10,7 @@ class AddNewWorkerController:
         self.main_controller = main_controller
         self.model = model
         self.view = view
+        self.view.tabs['AddNewWorker'] = self.view.create_tab('AddNewWorker')
         self.tab = self.view.tabs['AddNewWorker']
         self.tab.add_photo_button.config(command=self.add_photo)
         self.tab.saveButton.config(command=self.save_worker)
@@ -73,6 +74,7 @@ class AddNewWorkerController:
                     if self.ready_to_save:
                         showwarning("Зауваження", "Правильно заповніть поля.")
                         self.ready_to_save = 0
+                        return
                 else:
                     if self.model.update_table(self.id, 0, t, data):
                         showwarning("Зауваження", "Правильно заповніть поля.")
