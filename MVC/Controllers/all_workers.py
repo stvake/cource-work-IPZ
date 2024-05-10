@@ -6,14 +6,18 @@ class AllWorkersController:
         self.main_controller = main_controller
         self.model = model
         self.view = view
+        self.tab = None
+        self.workers_controllers = {}
+        self._initialize_tab()
+        self._get_all_workers()
+
+    def _initialize_tab(self):
         self.view.tabs['Workers'] = self.view.create_tab('Workers')
         self.tab = self.view.tabs['Workers']
-        self.workers_controllers = {}
         self.tab.add_worker_button.config(command=self.add_worker)
         self.tab.close_button.config(command=self.close_tab)
-        self.get_all_workers()
 
-    def get_all_workers(self):
+    def _get_all_workers(self):
         for i in range(self.model.get_workers_quantity()):
             if self.model.if_exists('Workers', 'id', i+1):
                 self.view.create_tab(

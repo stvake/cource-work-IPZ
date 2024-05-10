@@ -17,6 +17,7 @@ class AddNewWorkerController:
         self.tab.cancelButton.config(command=self.cancel)
         self.photo_path = None
         self.id = None
+        self.workers_controllers = {}
         self.ready_to_save = 1
 
     def add_photo(self):

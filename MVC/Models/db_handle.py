@@ -144,7 +144,7 @@ class HandleDataBaseModel:
             self.connection.execute("begin transaction")
             self.cursor.execute("select * from Workers order by id desc")
             output = self.cursor.fetchall()[0][0] + 1
-            self.cursor.execute(f"insert into Workers (id, LastName, FirstName, Patronymic, BirthDate, Photo, unit_id) "
+            self.cursor.execute(f"insert into Workers(id, LastName, FirstName, Patronymic, BirthDate, Photo, unit_name)"
                                 f"values ({output}, '', '', '', '', '', '')")
             self.connection.commit()
             return output
@@ -225,16 +225,14 @@ class HandleDataBaseModel:
         try:
             self.connection.execute("begin transaction")
             rows = []
-            self.cursor.execute(f'select id from Units')
-            ids = self.cursor.fetchall()
-            for i in range(len(ids)):
-                row = []
-                self.cursor.execute(f'select id, Name from Units')
-                row.extend([j for j in self.cursor.fetchall()[i]])
-                self.cursor.execute(f'select count(*) from Workers where unit_id = {ids[i][0]}')
+            self.cursor.execute(f'select Name from Units')
+            names = self.cursor.fetchall()
+            for i in range(len(names)):
+                row = [names[i][0]]
+                self.cursor.execute(f"select count(*) from Workers where unit_name = '{names[i][0]}'")
                 row.append(self.cursor.fetchone()[0])
 
-                self.cursor.execute(f'select projects_id from Units where id = {ids[i][0]}')
+                self.cursor.execute(f"select projects_id from Units where name = '{names[i][0]}'")
                 k = 0
                 cost = 0
                 projects = self.cursor.fetchone()[0]
@@ -258,7 +256,7 @@ class HandleDataBaseModel:
 
             self.cursor.execute('delete from Units')
             for row in rows:
-                self.cursor.execute(f'insert into Units(id, Name, WorkersQuantity, UnfinishedProjectsQuantity, '
+                self.cursor.execute(f'insert into Units(Name, WorkersQuantity, UnfinishedProjectsQuantity, '
                                     f'AllProjectsQuantity, TotalCost, projects_id) values {tuple(row)}')
             self.connection.commit()
             return rows
@@ -267,9 +265,7 @@ class HandleDataBaseModel:
             self.connection.rollback()
 
     def get_unit_workers(self, unit_name):
-        self.cursor.execute(f"select id from Units where Name = '{unit_name}'")
-        unit_id = self.cursor.fetchone()[0]
-        self.cursor.execute(f"select id from Workers where unit_id = {unit_id}")
+        self.cursor.execute(f"select id from Workers where unit_name = '{unit_name}'")
         workers = [i[0] for i in self.cursor.fetchall()]
         return workers
 
@@ -282,3 +278,30 @@ class HandleDataBaseModel:
                                 f"where id = {project}")
             output.append(self.cursor.fetchone())
         return output
+
+    def get_not_unit_workers(self, unit_name):
+        self.cursor.execute(f"select id, LastName, FirstName, Patronymic from Workers "
+                            f"where unit_name != '{unit_name}' or unit_name is null")
+
+        not_unit_workers = self.cursor.fetchall()
+        workers = []
+        for i in not_unit_workers:
+            self.cursor.execute(f"select unit_name from Workers where id = {i[0]}")
+            worker = list(i)
+            try:
+                unit = self.cursor.fetchone()[0]
+                worker.append(f'(знаходиться у підрозділі: {unit})' if unit is not None
+                              else '(не знаходиться у підрозділах)')
+            except TypeError:
+                worker.append('(не знаходиться у підрозділах)')
+            workers.append(worker)
+        return workers
+
+    def set_worker_unit(self, worker_id, unit_name):
+        try:
+            self.connection.execute("begin transaction")
+            self.cursor.execute(f"update Workers set unit_name = '{unit_name}' where id = {worker_id}")
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()
