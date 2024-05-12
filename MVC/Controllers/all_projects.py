@@ -21,13 +21,9 @@ class AllProjectsController:
     def close_tab(self):
         def get_all_rows(table):
             output = []
-            n = 1
-            try:
-                while True:
-                    output.append(table.item(f'I00{n}').get('values'))
-                    n += 1
-            except TclError:
-                return output
+            for line in table.get_children():
+                output.append(table.item(line).get('values'))
+            return output
         data = get_all_rows(self.tab.projects_table)
         if self.model.update_projects_table(data):
             showwarning("Зауваження", "Правильно заповніть поля.")

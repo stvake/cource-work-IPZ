@@ -35,7 +35,7 @@ class UnitWorkersController(AllWorkersController):
 
         workers_lf = LabelFrame(add_worker_win, text='Виберіть робітників')
         workers_lf.pack(padx=5, pady=5)
-        workers_listbox = Listbox(workers_lf, selectmode=MULTIPLE, height=20, width=80, font=14)
+        workers_listbox = Listbox(workers_lf, selectmode=MULTIPLE, height=20, width=60, font=14)
         workers_listbox.pack(padx=5, pady=5)
 
         not_unit_workers = self.model.get_not_unit_workers(self.unit_name)
@@ -54,6 +54,11 @@ class UnitWorkersController(AllWorkersController):
                         self.model.set_worker_unit(not_unit_workers_ids[i], self.unit_name)
                 else:
                     self.model.set_worker_unit(not_unit_workers_ids[i], self.unit_name)
+            self.view.worker_tabs.clear()
+            self.workers_controllers.clear()
+            for i in self.tab.frame.interior.winfo_children():
+                i.destroy()
+            self._get_all_workers()
             add_worker_win.destroy()
 
         def on_cancel():

@@ -7,6 +7,6 @@ class App(Tk):
         super().__init__()
         self.title('Відділ кадрів')
         self.width = 1070
-        self.height = 850
+        self.height = 855
         self.geometry(f"{self.width}x{self.height}")
         self.notebook = ttk.Notebook(self, width=self.width, height=self.height)

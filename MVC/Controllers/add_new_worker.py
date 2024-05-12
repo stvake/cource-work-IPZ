@@ -46,13 +46,9 @@ class AddNewWorkerController:
 
             def get_all_rows(table):
                 output = []
-                n = 1
-                try:
-                    while True:
-                        output.append(table.item(f'I00{n}').get('values'))
-                        n += 1
-                except TclError:
-                    return output
+                for line in table.get_children():
+                    output.append(table.item(line).get('values'))
+                return output
 
             for t in range(len(self.tab.tables_firstSection)):
                 data = []

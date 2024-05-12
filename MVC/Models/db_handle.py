@@ -183,12 +183,18 @@ class HandleDataBaseModel:
         self.cursor.execute(f"select * from WorkersProjects order by id")
         return self.cursor.fetchall()
 
+    def get_worker_id(self, last_name, first_name):
+        self.cursor.execute(f"select id from Workers where LastName='{last_name}' and FirstName='{first_name}'")
+        return self.cursor.fetchone()[0]
+
     def update_projects_table(self, data):
         try:
             self.connection.execute("begin transaction")
             for row in data:
-                self.cursor.execute(f'insert into WorkersProjects(mainworker_id, id, name, cost, start, end, '
-                                    f'collaborators) VALUES {tuple(row)}')
+                self.cursor.execute(f"delete from WorkersProjects where id={row[0]}")
+                self.cursor.execute(f'insert into WorkersProjects(mainworker_id, id, name, cost, '
+                                    f'start, end, collaborators) '
+                                    f'VALUES {tuple([self.get_worker_id(*row[-1].split(",")[0].split())]+row)}')
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
@@ -254,8 +260,8 @@ class HandleDataBaseModel:
                 row.append(projects)
                 rows.append(row)
 
-            self.cursor.execute('delete from Units')
             for row in rows:
+                self.cursor.execute(f"delete from Units where Name = '{row[0]}'")
                 self.cursor.execute(f'insert into Units(Name, WorkersQuantity, UnfinishedProjectsQuantity, '
                                     f'AllProjectsQuantity, TotalCost, projects_id) values {tuple(row)}')
             self.connection.commit()
@@ -301,6 +307,18 @@ class HandleDataBaseModel:
         try:
             self.connection.execute("begin transaction")
             self.cursor.execute(f"update Workers set unit_name = '{unit_name}' where id = {worker_id}")
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()
+
+    def update_units(self, units, projects):
+        try:
+            self.connection.execute("begin transaction")
+            for i in zip(units, projects):
+                self.cursor.execute(f"delete from Units where Name='{i[0]}'")
+                self.cursor.execute(f"insert into Units values (?, ?, ?, ?, ?, ?)",
+                                    (i, None, None, None, None, i[1]))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
