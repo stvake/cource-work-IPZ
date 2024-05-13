@@ -65,3 +65,6 @@ class EditableTable(ttk.Treeview):
     def _on_delete_pressed(self, event):
         selected_iid = self.focus()
         self.delete(selected_iid)
+
+    def get_all_rows(self):
+        return [self.item(line).get('values') for line in self.get_children()]

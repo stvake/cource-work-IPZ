@@ -20,12 +20,12 @@ class PositionsController:
 
     def get_posts_from_db(self):
         rows = self.model.get_posts()
-        print(rows)
         for row in rows:
             self.tab.post_table.insert('', 'end', values=tuple(row))
 
     def close_tab(self):
-        pass
+        all_elements = self.tab.post_table.get_all_rows()
+        self.model.write_post(all_elements)
 
     def close_tab_without_save(self):
         self.tab.notebook.forget(self.tab.mainFrame)

@@ -368,3 +368,15 @@ class HandleDataBaseModel:
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+
+    def write_post(self, tables_elements):
+        try:
+            self.connection.execute("begin transaction")
+            for i in tables_elements:
+                self.cursor.execute(f"delete from Posts where Post_name = '{i[0]}'")
+                self.cursor.execute(f'insert into Posts(Post_name, Salary_in_one_worker, Work_time, '
+                                    f'Sum_of_workers, Sum_salary) values {tuple(i)}')
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()

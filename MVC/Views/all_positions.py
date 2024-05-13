@@ -17,7 +17,7 @@ class AllPositionsView:
                                               show='headings', height=10)
         self.post_table.heading('Name', text='Назва посади')
         self.post_table.heading('salary', text='Заробітня плата')
-        self.post_table.heading('time', text='Кількість робочих годин в день')
+        self.post_table.heading('time', text='Кількість робочих годин')
         self.post_table.heading('amount', text='Кількість працівників')
         self.post_table.heading('summ_salary', text='Сума заробітньої плати')
         self.post_table.pack()
@@ -28,7 +28,7 @@ class AllPositionsView:
         self.bestPosts_Button = ttk.Button(self.frame, text="Відкрити вкладку з найбільш привабливими посадами")
         self.bestPosts_Button.pack(fill=BOTH, padx=5, pady=5)
 
-        self.closeTab_Button = ttk.Button(self.frame, text="Зберегти та закрити вкладку")
+        self.closeTab_Button = ttk.Button(self.frame, text="Зберегти")
         self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
         self.closeTabWithoutSave_Button = ttk.Button(self.frame, text="Закрити без збереження")
