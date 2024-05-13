@@ -18,7 +18,7 @@ class UnitWorkersController(AllWorkersController):
         self.tab.close_button.config(command=self.close_tab)
         self.tab.add_tab()
 
-    def _get_all_workers(self):
+    def _get_all_workers(self, sort_by='LastName', reverse=False):
         for i in self.model.get_unit_workers(self.unit_name):
             self.view.create_tab(
                 'Worker',

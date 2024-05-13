@@ -1,15 +1,17 @@
 import sqlite3
 import datetime
+import locale
 
 
 class HandleDataBaseModel:
     def __init__(self):
         self.connection = sqlite3.connect('HumanResourceDepartment.db')
         self.cursor = self.connection.cursor()
+        locale.setlocale(locale.LC_ALL, 'uk_UA.UTF-8')
 
-    def get_workers_quantity(self):
-        self.cursor.execute('SELECT id FROM Workers order by id')
-        return self.cursor.fetchall()[-1][0]
+    # def get_workers_quantity(self):
+    #     self.cursor.execute('SELECT id FROM Workers order by id')
+    #     return self.cursor.fetchall()[-1][0]
 
     def get_worker_info(self, worker_id):
         self.cursor.execute(f"SELECT * FROM Workers WHERE id = {worker_id}")
@@ -323,3 +325,9 @@ class HandleDataBaseModel:
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+
+    def get_id_of_workers_sorted_by(self, sort_by, reverse=False):
+        self.cursor.execute(f"select id, {sort_by} from Workers")
+        elements = [i for i in self.cursor.fetchall()]
+        sorted_elements = sorted(elements, key=lambda x: locale.strxfrm(x[1]), reverse=reverse)
+        return [i[0] for i in sorted_elements]
