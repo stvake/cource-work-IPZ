@@ -37,30 +37,39 @@ class UnitWorkersController(AllWorkersController):
 
         workers_lf = LabelFrame(add_worker_win, text='Виберіть робітників')
         workers_lf.pack(padx=5, pady=5)
-        workers_listbox = Listbox(workers_lf, selectmode=MULTIPLE, height=20, width=60, font=14)
-        workers_listbox.pack(padx=5, pady=5)
+        workers_table = ttk.Treeview(workers_lf, columns=('name', 'unit'), show='headings', selectmode=EXTENDED)
+        workers_table.heading('name', text='ПІБ')
+        workers_table.heading('unit', text='Приналежність підрозділу')
+        workers_table.pack(padx=5, pady=5)
 
         not_unit_workers = self.model.get_not_unit_workers(self.unit_name)
         not_unit_workers_ids = []
 
         for worker in not_unit_workers:
             not_unit_workers_ids.append(worker[0])
-            workers_listbox.insert('end', " ".join(worker[1:]))
+            workers_table.insert('', 'end', values=(" ".join(worker[1:-1]), worker[-1]))
 
         def on_ok():
-            for i in workers_listbox.curselection():
-                if 'знаходиться у підрозділі' in workers_listbox.get(i).split(' (')[1][:-1]:
-                    ans = askyesno("Увага", f"{workers_listbox.get(i).split(' (')[0]} вже знаходиться в "
+            rows = [workers_table.item(line).get('values') for line in workers_table.selection()]
+            for i in range(len(rows)):
+                if 'знаходиться у підрозділі' in rows[i][1]:
+                    ans = askyesno("Увага", f"{rows[i][0]} вже знаходиться в "
                                             f"підрозділі. Бажаєте змінити його підрозділ?")
                     if ans:
                         self.model.set_worker_unit(not_unit_workers_ids[i], self.unit_name)
                 else:
                     self.model.set_worker_unit(not_unit_workers_ids[i], self.unit_name)
+
             self.view.worker_tabs.clear()
             self.workers_controllers.clear()
             for i in self.tab.frame.interior.winfo_children():
                 i.destroy()
+
             self._get_all_workers()
+
+            self.view.tabs['Units'].units_table.delete(*self.view.tabs['Units'].units_table.get_children())
+            self.main_controller.all_units_controller.refresh()
+
             add_worker_win.destroy()
 
         def on_cancel():

@@ -295,10 +295,10 @@ class HandleDataBaseModel:
             worker = list(i)
             try:
                 unit = self.cursor.fetchone()[0]
-                worker.append(f'(знаходиться у підрозділі: {unit})' if unit is not None
-                              else '(не знаходиться у підрозділах)')
+                worker.append(f'знаходиться у підрозділі: {unit}' if unit is not None
+                              else 'не знаходиться у підрозділах')
             except TypeError:
-                worker.append('(не знаходиться у підрозділах)')
+                worker.append('не знаходиться у підрозділах')
             workers.append(worker)
         return workers
 

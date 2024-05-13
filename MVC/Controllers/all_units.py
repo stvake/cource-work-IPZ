@@ -23,6 +23,9 @@ class UnitsController:
         for row in rows:
             self.tab.units_table.insert('', 'end', values=tuple(row)[:-1])
 
+    def refresh(self):
+        self._get_info_from_db()
+
     def _sort_by_cost(self):
         ...
 
@@ -40,9 +43,9 @@ class UnitsController:
             self.unit_projects[unit_name] = UnitProjectsController(self, unit_name, self.model, self.view)
 
     def _close_tab(self):
-        units = [self.tab.units_table.item(line).get('values')[0] for line in self.tab.units_table.get_children()]
-        projects = [self.tab.units_table.item(line).get('values')[-1] for line in self.tab.units_table.get_children()]
-        self.model.update_units(units, projects)
+        # units = [self.tab.units_table.item(line).get('values')[0] for line in self.tab.units_table.get_children()]
+        # projects = [self.tab.units_table.item(line).get('values')[-1] for line in self.tab.units_table.get_children()]
+        # self.model.update_units(units, projects)
         self.tab.notebook.forget(self.tab.mainFrame)
         self.main_controller.all_units_controller = None
 
