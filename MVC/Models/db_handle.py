@@ -327,3 +327,43 @@ class HandleDataBaseModel:
         elements = [i for i in self.cursor.fetchall()]
         sorted_elements = sorted(elements, key=lambda x: locale.strxfrm(x[1]), reverse=reverse)
         return [i[0] for i in sorted_elements]
+
+    def get_posts(self):
+        try:
+            self.connection.execute("begin transaction")
+            rows = []
+            self.cursor.execute(f'select Post_name from Posts')
+            names = self.cursor.fetchall()
+            for i in range(len(names)):
+                row = [names[i][0]]
+                help_count = int()
+                self.cursor.execute(f"select Salary_in_one_worker from Posts where Post_name = '{names[i][0]}'")
+                help_salary = self.cursor.fetchone()[0]
+                row.append(help_salary)
+
+                self.cursor.execute(f"select Work_time from Posts where Post_name = '{names[i][0]}'")
+                row.append(self.cursor.fetchone()[0])
+
+                self.cursor.execute(f"select id from Workers")
+                workers_id = [j[0] for j in self.cursor.fetchall()]
+                for j in workers_id:
+                    self.cursor.execute(f"select Date, Name from Appointment where worker_id = {j}")
+                    help = self.cursor.fetchall()
+                    sorted_help = sorted(help, key=lambda x: x[0])
+                    if sorted_help[-1][1] == names[i][0]:
+                        help_count += 1
+                row.append(help_count)
+
+                row.append(help_count * help_salary)
+
+                rows.append(row)
+
+            for row in rows:
+                self.cursor.execute(f"delete from Posts where Post_name = '{row[0]}'")
+                self.cursor.execute(f'insert into Posts(Post_name, Salary_in_one_worker, Work_time, '
+                                    f'Sum_of_workers, Sum_salary) values {tuple(row)}')
+            self.connection.commit()
+            return rows
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()

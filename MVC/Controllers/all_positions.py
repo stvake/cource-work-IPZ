@@ -16,10 +16,13 @@ class PositionsController:
         self.full_worker_info = {}
 
         self.post_id = int()            #Змінеш коли зробиш таблицю в БД
-        self.get_posts_from_db(self.post_id)
+        self.get_posts_from_db()
 
-    def get_posts_from_db(self, post_id):
-        pass
+    def get_posts_from_db(self):
+        rows = self.model.get_posts()
+        print(rows)
+        for row in rows:
+            self.tab.post_table.insert('', 'end', values=tuple(row))
 
     def close_tab(self):
         pass
