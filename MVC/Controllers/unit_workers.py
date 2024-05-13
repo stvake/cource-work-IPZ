@@ -17,9 +17,11 @@ class UnitWorkersController(AllWorkersController):
         self.tab.add_worker_button.config(command=self.add_worker)
         self.tab.close_button.config(command=self.close_tab)
         self.tab.add_tab()
+        self.tab.sort_lastname.config(command=lambda: self.sort_by('LastName'))
+        self.tab.sort_firstname.config(command=lambda: self.sort_by('FirstName'))
 
     def _get_all_workers(self, sort_by='LastName', reverse=False):
-        for i in self.model.get_unit_workers(self.unit_name):
+        for i in self.model.get_unit_workers(self.unit_name, sort_by, reverse):
             self.view.create_tab(
                 'Worker',
                 i,
