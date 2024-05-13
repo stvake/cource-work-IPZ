@@ -28,6 +28,9 @@ class VerticalScrolledFrame(ttk.Frame):
             self.canvas.config(width=self.interior.winfo_reqwidth())
 
     def _configure_canvas(self, event):
+        for x in self.get_all_widgets(self):
+            x.bind('<MouseWheel>', self._on_mousewheel)
+
         if self.interior.winfo_reqwidth() != self.canvas.winfo_width():
             self.canvas.itemconfigure(self.interior_id, width=self.canvas.winfo_width())
 

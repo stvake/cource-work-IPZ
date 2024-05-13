@@ -9,10 +9,6 @@ class HandleDataBaseModel:
         self.cursor = self.connection.cursor()
         locale.setlocale(locale.LC_ALL, 'uk_UA.UTF-8')
 
-    # def get_workers_quantity(self):
-    #     self.cursor.execute('SELECT id FROM Workers order by id')
-    #     return self.cursor.fetchall()[-1][0]
-
     def get_worker_info(self, worker_id):
         self.cursor.execute(f"SELECT * FROM Workers WHERE id = {worker_id}")
         info = list(self.cursor.fetchone())[:-1]
