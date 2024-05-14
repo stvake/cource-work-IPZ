@@ -1,7 +1,7 @@
 from tkinter import *
 import tkinter.ttk as ttk
 from MVC.Views.vertical_scrolled_frame import VerticalScrolledFrame
-from MVC.Views.editable_table import EditableTable
+from MVC.Views.combobox_table import ComboboxTable
 
 
 class UnitProjectsView:
@@ -14,8 +14,9 @@ class UnitProjectsView:
         self.frame = VerticalScrolledFrame(self.mainFrame)
         self.frame.pack(expand=True, fill=BOTH)
 
-        self.projects_table = EditableTable(self.frame, columns=('ID', 'name', 'cost', 'start', 'end', 'collaborators'),
-                                            show='headings', height=10, allow_delete=False)
+        self.projects_table = ComboboxTable(self.frame, columns=('ID', 'name', 'cost', 'start', 'end', 'collaborators'),
+                                            show='headings', height=10, allow_delete=False,
+                                            non_editable_columns=[0, 2, 3, 4, 5])
         self.projects_table.heading('ID', text='№')
         self.projects_table.heading('name', text='Назва проекту')
         self.projects_table.heading('cost', text='Вартість проекту')
