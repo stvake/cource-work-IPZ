@@ -55,17 +55,12 @@ class HandleDataBaseModel:
 
         return output
 
-    def if_exists(self, table, column, worker_id):
-        self.cursor.execute(f"SELECT 1 FROM {table} WHERE {column} = ?", (worker_id,))
-        return self.cursor.fetchone()
-
     def update_info(self, worker_id, info, mil_info):
         try:
             self.connection.execute("begin transaction")
-            if self.if_exists('Workers', 'id', worker_id):
-                self.cursor.execute(f"delete from Workers where id = {worker_id}")
-                self.cursor.execute(f"delete from FullInfo where worker_id = {worker_id}")
-                self.cursor.execute(f"delete from Military where worker_id = {worker_id}")
+            self.cursor.execute(f"delete from Workers where id = {worker_id}")
+            self.cursor.execute(f"delete from FullInfo where worker_id = {worker_id}")
+            self.cursor.execute(f"delete from Military where worker_id = {worker_id}")
 
             self.cursor.execute(f"insert into Workers (id, LastName, FirstName, Patronymic, BirthDate)"
                                 f"values {tuple([worker_id] + info[0:4])}")
