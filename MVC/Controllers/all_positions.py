@@ -1,4 +1,5 @@
 # from MVC.Controllers.full_worker_info import FullWorkerInfoController
+from MVC.Controllers.best_posts import BestPostsController
 
 
 class PositionsController:
@@ -13,6 +14,7 @@ class PositionsController:
         self.tab.bestPosts_Button.config(command=self.open_best_posts)
         self.worker = None
         self.worker_id = None
+        self.best_post_controller = None
         self.full_worker_info = {}
 
         self.post_id = int()            #Змінеш коли зробиш таблицю в БД
@@ -41,4 +43,5 @@ class PositionsController:
         # self.full_worker_info[self.worker_id] = FullWorkerInfoController(self.model, self.view, self.worker_id)
 
     def open_best_posts(self):
-        pass
+        self.best_post_controller = BestPostsController(self.model, self.view)
+
