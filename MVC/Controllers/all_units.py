@@ -16,6 +16,7 @@ class UnitsController:
         self.tab.closeTabWithoutSave_Button.config(command=self._close_tab_without_save)
         self.tab.openUnitWorkers_Button.config(command=self._open_unit_workers)
         self.tab.openUnitProjects_Button.config(command=self._open_unit_projects)
+        self.sort_count = 0
         self._get_info_from_db()
 
     def _get_info_from_db(self):
@@ -27,7 +28,19 @@ class UnitsController:
         self._get_info_from_db()
 
     def _sort_by_cost(self):
-        ...
+        items = [(line, self.tab.units_table.item(line).get('values')) for line in self.tab.units_table.get_children()]
+        if self.sort_count == 0:
+            sorted_items = sorted(items, key=lambda item: item[1][-1])
+            self.sort_count = 1
+        else:
+            sorted_items = sorted(items, key=lambda item: item[1][-1], reverse=True)
+            self.sort_count = 0
+
+        self.tab.units_table.delete(*self.tab.units_table.get_children())
+        for row in sorted_items:
+            self.tab.units_table.insert('', 'end', values=tuple(row)[1])
+
+        print([(line, self.tab.units_table.item(line).get('values')) for line in self.tab.units_table.get_children()])
 
     def _open_unit_workers(self):
         selected_iid = self.tab.units_table.focus()
@@ -43,9 +56,8 @@ class UnitsController:
             self.unit_projects[unit_name] = UnitProjectsController(self, unit_name, self.model, self.view)
 
     def _close_tab(self):
-        # units = [self.tab.units_table.item(line).get('values')[0] for line in self.tab.units_table.get_children()]
-        # projects = [self.tab.units_table.item(line).get('values')[-1] for line in self.tab.units_table.get_children()]
-        # self.model.update_units(units, projects)
+        units = [self.tab.units_table.item(line).get('values')[0] for line in self.tab.units_table.get_children()]
+        self.model.update_units(units)
         self.tab.notebook.forget(self.tab.mainFrame)
         self.main_controller.all_units_controller = None
 

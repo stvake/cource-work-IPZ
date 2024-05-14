@@ -236,27 +236,29 @@ class HandleDataBaseModel:
                 cost = 0
                 projects = self.cursor.fetchone()[0]
 
-                for p in projects.split(','):
-                    self.cursor.execute(f'select End from WorkersProjects where id = {p}')
-                    end_date = datetime.datetime.strptime(self.cursor.fetchone()[0], "%d-%m-%Y").date()
-                    current_date = datetime.date.today().strftime("%Y-%m-%d")
-                    formatted_date = datetime.datetime.strptime(current_date, "%Y-%m-%d").date()
-                    if end_date > formatted_date:
-                        k += 1
+                if projects:
+                    for p in projects.split(','):
+                        self.cursor.execute(f'select End from WorkersProjects where id = {p}')
+                        end_date = datetime.datetime.strptime(self.cursor.fetchone()[0], "%d-%m-%Y").date()
+                        current_date = datetime.date.today().strftime("%Y-%m-%d")
+                        formatted_date = datetime.datetime.strptime(current_date, "%Y-%m-%d").date()
+                        if end_date > formatted_date:
+                            k += 1
 
-                    self.cursor.execute(f'select Cost from WorkersProjects where id = {p}')
-                    cost += self.cursor.fetchone()[0]
+                        self.cursor.execute(f'select Cost from WorkersProjects where id = {p}')
+                        cost += self.cursor.fetchone()[0]
 
                 row.append(k)
-                row.append(len(projects.split(',')))
+                row.append(len(projects.split(',')) if projects else 0)
                 row.append(cost)
-                row.append(projects)
+                row.append(projects if projects else None)
                 rows.append(row)
 
+            self.cursor.execute(f"delete from Units")
             for row in rows:
-                self.cursor.execute(f"delete from Units where Name = '{row[0]}'")
                 self.cursor.execute(f'insert into Units(Name, WorkersQuantity, UnfinishedProjectsQuantity, '
-                                    f'AllProjectsQuantity, TotalCost, projects_id) values {tuple(row)}')
+                                    f'AllProjectsQuantity, TotalCost, projects_id) values (?, ?, ?, ?, ?, ?)',
+                                    tuple(row))
             self.connection.commit()
             return rows
         except sqlite3.Error as e:
@@ -270,14 +272,19 @@ class HandleDataBaseModel:
         return [i[0] for i in sorted_elements]
 
     def get_unit_projects(self, unit_name):
-        self.cursor.execute(f"select projects_id from Units where Name = '{unit_name}'")
-        projects = self.cursor.fetchone()[0].split(',')
-        output = []
-        for project in projects:
-            self.cursor.execute(f"select id, Name, Cost, Start, End, Collaborators from WorkersProjects "
-                                f"where id = {project}")
-            output.append(self.cursor.fetchone())
-        return output
+        try:
+            self.cursor.execute(f"select projects_id from Units where Name = '{unit_name}'")
+            projects = self.cursor.fetchone()[0].split(',')
+            output = []
+            for project in projects:
+                self.cursor.execute(f"select id, Name, Cost, Start, End, Collaborators from WorkersProjects "
+                                    f"where id = {project}")
+                output.append(self.cursor.fetchone())
+            return output
+        except TypeError:
+            pass
+        except AttributeError:
+            pass
 
     def get_not_unit_workers(self, unit_name):
         self.cursor.execute(f"select id, LastName, FirstName, Patronymic from Workers "
@@ -306,13 +313,20 @@ class HandleDataBaseModel:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
 
-    def update_units(self, units, projects):
+    def update_units(self, units):
         try:
             self.connection.execute("begin transaction")
+
+            self.cursor.execute("select projects_id from Units")
+            projects = [i[0] for i in self.cursor.fetchall()]
+            if len(projects) != len(units):
+                for i in range(len(units)-len(projects)):
+                    projects.append(None)
+
+            self.cursor.execute(f"delete from Units")
             for i in zip(units, projects):
-                self.cursor.execute(f"delete from Units where Name='{i[0]}'")
                 self.cursor.execute(f"insert into Units values (?, ?, ?, ?, ?, ?)",
-                                    (i, None, None, None, None, i[1]))
+                                    (i[0], None, None, None, None, i[1]))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")

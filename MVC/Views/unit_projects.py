@@ -32,6 +32,9 @@ class UnitProjectsView:
 
         self.projects_table.pack(padx=5, pady=5, fill=BOTH)
 
+        self.save_Button = ttk.Button(self.frame, text="Зберегти зміни")
+        self.save_Button.pack(fill=BOTH, padx=5, pady=5)
+
         self.closeTab_Button = ttk.Button(self.frame, text="Закрити вкладку")
         self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
