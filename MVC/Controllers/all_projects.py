@@ -1,4 +1,3 @@
-from tkinter import TclError
 from tkinter.messagebox import showwarning
 
 
@@ -19,12 +18,7 @@ class AllProjectsController:
             self.tab.projects_table.insert('', 'end', values=i[1:])
 
     def close_tab(self):
-        def get_all_rows(table):
-            output = []
-            for line in table.get_children():
-                output.append(table.item(line).get('values'))
-            return output
-        data = get_all_rows(self.tab.projects_table)
+        data = self.tab.projects_table.get_all_rows()
         if self.model.update_projects_table(data):
             showwarning("Зауваження", "Правильно заповніть поля.")
             return

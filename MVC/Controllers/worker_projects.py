@@ -1,4 +1,3 @@
-from tkinter import *
 from tkinter.messagebox import showwarning
 
 
@@ -20,12 +19,7 @@ class WorkerProjectsController:
             self.worker_projects_info.projects_table.insert('', 'end', values=i[1:])
 
     def close_tab(self):
-        def get_all_rows(table):
-            output = []
-            for line in table.get_children():
-                output.append(table.item(line).get('values'))
-            return output
-        data = get_all_rows(self.worker_projects_info.projects_table)
+        data = self.worker_projects_info.projects_table.get_all_rows()
         if self.model.update_worker_project_table(data, self.worker_id):
             showwarning("Зауваження", "Правильно заповніть поля.")
             return

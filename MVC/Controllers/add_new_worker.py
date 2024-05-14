@@ -44,22 +44,16 @@ class AddNewWorkerController:
                     showwarning("Зауваження", "Правильно заповніть поля.")
                     return
 
-            def get_all_rows(table):
-                output = []
-                for line in table.get_children():
-                    output.append(table.item(line).get('values'))
-                return output
-
             for t in range(len(self.tab.tables_firstSection)):
                 data = []
                 if t == 0:
-                    for row in zip(get_all_rows(self.tab.tables_firstSection[t]),
-                                   get_all_rows(self.tab.tables_firstSection[t + 1])):
+                    for row in zip(self.tab.tables_firstSection[t].get_all_rows(),
+                                   self.tab.tables_firstSection[t + 1].get_all_rows()):
                         data.append(row[0] + row[1])
                 elif t == 1:
                     continue
                 else:
-                    for row in get_all_rows(self.tab.tables_firstSection[t]):
+                    for row in self.tab.tables_firstSection[t].get_all_rows():
                         data.append(row)
 
                 quantity_of_empty_elements = 0
@@ -80,7 +74,7 @@ class AddNewWorkerController:
 
             for t in range(len(self.tab.tables_other)):
                 data = []
-                for row in get_all_rows(self.tab.tables_other[t]):
+                for row in self.tab.tables_other[t].get_all_rows():
                     data.append(row)
 
                 quantity_of_empty_elements = 0
@@ -111,4 +105,5 @@ class AddNewWorkerController:
                 self.tab.notebook.forget(self.tab.mainFrame)
 
     def cancel(self):
+        self.main_controller.add_new_worker_controller = None
         self.tab.notebook.forget(self.tab.mainFrame)

@@ -91,22 +91,16 @@ class FullWorkerInfoController:
         self.full_worker_info.worker.birth_date_text.config(state=DISABLED)
         self.full_worker_info.worker.post_text.config(state=DISABLED)
 
-        def get_all_rows(table):
-            output = []
-            for line in table.get_children():
-                output.append(table.item(line).get('values'))
-            return output
-
         for t in range(len(self.full_worker_info.tables_firstSection)):
             data = []
             if t == 0:
-                for row in zip(get_all_rows(self.full_worker_info.tables_firstSection[t]),
-                               get_all_rows(self.full_worker_info.tables_firstSection[t+1])):
+                for row in zip(self.full_worker_info.tables_firstSection[t].get_all_rows(),
+                               self.full_worker_info.tables_firstSection[t+1].get_all_rows()):
                     data.append(row[0] + row[1])
             elif t == 1:
                 continue
             else:
-                for row in get_all_rows(self.full_worker_info.tables_firstSection[t]):
+                for row in self.full_worker_info.tables_firstSection[t].get_all_rows():
                     data.append(row)
 
             quantity_of_empty_elements = 0
@@ -127,7 +121,7 @@ class FullWorkerInfoController:
 
         for t in range(len(self.full_worker_info.tables_other)):
             data = []
-            for row in get_all_rows(self.full_worker_info.tables_other[t]):
+            for row in self.full_worker_info.tables_other[t].get_all_rows():
                 data.append(row)
 
             quantity_of_empty_elements = 0

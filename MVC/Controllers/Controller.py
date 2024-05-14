@@ -32,7 +32,7 @@ class Controller:
         self.all_workers_controller = AllWorkersController(self, self.model, self.view)
 
     def create_add_new_worker_controller(self):
-        self.all_workers_controller = AddNewWorkerController(self, self.model, self.view)
+        self.add_new_worker_controller = AddNewWorkerController(self, self.model, self.view)
 
     def create_all_projects_controller(self):
         self.all_projects = AllProjectsController(self, self.model, self.view)
