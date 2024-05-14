@@ -389,3 +389,21 @@ class HandleDataBaseModel:
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+
+    def get_projects_for_unit(self):
+        self.cursor.execute(f"select Name from WorkersProjects")
+        return [i[0] for i in self.cursor.fetchall()]
+
+    def get_project_data_by_name(self, name):
+        self.cursor.execute(f"select * from WorkersProjects where Name = '{name}'")
+        return self.cursor.fetchone()[1:]
+
+    def set_unit_projects(self, projects, unit_name):
+        try:
+            # print(f"update Units set projects_id='{projects}' where Name='{unit_name}'")
+            self.connection.execute("begin transaction")
+            self.cursor.execute(f"update Units set projects_id='{projects}' where Name='{unit_name}'")
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()

@@ -48,6 +48,7 @@ class ComboboxTable(EditableTable):
         self.combobox_edit.bind("<<ComboboxSelected>>", self._on_combobox_selected)
         self.combobox_edit.bind("<Escape>", self._on_focus_out)
         self.bind("<Escape>", self._on_focus_out)
+        self.combobox_edit.get()
 
     def set_combobox_values(self, column_name, values):
         column_index = self['columns'].index(column_name)
@@ -58,5 +59,9 @@ class ComboboxTable(EditableTable):
         self.is_editing = False
 
     def _on_combobox_selected(self, event):
+        self.on_value_selected(event.widget.get())
         self._on_enter_pressed(event)
         self.is_editing = False
+
+    def on_value_selected(self, value):
+        pass

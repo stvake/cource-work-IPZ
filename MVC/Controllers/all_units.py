@@ -25,22 +25,21 @@ class UnitsController:
             self.tab.units_table.insert('', 'end', values=tuple(row)[:-1])
 
     def refresh(self):
+        self.tab.units_table.delete(*self.tab.units_table.get_children())
         self._get_info_from_db()
 
     def _sort_by_cost(self):
-        items = [(line, self.tab.units_table.item(line).get('values')) for line in self.tab.units_table.get_children()]
+        items = [self.tab.units_table.item(line).get('values') for line in self.tab.units_table.get_children()]
         if self.sort_count == 0:
-            sorted_items = sorted(items, key=lambda item: item[1][-1])
+            sorted_items = sorted(items, key=lambda item: item[-1])
             self.sort_count = 1
         else:
-            sorted_items = sorted(items, key=lambda item: item[1][-1], reverse=True)
+            sorted_items = sorted(items, key=lambda item: item[-1], reverse=True)
             self.sort_count = 0
 
-        self.tab.units_table.delete(*self.tab.units_table.get_children())
-        for row in sorted_items:
-            self.tab.units_table.insert('', 'end', values=tuple(row)[1])
-
-        print([(line, self.tab.units_table.item(line).get('values')) for line in self.tab.units_table.get_children()])
+        rows_iid = self.tab.units_table.get_children()
+        for i in range(len(rows_iid)):
+            self.tab.units_table.item(rows_iid[i], values=sorted_items[i])
 
     def _open_unit_workers(self):
         selected_iid = self.tab.units_table.focus()
