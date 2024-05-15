@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.messagebox import showwarning
+from tkinter.filedialog import askopenfilename
 from PIL import Image, ImageTk
 from io import BytesIO
 
@@ -11,11 +12,28 @@ class FullWorkerInfoController:
         self.view = view
         self.worker_id = worker_id
         self.full_worker_info = self.view.full_info_tabs[self.worker_id]
+        self.full_worker_info.add_photo_button.config(command=self.add_photo)
         self.full_worker_info.closeTab_Button.config(command=self.close_tab)
         self.full_worker_info.closeTabWithoutSave_Button.config(command=self.close_tab_without_save)
         self.ready_to_save = 1
         self.image_data = None
+        self.photo_path = None
         self.get_info_from_db(self.worker_id)
+
+    def add_photo(self):
+        p = askopenfilename()
+        if len(p) != 0:
+            self.photo_path = p
+            self.full_worker_info.photo = ImageTk.PhotoImage(Image.open(p).resize((100, 100), Image.BILINEAR))
+            self.full_worker_info.photo_label.config(image=self.full_worker_info.photo)
+            with open(p, 'rb') as f:
+                self.image_data = f.read()
+
+    def refresh_workers(self):
+        for i in self.view.tabs['Workers'].frame.interior.winfo_children():
+            i.destroy()
+
+        self.worker_controller.all_workers_controller.refresh()
 
     def get_info_from_db(self, worker_id):
         info = self.model.get_worker_full_info(worker_id)
@@ -26,7 +44,7 @@ class FullWorkerInfoController:
                     self.full_worker_info.entries_general[i].insert(END, info[0][i])
             elif i == 4:
                 self.image_data = info[0][i]
-                img = Image.open(BytesIO(self.image_data))
+                img = Image.open(BytesIO(self.image_data)).resize((100, 100), Image.BILINEAR)
                 self.full_worker_info.photo = ImageTk.PhotoImage(img)
                 self.full_worker_info.photo_label.config(image=self.full_worker_info.photo)
             elif i > 4:
@@ -69,27 +87,6 @@ class FullWorkerInfoController:
         if self.model.update_info(self.full_worker_info.id, info, mil_info):
             showwarning("Зауваження", "Правильно заповніть поля.")
             return
-
-        self.full_worker_info.worker.name_text.config(state=NORMAL)
-        self.full_worker_info.worker.birth_date_text.config(state=NORMAL)
-        self.full_worker_info.worker.post_text.config(state=NORMAL)
-
-        self.full_worker_info.worker.name_text.delete(1.0, END)
-        self.full_worker_info.worker.birth_date_text.delete(1.0, END)
-        self.full_worker_info.worker.post_text.delete(1.0, END)
-
-        self.full_worker_info.worker.name_text.insert(END, f"{info[0]} {info[1]} {info[2]}")
-        self.full_worker_info.worker.birth_date_text.insert(END, info[3])
-        indexes = self.full_worker_info.appointment_table.get_children()
-        values = []
-        for i in indexes:
-            values.append(self.full_worker_info.appointment_table.item(i).get('values'))
-        sorted_values = sorted(values, key=lambda x: x[0])
-        self.full_worker_info.worker.post_text.insert(END, sorted_values[-1][2])
-
-        self.full_worker_info.worker.name_text.config(state=DISABLED)
-        self.full_worker_info.worker.birth_date_text.config(state=DISABLED)
-        self.full_worker_info.worker.post_text.config(state=DISABLED)
 
         for t in range(len(self.full_worker_info.tables_firstSection)):
             data = []
@@ -141,6 +138,7 @@ class FullWorkerInfoController:
                 self.ready_to_save = 1
 
         if self.ready_to_save:
+            self.refresh_workers()
             self.worker_controller.full_worker_info.pop(self.worker_id)
             self.full_worker_info.notebook.forget(self.full_worker_info.mainFrame)
 

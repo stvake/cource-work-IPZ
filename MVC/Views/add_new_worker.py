@@ -27,15 +27,13 @@ class AddNewWorkerView:
         self.initialize_tab()
 
     def initialize_photo(self):
-        self.photo_frame = ttk.Frame(self.mainFrame)
-        self.photo_frame.pack(side=LEFT, anchor=NW, padx=5, pady=10)
-        self.image_frame = ttk.Frame(self.photo_frame, relief=GROOVE)
-        self.image_frame.pack()
-        self.image_label = ttk.Label(self.image_frame, text="Завантажте\nфото\nнового\nробітника",
+        self.photo_and_button_frame = ttk.Frame(self.mainFrame)
+        self.photo_and_button_frame.pack(side=LEFT, anchor=NW, padx=5, pady=10)
+        self.photo_frame = ttk.Frame(self.photo_and_button_frame, relief=GROOVE)
+        self.photo_frame.pack()
+        self.image_label = ttk.Label(self.photo_frame, text="Завантажте\nфото\nнового\nробітника",
                                      font=('Arial', 14), justify=CENTER)
         self.image_label.pack(padx=2, pady=2)
-        self.add_photo_button = ttk.Button(self.photo_frame, text='Завантажити фото')
-        self.add_photo_button.pack(padx=2, pady=5)
 
     def initialize_frames(self):
         self.firstSection = LabelFrame(self.mainScrolledFrame.interior, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
@@ -466,6 +464,9 @@ class AddNewWorkerView:
 
         self.cancelButton = ttk.Button(self.mainScrolledFrame.interior, text="Відмінити та закрити вкладку")
         self.cancelButton.pack(fill=BOTH, padx=5, pady=5)
+
+        self.add_photo_button = ttk.Button(self.photo_and_button_frame, text='Завантажити фото')
+        self.add_photo_button.pack(padx=2, pady=5)
 
     def initialize_tab(self):
         self.notebook.insert("end", self.mainFrame, text='Додати нового робітника')

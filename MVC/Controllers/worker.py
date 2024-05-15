@@ -28,7 +28,7 @@ class WorkerController:
         self.worker.name_text.insert(1.0, f"{info[1]} {info[2]} {info[3]}")
         self.worker.birth_date_text.insert(1.0, f"{info[4]}")
 
-        img = Image.open(BytesIO(info[5]))
+        img = Image.open(BytesIO(info[5])).resize((100, 100), Image.BILINEAR)
         self.worker.photo = ImageTk.PhotoImage(img)
         self.worker.photo_label.config(image=self.worker.photo)
 

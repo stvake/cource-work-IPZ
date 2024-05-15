@@ -67,7 +67,6 @@ class UnitWorkersController(AllWorkersController):
 
             self._get_all_workers()
 
-            # self.view.tabs['Units'].units_table.delete(*self.view.tabs['Units'].units_table.get_children())
             self.main_controller.all_units_controller.refresh()
 
             add_worker_win.destroy()

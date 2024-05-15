@@ -32,6 +32,9 @@ class AllWorkersController:
             )
             self.workers_controllers[f'{i}'] = WorkerController(self, self.model, self.view, i)
 
+    def refresh(self):
+        self._get_all_workers()
+
     def sort_by(self, sort_by):
         self.view.worker_tabs.clear()
         self.workers_controllers.clear()
