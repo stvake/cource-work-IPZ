@@ -21,7 +21,8 @@ class FullWorkerInfoController:
         self.get_info_from_db(self.worker_id)
 
     def add_photo(self):
-        p = askopenfilename()
+        filetypes = [("Image Files", "*.jpg;*.jpeg;*.png;*.gif")]
+        p = askopenfilename(filetypes=filetypes)
         if len(p) != 0:
             self.photo_path = p
             self.full_worker_info.photo = ImageTk.PhotoImage(Image.open(p).resize((100, 100), Image.BILINEAR))

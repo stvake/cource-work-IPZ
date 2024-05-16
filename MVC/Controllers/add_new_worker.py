@@ -1,6 +1,7 @@
 from tkinter.filedialog import askopenfilename
 from tkinter import *
 from tkinter.messagebox import showwarning
+from PIL import Image, ImageTk
 
 from MVC.Controllers.worker import WorkerController
 
@@ -21,10 +22,11 @@ class AddNewWorkerController:
         self.ready_to_save = 1
 
     def add_photo(self):
-        p = askopenfilename()
+        filetypes = [("Image Files", "*.jpg;*.jpeg;*.png;*.gif")]
+        p = askopenfilename(filetypes=filetypes)
         if len(p) != 0:
             self.photo_path = p
-            self.tab.photo = PhotoImage(file=p)
+            self.tab.photo = ImageTk.PhotoImage(Image.open(p).resize((100, 100), Image.BILINEAR))
             self.tab.image_label.config(text='', image=self.tab.photo)
 
     def save_worker(self):
