@@ -1,7 +1,7 @@
 from tkinter import *
 import tkinter.ttk as ttk
-from MVC.Views.vertical_scrolled_frame import VerticalScrolledFrame
-from MVC.Views.combobox_table import ComboboxTable
+from CustomWidgets.vertical_scrolled_frame import VerticalScrolledFrame
+from CustomWidgets.combobox_table import ComboboxTable
 
 
 class UnitProjectsView:

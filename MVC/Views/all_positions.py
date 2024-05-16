@@ -1,7 +1,7 @@
 from tkinter import *
 import tkinter.ttk as ttk
-from MVC.Views.vertical_scrolled_frame import VerticalScrolledFrame
-from MVC.Views.editable_table import EditableTable
+from CustomWidgets.vertical_scrolled_frame import VerticalScrolledFrame
+from CustomWidgets.editable_table import EditableTable
 
 
 class AllPositionsView:

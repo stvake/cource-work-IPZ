@@ -1,6 +1,6 @@
 from tkinter import *
 import tkinter.ttk as ttk
-from MVC.Views.vertical_scrolled_frame import VerticalScrolledFrame
+from CustomWidgets.vertical_scrolled_frame import VerticalScrolledFrame
 
 
 class AllWorkersView:

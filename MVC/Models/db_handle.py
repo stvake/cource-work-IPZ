@@ -58,6 +58,8 @@ class HandleDataBaseModel:
     def update_info(self, worker_id, info, mil_info):
         try:
             self.connection.execute("begin transaction")
+            self.cursor.execute(f"select unit_name from Workers where id = {worker_id}")
+            unit_name = self.cursor.fetchone()[0]
             self.cursor.execute(f"delete from Workers where id = {worker_id}")
             self.cursor.execute(f"delete from FullInfo where worker_id = {worker_id}")
             self.cursor.execute(f"delete from Military where worker_id = {worker_id}")
@@ -66,6 +68,7 @@ class HandleDataBaseModel:
                                 f"values {tuple([worker_id] + info[0:4])}")
             self.cursor.execute(f"update Workers set Photo = ? where id={worker_id}",
                                 (sqlite3.Binary(info[4]),))
+            self.cursor.execute(f"update Workers set unit_name = '{unit_name}' where id={worker_id}")
             self.cursor.execute(f"insert into FullInfo (worker_id, Nationality, Education, LastWork, LastWorkPost, "
                                 f"WorkExperienceDate, WorkExperienceDays, WorkExperienceMonths, WorkExperienceYears, "
                                 f"WorkBonusDays, WorkBonusMonths, WorkBonusYears, OldFireDate, OldFireReason, Pension, "

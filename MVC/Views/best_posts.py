@@ -1,6 +1,5 @@
-from tkinter import *
 import tkinter.ttk as ttk
-from MVC.Views.editable_table import EditableTable
+from CustomWidgets.editable_table import EditableTable
 
 
 class BestPostsView:

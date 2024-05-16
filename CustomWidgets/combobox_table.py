@@ -1,4 +1,4 @@
-from MVC.Views.editable_table import EditableTable
+from CustomWidgets.editable_table import EditableTable
 import tkinter.ttk as ttk
 
 
