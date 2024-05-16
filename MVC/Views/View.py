@@ -3,7 +3,6 @@ from MVC.Views.home import HomeView
 from MVC.Views.all_workers import AllWorkersView
 from MVC.Views.all_units import AllUnitsView
 from MVC.Views.all_positions import AllPositionsView
-from MVC.Views.search import SearchView
 from MVC.Views.all_projects import AllProjectsView
 from MVC.Views.worker import WorkerView
 from MVC.Views.full_worker_info import FullWorkerInfoView
@@ -36,8 +35,6 @@ class View:
             return AddNewWorkerView(self.app.notebook)
         elif args[0] == 'Positions':
             return AllPositionsView(self.app.notebook)
-        elif args[0] == 'Search':
-            return SearchView(self.app.notebook)
         elif args[0] == 'AllProjects':
             return AllProjectsView(self.app.notebook)
         elif args[0] == 'BestPost':

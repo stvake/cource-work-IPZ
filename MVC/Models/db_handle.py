@@ -400,7 +400,6 @@ class HandleDataBaseModel:
 
     def set_unit_projects(self, projects, unit_name):
         try:
-            # print(f"update Units set projects_id='{projects}' where Name='{unit_name}'")
             self.connection.execute("begin transaction")
             self.cursor.execute(f"update Units set projects_id='{projects}' where Name='{unit_name}'")
             self.connection.commit()

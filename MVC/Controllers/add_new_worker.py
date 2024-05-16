@@ -3,8 +3,6 @@ from tkinter import *
 from tkinter.messagebox import showwarning
 from PIL import Image, ImageTk
 
-from MVC.Controllers.worker import WorkerController
-
 
 class AddNewWorkerController:
     def __init__(self, main_controller, model, view):
@@ -18,7 +16,6 @@ class AddNewWorkerController:
         self.tab.cancelButton.config(command=self.cancel)
         self.photo_path = None
         self.id = None
-        self.workers_controllers = {}
         self.ready_to_save = 1
 
     def add_photo(self):
@@ -28,6 +25,11 @@ class AddNewWorkerController:
             self.photo_path = p
             self.tab.photo = ImageTk.PhotoImage(Image.open(p).resize((100, 100), Image.BILINEAR))
             self.tab.image_label.config(text='', image=self.tab.photo)
+
+    def refresh_workers(self):
+        for i in self.view.tabs['Workers'].frame.interior.winfo_children():
+            i.destroy()
+        self.main_controller.all_workers_controller.refresh()
 
     def save_worker(self):
         if not self.photo_path:
@@ -95,15 +97,7 @@ class AddNewWorkerController:
                     self.ready_to_save = 1
 
             if self.ready_to_save:
-                self.view.create_tab(
-                    'Worker',
-                    self.id,
-                    self.id,
-                    self.view.tabs['Workers'].frame.interior,
-                    self.view.tabs['Workers'].notebook
-                )
-                self.main_controller.all_workers_controller.workers_controllers[self.id] = (
-                    WorkerController(self.main_controller.all_workers_controller, self.model, self.view, self.id))
+                self.refresh_workers()
                 self.tab.notebook.forget(self.tab.mainFrame)
 
     def cancel(self):

@@ -4,7 +4,6 @@ from MVC.Controllers.all_positions import PositionsController
 from MVC.Controllers.all_units import UnitsController
 from MVC.Controllers.all_workers import AllWorkersController
 from MVC.Controllers.all_projects import AllProjectsController
-from MVC.Controllers.search import SearchController
 from MVC.Controllers.add_new_worker import AddNewWorkerController
 
 
@@ -20,7 +19,6 @@ class Controller:
         self.all_units_controller = None
         self.all_workers_controller = None
         self.all_projects = None
-        self.search_controller = None
 
     def create_all_positions_controller(self):
         self.all_positions_controller = PositionsController(self.model, self.view)
@@ -36,9 +34,6 @@ class Controller:
 
     def create_all_projects_controller(self):
         self.all_projects = AllProjectsController(self, self.model, self.view)
-
-    def create_search_controller(self):
-        self.search_controller = SearchController(self, self.model, self.view)
 
     def start(self):
         self.view.start_app()

@@ -11,7 +11,6 @@ class HomeController:
         self.tab.listOfAllUnits_Button.config(command=self.open_units)
         self.tab.listOfAllProjects_Button.config(command=self.open_projects)
         self.tab.position_Button.config(command=self.open_positions)
-        self.tab.search_Button.config(command=self.open_search)
 
     def open_workers(self):
         self.main_controller.create_all_workers_controller()
@@ -28,7 +27,3 @@ class HomeController:
     def open_positions(self):
         self.main_controller.create_all_positions_controller()
         self.view.tabs['Positions'].add_tab()
-
-    def open_search(self):
-        self.main_controller.create_search_controller()
-        self.view.tabs['Search'].add_tab()
