@@ -11,6 +11,7 @@ from MVC.Views.worker_projects import WorkerProjectView
 from MVC.Views.unit_projects import UnitProjectsView
 from MVC.Views.unit_workers import UnitWorkers
 from MVC.Views.best_posts import BestPostsView
+from MVC.Views.best_worker import BestWorkerView
 
 
 class View:
@@ -39,6 +40,8 @@ class View:
             return AllProjectsView(self.app.notebook)
         elif args[0] == 'BestPost':
             return BestPostsView(self.app.notebook)
+        elif args[0] == 'BestWorker':
+            return BestWorkerView(self.app.notebook, *args[1:])
         elif args[0] == 'Worker':
             self.worker_tabs[args[1]] = WorkerView(*args[2:])
         elif args[0] == 'FullWorkerInfo':

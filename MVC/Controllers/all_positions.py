@@ -1,5 +1,6 @@
 # from MVC.Controllers.full_worker_info import FullWorkerInfoController
 from MVC.Controllers.best_posts import BestPostsController
+from MVC.Controllers.best_worker import BestWorkerController
 
 
 class PositionsController:
@@ -15,9 +16,11 @@ class PositionsController:
         self.worker = None
         self.worker_id = None
         self.best_post_controller = None
+        self.best_worker_controller = None
+        self.post_name = None
         self.full_worker_info = {}
 
-        self.post_id = int()            #Змінеш коли зробиш таблицю в БД
+        self.post_id = int()            # Змінеш коли зробиш таблицю в БД
         self.get_posts_from_db()
 
     def get_posts_from_db(self):
@@ -32,16 +35,11 @@ class PositionsController:
     def close_tab_without_save(self):
         self.tab.notebook.forget(self.tab.mainFrame)
 
-    def find_best_worker(self, post_id):            #заглушка
-        self.worker_id = 0
-        return self.worker_id
-
     def open_best_worker_info(self):
-        self.worker_id = self.find_best_worker(self.post_id)
-        self.worker = self.view.worker_tabs[self.worker_id]
-        # self.view.create_tab(self.worker_id, 'FullWorkerInfo', self.worker.notebook, self.worker)
-        # self.full_worker_info[self.worker_id] = FullWorkerInfoController(self.model, self.view, self.worker_id)
+        selected_iid = self.tab.post_table.focus()
+        if selected_iid:
+            self.post_name = self.tab.post_table.item(selected_iid).get('values')[0]
+            self.best_worker_controller = BestWorkerController(self.model, self.view, self.post_name)
 
     def open_best_posts(self):
         self.best_post_controller = BestPostsController(self.model, self.view)
-
