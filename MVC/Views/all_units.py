@@ -34,11 +34,11 @@ class AllUnitsView:
                                                   text="Відкрити вкладку всіх проектів вибраного підрозділу")
         self.openUnitProjects_Button.pack(fill=BOTH, padx=5, pady=5)
 
-        self.closeTab_Button = ttk.Button(self.frame, text="Зберегти та закрити вкладку")
-        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
+        self.saveTab_Button = ttk.Button(self.frame, text="Зберегти зміни")
+        self.saveTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
-        self.closeTabWithoutSave_Button = ttk.Button(self.frame, text="Закрити без збереження")
-        self.closeTabWithoutSave_Button.pack(fill=BOTH, padx=5, pady=5)
+        self.closeTab_Button = ttk.Button(self.frame, text="Закрити вкладку")
+        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text="Список підрозділів")

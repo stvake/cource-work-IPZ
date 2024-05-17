@@ -52,8 +52,8 @@ class UnitWorkersController(AllWorkersController):
         def on_ok():
             rows = [(line, workers_table.item(line).get('values')) for line in workers_table.selection()]
             for i in rows:
-                if 'знаходиться у підрозділі' in rows[1][1]:
-                    ans = askyesno("Увага", f"{rows[1][0]} вже знаходиться в "
+                if 'знаходиться у підрозділі' in i[1][1]:
+                    ans = askyesno("Увага", f"{i[1][0]} вже знаходиться в "
                                             f"підрозділі. Бажаєте змінити його підрозділ?")
                     if ans:
                         self.model.set_worker_unit(not_unit_workers_ids[int(i[0][1:])-1], self.unit_name)

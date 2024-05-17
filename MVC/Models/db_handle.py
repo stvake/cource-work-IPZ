@@ -326,10 +326,14 @@ class HandleDataBaseModel:
                 for i in range(len(units)-len(projects)):
                     projects.append(None)
 
+            self.cursor.execute("select Name from Units")
+            old_units = [i[0] for i in self.cursor.fetchall()]
+
             self.cursor.execute(f"delete from Units")
-            for i in zip(units, projects):
+            for i in zip(old_units, units, projects):
                 self.cursor.execute(f"insert into Units values (?, ?, ?, ?, ?, ?)",
-                                    (i[0], None, None, None, None, i[1]))
+                                    (i[1], None, None, None, None, i[2]))
+                self.cursor.execute(f"update Workers set unit_name = '{i[1]}' where unit_name = '{i[0]}'")
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")

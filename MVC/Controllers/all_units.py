@@ -12,8 +12,8 @@ class UnitsController:
         self.unit_projects = {}
         self.unit_workers = {}
         self.tab.sortByCost_Button.config(command=self._sort_by_cost)
+        self.tab.saveTab_Button.config(command=self._save)
         self.tab.closeTab_Button.config(command=self._close_tab)
-        self.tab.closeTabWithoutSave_Button.config(command=self._close_tab_without_save)
         self.tab.openUnitWorkers_Button.config(command=self._open_unit_workers)
         self.tab.openUnitProjects_Button.config(command=self._open_unit_projects)
         self.sort_count = 0
@@ -54,12 +54,10 @@ class UnitsController:
             self.view.create_tab('UnitProjects', unit_name, self.tab.notebook, unit_name)
             self.unit_projects[unit_name] = UnitProjectsController(self, unit_name, self.model, self.view)
 
-    def _close_tab(self):
-        units = [self.tab.units_table.item(line).get('values')[0] for line in self.tab.units_table.get_children()]
+    def _save(self):
+        units = [i[0] for i in self.tab.units_table.get_all_rows()]
         self.model.update_units(units)
-        self.tab.notebook.forget(self.tab.mainFrame)
-        self.main_controller.all_units_controller = None
 
-    def _close_tab_without_save(self):
+    def _close_tab(self):
         self.tab.notebook.forget(self.tab.mainFrame)
         self.main_controller.all_units_controller = None
