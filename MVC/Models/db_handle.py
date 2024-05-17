@@ -364,7 +364,7 @@ class HandleDataBaseModel:
                 self.cursor.execute(f"select id from Workers")
                 workers_id = [j[0] for j in self.cursor.fetchall()]
                 for j in workers_id:
-                    self.cursor.execute(f"select Date, Name from Appointment where worker_id = {j}")
+                    self.cursor.execute(f"select Date, ProfName from Appointment where worker_id = {j}")
                     help = self.cursor.fetchall()
                     sorted_help = sorted(help, key=lambda x: x[0])
                     if sorted_help[-1][1] == names[i][0]:
@@ -413,3 +413,65 @@ class HandleDataBaseModel:
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+
+    def get_work_hours(self, post_name):
+        try:
+            self.connection.execute("begin transaction")
+            rows = []
+            help1 = []
+            help2 = []
+            now = datetime.datetime.now()
+
+            self.cursor.execute(f"select id from Workers")
+            workers_id = [j[0] for j in self.cursor.fetchall()]
+            for j in workers_id:
+                self.cursor.execute(f"select worker_id, Date, ProfName from Appointment where worker_id = {j}")
+                help = self.cursor.fetchall()
+                sorted_help = sorted(help, key=lambda x: x[1])
+                if sorted_help[-1][2] == post_name:
+                    rows.append(sorted_help[-1])
+            for i in range(len(rows)):
+                for j in range(3):
+                    help1.append(rows[i][j])
+                help2.append(help1)
+                help1 = []
+                help2[i][1] = (now.date() - datetime.datetime.strptime(rows[i][1], "%d-%m-%Y").date()).days
+
+            self.connection.commit()
+            return help2
+
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()
+
+    def get_projects_cost(self):
+        try:
+            self.connection.execute("begin transaction")
+            rows = []
+            workers = []
+            collaborators = []
+            projects_cost = {}
+
+            self.cursor.execute(f"select LastName, FirstName from Workers")
+            workers = [" ".join(j) for j in self.cursor.fetchall()]
+
+            for i in workers:
+                projects_cost[i] = 0
+
+            self.cursor.execute(f"select Cost, Collaborators from WorkersProjects")
+            collaborators = self.cursor.fetchall()
+
+            for i in collaborators:
+                for j in i[1].split(", "):
+                    projects_cost[j] += i[0]
+
+            self.connection.commit()
+            return projects_cost
+
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()
+
+    def get_all_worker(self):
+        self.cursor.execute(f"select id, Lastname, FirstName from Workers")
+        return [(j[0], " ".join(j[1:])) for j in self.cursor.fetchall()]
