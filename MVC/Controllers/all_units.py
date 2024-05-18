@@ -1,6 +1,8 @@
 from MVC.Controllers.unit_projects import UnitProjectsController
 from MVC.Controllers.unit_workers import UnitWorkersController
 
+from tkinter import TclError
+
 
 class UnitsController:
     def __init__(self, main_controller, model, view):
@@ -20,26 +22,37 @@ class UnitsController:
         self._get_info_from_db()
 
     def _get_info_from_db(self):
-        self.rows = self.model.get_units()
-        for row in self.rows:
+        self.units = self.model.get_units()
+        for row in self.units:
             self.tab.units_table.insert('', 'end', values=tuple(row)[1][:-1])
+        self.rows = self.tab.units_table.get_all_rows()
+        self.rows_iid = self.tab.units_table.get_children()
 
     def refresh(self):
         self.tab.recreate_table()
         self._get_info_from_db()
 
-    def _sort_by_cost(self):
-        items = [self.tab.units_table.item(line).get('values') for line in self.tab.units_table.get_children()]
-        if self.sort_count == 0:
-            sorted_items = sorted(items, key=lambda item: item[-1])
-            self.sort_count = 1
+    def _sort_by_cost(self, reset=False):
+        self.sorted_items = []
+        if reset:
+            self.sorted_items = self.rows.copy()
         else:
-            sorted_items = sorted(items, key=lambda item: item[-1], reverse=True)
-            self.sort_count = 0
+            items = self.tab.units_table.get_all_rows()
+            if self.sort_count == 0:
+                self.sorted_items = sorted(items, key=lambda item: item[-1])
+                self.sort_count = 1
+            elif self.sort_count == 1:
+                self.sorted_items = sorted(items, key=lambda item: item[-1], reverse=True)
+                self.sort_count = 2
+            else:
+                self.sort_count = 0
+                self._sort_by_cost(reset=True)
 
-        rows_iid = self.tab.units_table.get_children()
-        for i in range(len(rows_iid)):
-            self.tab.units_table.item(rows_iid[i], values=sorted_items[i])
+        for i in range(len(self.rows_iid)):
+            try:
+                self.tab.units_table.item(self.rows_iid[i], values=self.sorted_items[i])
+            except TclError:
+                pass
 
     def _open_unit_workers(self):
         selected_iid = self.tab.units_table.focus()
@@ -55,7 +68,9 @@ class UnitsController:
             self.unit_projects[unit_name] = UnitProjectsController(self, unit_name, self.model, self.view)
 
     def _save(self):
-        old_units = [(i[0], i[1][0]) for i in self.rows]
+        self._sort_by_cost(reset=True)
+
+        old_units = [(i[0], i[1][0]) for i in self.units]
 
         units = [i[0] for i in self.tab.units_table.get_all_rows()]
 
@@ -68,6 +83,8 @@ class UnitsController:
         new_units = [(old_units[int(ids[i][1:])-1][0], units[i]) for i in range(len(units))]
 
         self.model.update_units(old_units, new_units, ids)
+
+        self.refresh()
 
     def _close_tab(self):
         self.tab.notebook.forget(self.tab.mainFrame)
