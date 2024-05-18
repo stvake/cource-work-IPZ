@@ -172,8 +172,17 @@ class HandleDataBaseModel:
             self.connection.rollback()
 
     def get_worker_projects(self, worker_id):
-        self.cursor.execute(f"select * from WorkersProjects where MainWorker_id = {worker_id}")
-        return self.cursor.fetchall()
+        self.cursor.execute("select id, Collaborators from WorkersProjects")
+        c = self.cursor.fetchall()
+        c = [(i[0], [self.get_worker_id(*e.split()) for e in [j.strip() for j in i[1].split(',')]]) for i in c]
+
+        projects = []
+        for i in c:
+            if worker_id in i[1]:
+                self.cursor.execute(f"select * from WorkersProjects where id = {i[0]}")
+                projects.append(self.cursor.fetchone())
+
+        return projects
 
     def get_all_projects(self):
         self.cursor.execute(f"select * from WorkersProjects order by id")

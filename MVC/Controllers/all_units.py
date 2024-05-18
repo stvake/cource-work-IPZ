@@ -71,9 +71,7 @@ class UnitsController:
         self._sort_by_cost(reset=True)
 
         old_units = [(i[0], i[1][0]) for i in self.units]
-
         units = [i[0] for i in self.tab.units_table.get_all_rows()]
-
         ids = self.tab.units_table.get_children()
 
         if int(ids[-1][1:], 16) != len(old_units):
@@ -83,7 +81,6 @@ class UnitsController:
         new_units = [(old_units[int(ids[i][1:])-1][0], units[i]) for i in range(len(units))]
 
         self.model.update_units(old_units, new_units, ids)
-
         self.refresh()
 
     def _close_tab(self):
