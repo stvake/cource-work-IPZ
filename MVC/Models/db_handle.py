@@ -231,12 +231,19 @@ class HandleDataBaseModel:
             names = self.cursor.fetchall()
             for i in range(len(names)):
                 row = [names[i][0]]
+
+                self.cursor.execute(f"select id from Workers where unit_name = '{names[i][0]}'")
+                try:
+                    ids = [i[0] for i in self.cursor.fetchall()]
+                except TypeError:
+                    ids = []
+
                 self.cursor.execute(f"select count(*) from Workers where unit_name = '{names[i][0]}'")
                 row.append(self.cursor.fetchone()[0])
 
-                self.cursor.execute(f"select projects_id from Units where name = '{names[i][0]}'")
                 k = 0
                 cost = 0
+                self.cursor.execute(f"select projects_id from Units where name = '{names[i][0]}'")
                 projects = self.cursor.fetchone()[0]
 
                 if projects:
@@ -255,13 +262,13 @@ class HandleDataBaseModel:
                 row.append(len(projects.split(',')) if projects else 0)
                 row.append(cost)
                 row.append(projects if projects else None)
-                rows.append(row)
+                rows.append((ids, row))
 
             self.cursor.execute(f"delete from Units")
             for row in rows:
                 self.cursor.execute(f'insert into Units(Name, WorkersQuantity, UnfinishedProjectsQuantity, '
                                     f'AllProjectsQuantity, TotalCost, projects_id) values (?, ?, ?, ?, ?, ?)',
-                                    tuple(row))
+                                    tuple(row[1]))
             self.connection.commit()
             return rows
         except sqlite3.Error as e:
@@ -316,24 +323,36 @@ class HandleDataBaseModel:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
 
-    def update_units(self, units):
+    def update_units(self, old_units, units, ids):
         try:
             self.connection.execute("begin transaction")
 
             self.cursor.execute("select projects_id from Units")
             projects = [i[0] for i in self.cursor.fetchall()]
-            if len(projects) != len(units):
-                for i in range(len(units)-len(projects)):
+            if len(projects) < int(ids[-1][1:], 16):
+                for i in range(int(ids[-1][1:], 16)-len(projects)):
                     projects.append(None)
 
-            self.cursor.execute("select Name from Units")
-            old_units = [i[0] for i in self.cursor.fetchall()]
+            indexes = [int(i[1:])-1 for i in ids]
+
+            projects = [projects[i] for i in indexes]
+
+            excluded_elements = [old_units[i] for i in range(len(old_units))
+                                 if i not in indexes and old_units[i] != ([], None)]
 
             self.cursor.execute(f"delete from Units")
-            for i in zip(old_units, units, projects):
+
+            for i in zip([old_units[j] for j in indexes], units, projects):
                 self.cursor.execute(f"insert into Units values (?, ?, ?, ?, ?, ?)",
-                                    (i[1], None, None, None, None, i[2]))
-                self.cursor.execute(f"update Workers set unit_name = '{i[1]}' where unit_name = '{i[0]}'")
+                                    (i[1][1], None, None, None, None, i[2]))
+
+                for j in i[1][0]:
+                    self.cursor.execute(f"update Workers set unit_name = '{i[1][1]}' where id = {j}")
+
+                for j in excluded_elements:
+                    for e in j[0]:
+                        self.cursor.execute(f"update Workers set unit_name = null where id={e}")
+
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")

@@ -18,15 +18,15 @@ class AddNewWorkerView:
         self.entries_general = []
         self.entries_secondSection = []
 
-        self.initialize_photo()
-        self.initialize_frames()
-        self.initialize_labels()
-        self.initialize_treeviews()
-        self.initialize_entries()
-        self.initialize_buttons()
-        self.initialize_tab()
+        self._initialize_photo()
+        self._initialize_frames()
+        self._initialize_labels()
+        self._initialize_treeviews()
+        self._initialize_entries()
+        self._initialize_buttons()
+        self._initialize_tab()
 
-    def initialize_photo(self):
+    def _initialize_photo(self):
         self.photo_and_button_frame = ttk.Frame(self.mainFrame)
         self.photo_and_button_frame.pack(side=LEFT, anchor=NW, padx=5, pady=10)
         self.photo_frame = ttk.Frame(self.photo_and_button_frame, relief=GROOVE)
@@ -35,7 +35,7 @@ class AddNewWorkerView:
                                      font=('Arial', 14), justify=CENTER)
         self.image_label.pack(padx=2, pady=2)
 
-    def initialize_frames(self):
+    def _initialize_frames(self):
         self.firstSection = LabelFrame(self.mainScrolledFrame.interior, text="І. ЗАГАЛЬНІ ВІДОМОСТІ")
         self.firstSection.pack(fill=BOTH, padx=5, pady=5)
         self.secondSection = LabelFrame(self.mainScrolledFrame.interior, text="ІІ. ВІДОМОСТІ ПРО ВІЙСЬКОВИЙ ОБЛІК")
@@ -51,7 +51,7 @@ class AddNewWorkerView:
         self.sixthSection = Frame(self.mainScrolledFrame.interior)
         self.sixthSection.pack(fill=BOTH, padx=5, pady=5)
 
-    def initialize_labels(self):
+    def _initialize_labels(self):
         self.generalInformation = ttk.Label()
         self.lastName_Label = ttk.Label(self.firstSection, text="Прізвище: ")
         self.lastName_Label.grid(row=0, column=0, sticky=W, padx=5, pady=5)
@@ -192,7 +192,7 @@ class AddNewWorkerView:
         self.Date_Label = ttk.Label(self.sixthSection, text="(дата)")
         self.Date_Label.grid(row=6, column=3, padx=5, pady=(0, 5))
 
-    def initialize_treeviews(self):
+    def _initialize_treeviews(self):
         self.education_table1 = EditableTable(self.firstSection, columns=('Name', 'Diploma', 'year'), show='headings',
                                               height=10)
         self.education_table1.heading('Name', text='Назва освітнього закладу')
@@ -283,7 +283,7 @@ class AddNewWorkerView:
         self.vacation_table.grid(row=0, column=0, columnspan=6, padx=5, pady=5)
         self.tables_other.append(self.vacation_table)
 
-    def initialize_entries(self):
+    def _initialize_entries(self):
         self.lastName_Entry = ttk.Entry(self.firstSection, width=15, justify='center')
         self.lastName_Entry.grid(row=0, column=1, sticky=W, padx=5, pady=5)
         self.entries_general.append(self.lastName_Entry)
@@ -458,7 +458,7 @@ class AddNewWorkerView:
         self.workerYear_Entry.grid(row=5, column=4, padx=(0, 5), pady=5)
         self.entries_general.append(self.workerYear_Entry)
 
-    def initialize_buttons(self):
+    def _initialize_buttons(self):
         self.saveButton = ttk.Button(self.mainScrolledFrame.interior, text="Зберегти та закрити вкладку")
         self.saveButton.pack(fill=BOTH, padx=5, pady=5)
 
@@ -468,6 +468,6 @@ class AddNewWorkerView:
         self.add_photo_button = ttk.Button(self.photo_and_button_frame, text='Завантажити фото')
         self.add_photo_button.pack(padx=2, pady=5)
 
-    def initialize_tab(self):
+    def _initialize_tab(self):
         self.notebook.insert("end", self.mainFrame, text='Додати нового робітника')
         self.notebook.select(self.mainFrame)

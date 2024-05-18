@@ -20,12 +20,12 @@ class UnitsController:
         self._get_info_from_db()
 
     def _get_info_from_db(self):
-        rows = self.model.get_units()
-        for row in rows:
-            self.tab.units_table.insert('', 'end', values=tuple(row)[:-1])
+        self.rows = self.model.get_units()
+        for row in self.rows:
+            self.tab.units_table.insert('', 'end', values=tuple(row)[1][:-1])
 
     def refresh(self):
-        self.tab.units_table.delete(*self.tab.units_table.get_children())
+        self.tab.recreate_table()
         self._get_info_from_db()
 
     def _sort_by_cost(self):
@@ -55,8 +55,19 @@ class UnitsController:
             self.unit_projects[unit_name] = UnitProjectsController(self, unit_name, self.model, self.view)
 
     def _save(self):
+        old_units = [(i[0], i[1][0]) for i in self.rows]
+
         units = [i[0] for i in self.tab.units_table.get_all_rows()]
-        self.model.update_units(units)
+
+        ids = self.tab.units_table.get_children()
+
+        if int(ids[-1][1:], 16) != len(old_units):
+            for i in range(abs(int(ids[-1][1:], 16)-len(old_units))):
+                old_units.append(([], None))
+
+        new_units = [(old_units[int(ids[i][1:])-1][0], units[i]) for i in range(len(units))]
+
+        self.model.update_units(old_units, new_units, ids)
 
     def _close_tab(self):
         self.tab.notebook.forget(self.tab.mainFrame)
