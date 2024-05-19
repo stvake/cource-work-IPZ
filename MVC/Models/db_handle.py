@@ -14,46 +14,60 @@ class HandleDataBaseModel:
         info = list(self.cursor.fetchone())[:-1]
         self.cursor.execute(f"SELECT * FROM Appointment WHERE worker_id = {worker_id} ORDER BY Date DESC")
         info.append(self.cursor.fetchall()[0][3])
+        self.cursor.execute(f"SELECT Salary_in_one_worker FROM Posts WHERE Post_name = '{info[6]}'")
+        info.append(self.cursor.fetchone()[0])
         info = tuple(info)
         return info
 
     def get_worker_full_info(self, worker_id):
-        output = []
+        try:
+            self.connection.execute("begin transaction")
+            output = []
 
-        self.cursor.execute(f""" SELECT * FROM Workers JOIN FullInfo ON
-        Workers.id = FullInfo.worker_id WHERE Workers.id = {worker_id}""")
+            self.cursor.execute(f""" SELECT * FROM Workers JOIN FullInfo ON
+            Workers.id = FullInfo.worker_id WHERE Workers.id = {worker_id}""")
 
-        info = self.cursor.fetchall()[0]
-        temp = []
-        for el in range(len(info)):
-            if el != 0 and el != 6 and el != 7:
-                temp.append(info[el])
-        output.append(temp)
+            info = self.cursor.fetchall()[0]
+            temp = []
+            for el in range(len(info)):
+                if el != 0 and el != 6 and el != 7:
+                    temp.append(info[el])
+            output.append(temp)
 
-        self.cursor.execute(f"""SELECT * FROM Education WHERE Education.worker_id = {worker_id}""")
-        output.append(self.cursor.fetchall())
+            self.cursor.execute(f"""SELECT * FROM Education WHERE Education.worker_id = {worker_id}""")
+            output.append(self.cursor.fetchall())
 
-        self.cursor.execute(
-            f"""SELECT * FROM PostGraduationEducation WHERE PostGraduationEducation.worker_id = {worker_id}""")
-        output.append(self.cursor.fetchall())
+            self.cursor.execute(
+                f"""SELECT * FROM PostGraduationEducation WHERE PostGraduationEducation.worker_id = {worker_id}""")
+            output.append(self.cursor.fetchall())
 
-        self.cursor.execute(f"""SELECT * FROM Family WHERE Family.worker_id = {worker_id}""")
-        output.append(self.cursor.fetchall())
+            self.cursor.execute(f"""SELECT * FROM Family WHERE Family.worker_id = {worker_id}""")
+            output.append(self.cursor.fetchall())
 
-        self.cursor.execute(f"""SELECT * FROM Military WHERE Military.worker_id = {worker_id}""")
-        output.append(self.cursor.fetchall()[0][1:])
+            self.cursor.execute(f"""SELECT * FROM Military WHERE Military.worker_id = {worker_id}""")
+            output.append(self.cursor.fetchall()[0][1:])
 
-        self.cursor.execute(f"""SELECT * FROM ProfessionalEducation 
-                                WHERE ProfessionalEducation.worker_id = {worker_id}""")
-        output.append(self.cursor.fetchall())
+            self.cursor.execute(f"""SELECT * FROM ProfessionalEducation 
+                                    WHERE ProfessionalEducation.worker_id = {worker_id}""")
+            output.append(self.cursor.fetchall())
 
-        self.cursor.execute(f"""SELECT * FROM Appointment WHERE Appointment.worker_id = {worker_id}""")
-        output.append(self.cursor.fetchall())
+            self.cursor.execute(f"SELECT Appointment.ProfName, Posts.Salary_in_one_worker FROM"
+                                f" Appointment JOIN Posts on Appointment.ProfName = Posts.Post_name")
+            salary = self.cursor.fetchall()
+            for i in salary:
+                self.cursor.execute(f"UPDATE Appointment set Salary = ? WHERE ProfName = ?", (i[1], i[0]))
+            self.connection.commit()
 
-        self.cursor.execute(f"""SELECT * FROM Vacation WHERE Vacation.worker_id = {worker_id}""")
-        output.append(self.cursor.fetchall())
+            self.cursor.execute(f"""SELECT * FROM Appointment WHERE Appointment.worker_id = {worker_id}""")
+            output.append(self.cursor.fetchall())
 
-        return output
+            self.cursor.execute(f"""SELECT * FROM Vacation WHERE Vacation.worker_id = {worker_id}""")
+            output.append(self.cursor.fetchall())
+
+            return output
+        except sqlite3.Error as e:
+            print(f"\033[91m{e}\033[0m")
+            self.connection.rollback()
 
     def update_info(self, worker_id, info, mil_info):
         try:
@@ -443,62 +457,47 @@ class HandleDataBaseModel:
             self.connection.rollback()
 
     def get_work_hours(self, post_name):
-        try:
-            self.connection.execute("begin transaction")
-            rows = []
+        rows = []
+        help1 = []
+        help2 = []
+        now = datetime.datetime.now()
+
+        self.cursor.execute(f"select id from Workers")
+        workers_id = [j[0] for j in self.cursor.fetchall()]
+        for j in workers_id:
+            self.cursor.execute(f"select worker_id, Date, ProfName from Appointment where worker_id = {j}")
+            help = self.cursor.fetchall()
+            sorted_help = sorted(help, key=lambda x: x[1])
+            if sorted_help[-1][2] == post_name:
+                rows.append(sorted_help[-1])
+        for i in range(len(rows)):
+            for j in range(3):
+                help1.append(rows[i][j])
+            help2.append(help1)
             help1 = []
-            help2 = []
-            now = datetime.datetime.now()
+            help2[i][1] = (now.date() - datetime.datetime.strptime(rows[i][1], "%d-%m-%Y").date()).days
 
-            self.cursor.execute(f"select id from Workers")
-            workers_id = [j[0] for j in self.cursor.fetchall()]
-            for j in workers_id:
-                self.cursor.execute(f"select worker_id, Date, ProfName from Appointment where worker_id = {j}")
-                help = self.cursor.fetchall()
-                sorted_help = sorted(help, key=lambda x: x[1])
-                if sorted_help[-1][2] == post_name:
-                    rows.append(sorted_help[-1])
-            for i in range(len(rows)):
-                for j in range(3):
-                    help1.append(rows[i][j])
-                help2.append(help1)
-                help1 = []
-                help2[i][1] = (now.date() - datetime.datetime.strptime(rows[i][1], "%d-%m-%Y").date()).days
-
-            self.connection.commit()
-            return help2
-
-        except sqlite3.Error as e:
-            print(f"\033[91m{e}\033[0m")
-            self.connection.rollback()
+        self.connection.commit()
+        return help2
 
     def get_projects_cost(self):
-        try:
-            self.connection.execute("begin transaction")
-            rows = []
-            workers = []
-            collaborators = []
-            projects_cost = {}
+        projects_cost = {}
 
-            self.cursor.execute(f"select LastName, FirstName from Workers")
-            workers = [" ".join(j) for j in self.cursor.fetchall()]
+        self.cursor.execute(f"select LastName, FirstName from Workers")
+        workers = [" ".join(j) for j in self.cursor.fetchall()]
 
-            for i in workers:
-                projects_cost[i] = 0
+        for i in workers:
+            projects_cost[i] = 0
 
-            self.cursor.execute(f"select Cost, Collaborators from WorkersProjects")
-            collaborators = self.cursor.fetchall()
+        self.cursor.execute(f"select Cost, Collaborators from WorkersProjects")
+        collaborators = self.cursor.fetchall()
 
-            for i in collaborators:
-                for j in i[1].split(", "):
-                    projects_cost[j] += i[0]
+        for i in collaborators:
+            for j in i[1].split(", "):
+                projects_cost[j] += i[0]
 
-            self.connection.commit()
-            return projects_cost
-
-        except sqlite3.Error as e:
-            print(f"\033[91m{e}\033[0m")
-            self.connection.rollback()
+        self.connection.commit()
+        return projects_cost
 
     def get_all_worker(self):
         self.cursor.execute(f"select id, Lastname, FirstName from Workers")

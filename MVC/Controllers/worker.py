@@ -24,6 +24,7 @@ class WorkerController:
         self.worker.name_text.config(state=NORMAL)
         self.worker.birth_date_text.config(state=NORMAL)
         self.worker.post_text.config(state=NORMAL)
+        self.worker.salary_text.config(state=NORMAL)
 
         self.worker.name_text.insert(1.0, f"{info[1]} {info[2]} {info[3]}")
         self.worker.birth_date_text.insert(1.0, f"{info[4]}")
@@ -34,9 +35,12 @@ class WorkerController:
 
         self.worker.post_text.insert(1.0, f"{info[6]}")
 
+        self.worker.salary_text.insert(1.0, f"{info[7]}")
+
         self.worker.name_text.config(state=DISABLED)
         self.worker.birth_date_text.config(state=DISABLED)
         self.worker.post_text.config(state=DISABLED)
+        self.worker.salary_text.config(state=DISABLED)
 
     def more_info(self):
         self.view.create_tab('FullWorkerInfo', self.worker.id, self.worker.notebook, self.worker)
