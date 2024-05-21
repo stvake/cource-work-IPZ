@@ -33,8 +33,8 @@ class AllWorkersController:
                     'Worker',
                     i,
                     i,
-                    self.view.tabs['Workers'].frame.interior,
-                    self.view.tabs['Workers'].notebook
+                    self.tab.frame.interior,
+                    self.tab.notebook
                 )
                 self.workers_controllers[f'{i}'] = WorkerController(self, self.model, self.view, i)
 
@@ -62,8 +62,8 @@ class AllWorkersController:
                     'Worker',
                     i,
                     i,
-                    self.view.tabs['Workers'].frame.interior,
-                    self.view.tabs['Workers'].notebook
+                    self.tab.frame.interior,
+                    self.tab.notebook
                 )
                 self.workers_controllers[f'{i}'] = WorkerController(self, self.model, self.view, i)
 

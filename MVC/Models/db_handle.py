@@ -298,11 +298,9 @@ class HandleDataBaseModel:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
 
-    def get_unit_workers(self, unit_name, sort_by, reverse=False):
-        self.cursor.execute(f"select id, {sort_by} from Workers where unit_name = '{unit_name}'")
-        elements = [i for i in self.cursor.fetchall()]
-        sorted_elements = sorted(elements, key=lambda x: locale.strxfrm(x[1]), reverse=reverse)
-        return [i[0] for i in sorted_elements]
+    def get_unit_workers(self, unit_name):
+        self.cursor.execute(f"select id from Workers where unit_name = '{unit_name}'")
+        return [i[0] for i in self.cursor.fetchall()]
 
     def get_unit_projects(self, unit_name):
         try:
