@@ -81,25 +81,28 @@ class HandleDataBaseModel:
             self.cursor.execute("delete from FullInfo where worker_id = ?", (worker_id,))
             self.cursor.execute("delete from Military where worker_id = ?", (worker_id,))
 
-            self.cursor.execute(f"insert into Workers (id, LastName, FirstName, Patronymic, BirthDate)"
-                                f"values {tuple([worker_id] + info[0:4])}")
+            self.cursor.execute("insert into Workers (id, LastName, FirstName, Patronymic, BirthDate)"
+                                "values (?, ?, ?, ?, ?)", tuple([worker_id] + info[0:4]))
             self.cursor.execute("update Workers set Photo = ? where id= ?",
                                 (sqlite3.Binary(info[4]), worker_id))
-            self.cursor.execute(f"update Workers set unit_name = '{unit_name}' where id={worker_id}")
-            self.cursor.execute(f"insert into FullInfo (worker_id, Nationality, Education, LastWork, LastWorkPost, "
-                                f"WorkExperienceDate, WorkExperienceDays, WorkExperienceMonths, WorkExperienceYears, "
-                                f"WorkBonusDays, WorkBonusMonths, WorkBonusYears, OldFireDate, OldFireReason, Pension, "
-                                f"FamilyStatus, ActualResidence, RegisteredResidence, RegisteredResidence_cont, "
-                                f"PassportSeries, PassportNumber, PassportIssuedBy, PassportIssueDate, AdditionalInfo, "
-                                f"AdditionalInfo_cont, FireDate, FireReason, PersonnelServiceEmployeePost, "
-                                f"PersonnelServiceEmployeeSign, PersonnelServiceEmployeePIB, EmployeePIB, EmployeeSign,"
-                                f"EmployeeFireDate, EmployeeFireYear)"
-                                f"values {tuple([worker_id]+info[5:])}")
-            self.cursor.execute(f"insert into Military (worker_id, AccountingGroup, Suitability, AccountingCategory, "
-                                f"CommitteeNameRegistration, AccountingCategory_cont, CommitteeNameRegistration_cont, "
-                                f"Compound, CommitteeNameLiving, Rank, CommitteeNameLiving_cont, Specialty, "
-                                f"SpecialAccounting)"
-                                f"values {tuple([worker_id] + mil_info)}")
+            self.cursor.execute("update Workers set unit_name = ? where id=?", (unit_name, worker_id))
+
+            self.cursor.execute("insert into FullInfo (worker_id, Nationality, Education, LastWork, LastWorkPost, "
+                                "WorkExperienceDate, WorkExperienceDays, WorkExperienceMonths, WorkExperienceYears, "
+                                "WorkBonusDays, WorkBonusMonths, WorkBonusYears, OldFireDate, OldFireReason, Pension, "
+                                "FamilyStatus, ActualResidence, RegisteredResidence, RegisteredResidence_cont, "
+                                "PassportSeries, PassportNumber, PassportIssuedBy, PassportIssueDate, AdditionalInfo, "
+                                "AdditionalInfo_cont, FireDate, FireReason, PersonnelServiceEmployeePost, "
+                                "PersonnelServiceEmployeeSign, PersonnelServiceEmployeePIB, EmployeePIB, EmployeeSign,"
+                                "EmployeeFireDate, EmployeeFireYear)"
+                                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                "?, ?, ?, ?, ?, ?, ?, ?)", tuple([worker_id]+info[5:]))
+
+            self.cursor.execute("insert into Military (worker_id, AccountingGroup, Suitability, AccountingCategory, "
+                                "CommitteeNameRegistration, AccountingCategory_cont, CommitteeNameRegistration_cont, "
+                                "Compound, CommitteeNameLiving, Rank, CommitteeNameLiving_cont, Specialty, "
+                                "SpecialAccounting)"
+                                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tuple([worker_id] + mil_info))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
@@ -113,41 +116,42 @@ class HandleDataBaseModel:
                 if table_number == 0:
                     self.cursor.execute("DELETE FROM Education WHERE worker_id = ?", (worker_id,))
                     for row in data:
-                        self.cursor.execute(f"INSERT INTO Education ("
-                                            f"worker_id, UniName, Diploma, GraduationYear, "
-                                            f"Specialty, Qualification, EducationForm)"
-                                            f"VALUES {tuple([worker_id] + row)}")
+                        self.cursor.execute("INSERT INTO Education ("
+                                            "worker_id, UniName, Diploma, GraduationYear, "
+                                            "Specialty, Qualification, EducationForm)"
+                                            "VALUES (?, ?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
                 elif table_number == 2:
                     self.cursor.execute("DELETE FROM PostGraduationEducation WHERE worker_id = ?",
                                         (worker_id,))
                     for row in data:
-                        self.cursor.execute(f"INSERT INTO PostGraduationEducation ("
-                                            f"worker_id, PostGradUniName, "
-                                            f"PostGradDiploma, PostGradGradYear, PostGradDegree)"
-                                            f"VALUES {tuple([worker_id] + row)}")
+                        self.cursor.execute("INSERT INTO PostGraduationEducation ("
+                                            "worker_id, PostGradUniName, "
+                                            "PostGradDiploma, PostGradGradYear, PostGradDegree)"
+                                            "VALUES (?, ?, ?, ?, ?)", tuple([worker_id] + row))
                 elif table_number == 3:
                     self.cursor.execute("DELETE FROM Family WHERE worker_id = ?", (worker_id,))
                     for row in data:
-                        self.cursor.execute(f"INSERT INTO Family (worker_id, member, PIB, BirthDate) VALUES "
-                                            f"{tuple([worker_id] + row)}")
+                        self.cursor.execute("INSERT INTO Family (worker_id, member, PIB, BirthDate) VALUES "
+                                            "(?, ?, ?, ?)", tuple([worker_id] + row))
             else:
                 if table_number == 0:
                     self.cursor.execute("DELETE FROM ProfessionalEducation WHERE worker_id = ?",
                                         (worker_id,))
                     for row in data:
                         self.cursor.execute(
-                            f"INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form,Document)"
-                            f"VALUES {tuple([worker_id] + row)}")
+                            "INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form,Document)"
+                            "VALUES (?, ?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
                 elif table_number == 1:
                     self.cursor.execute("DELETE FROM Appointment WHERE worker_id = ?", (worker_id,))
                     for row in data:
-                        self.cursor.execute(f"INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, "
-                                            f"Salary, OrderBasis, Sign) VALUES {tuple([worker_id] + row)}")
+                        self.cursor.execute("INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, "
+                                            "Salary, OrderBasis, Sign) "
+                                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
                 elif table_number == 2:
                     self.cursor.execute("DELETE FROM Vacation WHERE worker_id = ?", (worker_id,))
                     for row in data:
-                        self.cursor.execute(f"INSERT INTO Vacation(worker_id, Type, Period, Start, End, OrderBasis)"
-                                            f"VALUES {tuple([worker_id] + row)}")
+                        self.cursor.execute("INSERT INTO Vacation(worker_id, Type, Period, Start, End, OrderBasis)"
+                                            "VALUES (?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
@@ -159,8 +163,8 @@ class HandleDataBaseModel:
             self.connection.execute("begin transaction")
             self.cursor.execute("select * from Workers order by id desc")
             output = self.cursor.fetchall()[0][0] + 1
-            self.cursor.execute(f"insert into Workers(id, LastName, FirstName, Patronymic, BirthDate, Photo, unit_name)"
-                                f"values ({output}, '', '', '', '', '', '')")
+            self.cursor.execute("insert into Workers(id, LastName, FirstName, Patronymic, BirthDate, Photo, unit_name)"
+                                "values (?, ?, ?, ?, ?, ?, ?)", (output, '', '', '', '', '', ''))
             self.connection.commit()
             return output
         except sqlite3.Error as e:
@@ -197,7 +201,7 @@ class HandleDataBaseModel:
 
         projects = []
         for i in c:
-            if worker_id in i[1]:
+            if int(worker_id) in i[1]:
                 self.cursor.execute("select * from WorkersProjects where id = ?", (i[0],))
                 projects.append(self.cursor.fetchone())
 
@@ -217,9 +221,9 @@ class HandleDataBaseModel:
             self.connection.execute("begin transaction")
             for row in data:
                 self.cursor.execute("delete from WorkersProjects where id=?", (row[0],))
-                self.cursor.execute(f'insert into WorkersProjects(mainworker_id, id, name, cost, '
-                                    f'start, end, collaborators) '
-                                    f'VALUES {tuple([self.get_worker_id(*row[-1].split(",")[0].split())]+row)}')
+                self.cursor.execute('insert into WorkersProjects(mainworker_id, id, name, cost, '
+                                    'start, end, collaborators) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                    tuple([self.get_worker_id(*row[-1].split(",")[0].split())]+row))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
@@ -239,13 +243,13 @@ class HandleDataBaseModel:
                 if k <= old_rows:
                     self.cursor.execute(f'insert into WorkersProjects('
                                         f'mainworker_id, id, name, cost, start, end, collaborators) '
-                                        f'VALUES {tuple(row)}')
+                                        f'VALUES (?, ?, ?, ?, ?, ?, ?)', tuple(row))
                 else:
                     self.cursor.execute(f'select id from WorkersProjects order by id')
                     row[1] = self.cursor.fetchall()[-1][0] + 1
                     self.cursor.execute(f'insert into WorkersProjects('
                                         f'mainworker_id, id, name, cost, start, end, collaborators) '
-                                        f'VALUES {tuple(row)}')
+                                        f'VALUES (?, ?, ?, ?, ?, ?, ?)', tuple(row))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
@@ -423,7 +427,7 @@ class HandleDataBaseModel:
             for row in rows:
                 self.cursor.execute("delete from Posts where Post_name = ?", (row[0],))
                 self.cursor.execute(f'insert into Posts(Post_name, Salary_in_one_worker, Work_time, '
-                                    f'Sum_of_workers, Sum_salary) values {tuple(row)}')
+                                    f'Sum_of_workers, Sum_salary) values (?, ?, ?, ?, ?)', tuple(row))
             self.connection.commit()
             return rows
         except sqlite3.Error as e:
@@ -436,7 +440,7 @@ class HandleDataBaseModel:
             for i in tables_elements:
                 self.cursor.execute("delete from Posts where Post_name = ?", (i[0],))
                 self.cursor.execute(f'insert into Posts(Post_name, Salary_in_one_worker, Work_time, '
-                                    f'Sum_of_workers, Sum_salary) values {tuple(i)}')
+                                    f'Sum_of_workers, Sum_salary) values (?, ?, ?, ?, ?)', tuple(i))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
