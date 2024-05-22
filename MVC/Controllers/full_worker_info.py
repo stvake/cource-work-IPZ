@@ -31,8 +31,6 @@ class FullWorkerInfoController:
                 self.image_data = f.read()
 
     def refresh_workers(self):
-        for i in self.view.tabs['Workers'].frame.interior.winfo_children():
-            i.destroy()
         self.worker_controller.all_workers_controller.refresh()
 
     def get_info_from_db(self, worker_id):
@@ -80,9 +78,9 @@ class FullWorkerInfoController:
                 self.tab.tables_other[i].insert(parent='', index=END, values=row[1:])
 
     def close_tab(self):
-        info = [i.get() for i in self.tab.entries_general]
+        info = [i.get() if i.get() != "" else None for i in self.tab.entries_general]
         info.insert(4, self.image_data)
-        mil_info = [i.get() for i in self.tab.entries_secondSection]
+        mil_info = [i.get() if i.get() != "" else None for i in self.tab.entries_secondSection]
 
         if self.model.update_info(self.tab.id, info, mil_info):
             showwarning("Зауваження", "Правильно заповніть поля.")

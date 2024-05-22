@@ -27,8 +27,6 @@ class AddNewWorkerController:
             self.tab.image_label.config(text='', image=self.tab.photo)
 
     def refresh_workers(self):
-        for i in self.view.tabs['Workers'].frame.interior.winfo_children():
-            i.destroy()
         self.main_controller.all_workers_controller.refresh()
 
     def save_worker(self):
@@ -41,9 +39,9 @@ class AddNewWorkerController:
             with open(self.photo_path, 'rb') as file:
                 image_data = file.read()
                 self.model.upload_image(self.id, image_data)
-                info = [i.get() for i in self.tab.entries_general]
+                info = [i.get() if i.get() != "" else None for i in self.tab.entries_general]
                 info.insert(4, image_data)
-                mil_info = [i.get() for i in self.tab.entries_secondSection]
+                mil_info = [i.get() if i.get() != "" else None for i in self.tab.entries_secondSection]
                 if self.model.update_info(self.id, info, mil_info):
                     showwarning("Зауваження", "Правильно заповніть поля.")
                     return

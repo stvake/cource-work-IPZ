@@ -1,3 +1,5 @@
+import locale
+
 from MVC.Controllers.all_workers import AllWorkersController
 from MVC.Controllers.worker import WorkerController
 
@@ -19,17 +21,48 @@ class UnitWorkersController(AllWorkersController):
         self.tab.add_tab()
         self.tab.sort_lastname.config(command=lambda: self.sort_by('LastName'))
         self.tab.sort_firstname.config(command=lambda: self.sort_by('FirstName'))
+        self.tab.sort_salary.config(command=lambda: self.sort_by('salary'))
 
     def _get_all_workers(self, sort_by='LastName', reverse=False):
-        for i in self.model.get_unit_workers(self.unit_name, sort_by, reverse):
-            self.view.create_tab(
-                'Worker',
-                i,
-                i,
-                self.tab.frame.interior,
-                self.tab.notebook
-            )
-            self.workers_controllers[f'{i}'] = WorkerController(self, self.model, self.view, i)
+        if not self.workers_controllers:
+            for i in self.model.get_unit_workers(self.unit_name):
+                self.view.create_tab(
+                    'Worker',
+                    i,
+                    i,
+                    self.tab.frame.interior,
+                    self.tab.notebook
+                )
+                self.workers_controllers[f'{i}'] = WorkerController(self, self.model, self.view, i)
+
+        else:
+            sorted_ids = []
+
+            if sort_by == 'LastName':
+                ids = [(i, self.workers_controllers[i].worker.name_text.get(1.0, 'end-1c').split()[0])
+                       for i in self.workers_controllers]
+                sorted_ids = [i[0] for i in sorted(ids, key=lambda x: locale.strxfrm(x[1]), reverse=reverse)]
+            elif sort_by == 'FirstName':
+                ids = [(i, self.workers_controllers[i].worker.name_text.get(1.0, 'end-1c').split()[1])
+                       for i in self.workers_controllers]
+                sorted_ids = [i[0] for i in sorted(ids, key=lambda x: locale.strxfrm(x[1]), reverse=reverse)]
+            elif sort_by == 'salary':
+                ids = [(i, int(self.workers_controllers[i].worker.salary_text.get(1.0, 'end-1c')))
+                       for i in self.workers_controllers]
+                sorted_ids = [i[0] for i in sorted(ids, key=lambda x: x[1], reverse=reverse)]
+
+            for i in self.tab.frame.interior.winfo_children():
+                i.destroy()
+
+            for i in sorted_ids:
+                self.view.create_tab(
+                    'Worker',
+                    i,
+                    i,
+                    self.tab.frame.interior,
+                    self.tab.notebook
+                )
+                self.workers_controllers[f'{i}'] = WorkerController(self, self.model, self.view, i)
 
     def add_worker(self):
         add_worker_win = Toplevel(self.view.app)
