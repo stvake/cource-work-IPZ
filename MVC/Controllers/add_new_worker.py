@@ -27,8 +27,6 @@ class AddNewWorkerController:
             self.tab.image_label.config(text='', image=self.tab.photo)
 
     def refresh_workers(self):
-        for i in self.view.tabs['Workers'].frame.interior.winfo_children():
-            i.destroy()
         self.main_controller.all_workers_controller.refresh()
 
     def save_worker(self):

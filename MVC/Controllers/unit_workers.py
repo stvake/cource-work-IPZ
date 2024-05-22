@@ -21,6 +21,7 @@ class UnitWorkersController(AllWorkersController):
         self.tab.add_tab()
         self.tab.sort_lastname.config(command=lambda: self.sort_by('LastName'))
         self.tab.sort_firstname.config(command=lambda: self.sort_by('FirstName'))
+        self.tab.sort_salary.config(command=lambda: self.sort_by('salary'))
 
     def _get_all_workers(self, sort_by='LastName', reverse=False):
         if not self.workers_controllers:

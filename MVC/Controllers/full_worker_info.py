@@ -31,8 +31,6 @@ class FullWorkerInfoController:
                 self.image_data = f.read()
 
     def refresh_workers(self):
-        for i in self.view.tabs['Workers'].frame.interior.winfo_children():
-            i.destroy()
         self.worker_controller.all_workers_controller.refresh()
 
     def get_info_from_db(self, worker_id):
