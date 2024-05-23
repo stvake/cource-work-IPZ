@@ -25,7 +25,7 @@ jobs:
           pip install pillow
 
       - name: Build executable
-        run: pyinstaller --noconfirm --onedir --windowed --icon "./workers.ico" --name "HumanResourceDepartment" --contents-directory "." --add-data "./HumanResourceDepartment.db;." --add-data "./photos/background.png;photos/" --add-data "./photos/workers.png;photos/"  "./main.py"
+        run: pyinstaller --noconfirm --onedir --windowed --icon "./workers.ico" --name "HumanResourceDepartment" --contents-directory "." --add-data "./HumanResourceDepartment.db:." --add-data "./photos/background.png:photos/" --add-data "./photos/workers.png:photos/" "./main.py"
 
       - name: Create zip archive
         run: |
