@@ -1,6 +1,7 @@
 import sqlite3
 import datetime
 import locale
+import re
 
 
 class HandleDataBaseModel:
@@ -8,6 +9,17 @@ class HandleDataBaseModel:
         self.connection = sqlite3.connect('HumanResourceDepartment.db')
         self.cursor = self.connection.cursor()
         locale.setlocale(locale.LC_ALL, 'uk_UA.UTF-8')
+
+    @staticmethod
+    def is_valid_date(date_string):
+        date_pattern = r'^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$'
+        if date_string:
+            if re.fullmatch(date_pattern, date_string):
+                return True
+            else:
+                return False
+        else:
+            return True
 
     def get_worker_info(self, worker_id):
         self.cursor.execute("SELECT * FROM Workers WHERE id = ?", (worker_id,))
@@ -81,22 +93,34 @@ class HandleDataBaseModel:
             self.cursor.execute("delete from FullInfo where worker_id = ?", (worker_id,))
             self.cursor.execute("delete from Military where worker_id = ?", (worker_id,))
 
-            self.cursor.execute("insert into Workers (id, LastName, FirstName, Patronymic, BirthDate)"
-                                "values (?, ?, ?, ?, ?)", tuple([worker_id] + info[0:4]))
+            if self.is_valid_date(info[3]):
+                self.cursor.execute("insert into Workers (id, LastName, FirstName, Patronymic, BirthDate)"
+                                    "values (?, ?, ?, ?, ?)", tuple([worker_id] + info[0:4]))
+            else:
+                self.connection.rollback()
+                return "err"
             self.cursor.execute("update Workers set Photo = ? where id= ?",
                                 (sqlite3.Binary(info[4]), worker_id))
             self.cursor.execute("update Workers set unit_name = ? where id=?", (unit_name, worker_id))
 
-            self.cursor.execute("insert into FullInfo (worker_id, Nationality, Education, LastWork, LastWorkPost, "
-                                "WorkExperienceDate, WorkExperienceDays, WorkExperienceMonths, WorkExperienceYears, "
-                                "WorkBonusDays, WorkBonusMonths, WorkBonusYears, OldFireDate, OldFireReason, Pension, "
-                                "FamilyStatus, ActualResidence, RegisteredResidence, RegisteredResidence_cont, "
-                                "PassportSeries, PassportNumber, PassportIssuedBy, PassportIssueDate, AdditionalInfo, "
-                                "AdditionalInfo_cont, FireDate, FireReason, PersonnelServiceEmployeePost, "
-                                "PersonnelServiceEmployeeSign, PersonnelServiceEmployeePIB, EmployeePIB, EmployeeSign,"
-                                "EmployeeFireDate, EmployeeFireYear)"
-                                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                                "?, ?, ?, ?, ?, ?, ?, ?)", tuple([worker_id]+info[5:]))
+            if (self.is_valid_date(info[9]) and
+                    self.is_valid_date(info[16]) and
+                    self.is_valid_date(info[26]) and
+                    self.is_valid_date(info[29]) and
+                    self.is_valid_date(info[36])):
+                self.cursor.execute("insert into FullInfo (worker_id, Nationality, Education, LastWork, "
+                                    "LastWorkPost, WorkExperienceDate, WorkExperienceDays, WorkExperienceMonths, "
+                                    "WorkExperienceYears, WorkBonusDays, WorkBonusMonths, WorkBonusYears, OldFireDate, "
+                                    "OldFireReason, Pension, FamilyStatus, ActualResidence, RegisteredResidence, "
+                                    "RegisteredResidence_cont, PassportSeries, PassportNumber, PassportIssuedBy, "
+                                    "PassportIssueDate, AdditionalInfo, AdditionalInfo_cont, FireDate, FireReason, "
+                                    "PersonnelServiceEmployeePost, PersonnelServiceEmployeeSign, "
+                                    "PersonnelServiceEmployeePIB, EmployeePIB, EmployeeSign, EmployeeFireDate, "
+                                    "EmployeeFireYear) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                    "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tuple([worker_id]+info[5:]))
+            else:
+                self.connection.rollback()
+                return "err"
 
             self.cursor.execute("insert into Military (worker_id, AccountingGroup, Suitability, AccountingCategory, "
                                 "CommitteeNameRegistration, AccountingCategory_cont, CommitteeNameRegistration_cont, "
@@ -131,27 +155,43 @@ class HandleDataBaseModel:
                 elif table_number == 3:
                     self.cursor.execute("DELETE FROM Family WHERE worker_id = ?", (worker_id,))
                     for row in data:
-                        self.cursor.execute("INSERT INTO Family (worker_id, member, PIB, BirthDate) VALUES "
-                                            "(?, ?, ?, ?)", tuple([worker_id] + row))
+                        if self.is_valid_date(row[-1]):
+                            self.cursor.execute("INSERT INTO Family (worker_id, member, PIB, BirthDate) VALUES "
+                                                "(?, ?, ?, ?)", tuple([worker_id] + row))
+                        else:
+                            self.connection.rollback()
+                            return "err"
             else:
                 if table_number == 0:
                     self.cursor.execute("DELETE FROM ProfessionalEducation WHERE worker_id = ?",
                                         (worker_id,))
                     for row in data:
-                        self.cursor.execute(
-                            "INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form,Document)"
-                            "VALUES (?, ?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
+                        if self.is_valid_date(row[0]):
+                            self.cursor.execute(
+                                "INSERT INTO ProfessionalEducation(worker_id, Date, Name, Period, Type, Form, "
+                                "Document) VALUES (?, ?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
+                        else:
+                            self.connection.rollback()
+                            return "err"
                 elif table_number == 1:
                     self.cursor.execute("DELETE FROM Appointment WHERE worker_id = ?", (worker_id,))
                     for row in data:
-                        self.cursor.execute("INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, "
-                                            "Salary, OrderBasis, Sign) "
-                                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
+                        if self.is_valid_date(row[0]):
+                            self.cursor.execute("INSERT INTO Appointment (worker_id, Date, Name, ProfName, Code, "
+                                                "Salary, OrderBasis, Sign) "
+                                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
+                        else:
+                            self.connection.rollback()
+                            return "err"
                 elif table_number == 2:
                     self.cursor.execute("DELETE FROM Vacation WHERE worker_id = ?", (worker_id,))
                     for row in data:
-                        self.cursor.execute("INSERT INTO Vacation(worker_id, Type, Period, Start, End, OrderBasis)"
-                                            "VALUES (?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
+                        if self.is_valid_date(row[2]) and self.is_valid_date(row[3]):
+                            self.cursor.execute("INSERT INTO Vacation(worker_id, Type, Period, Start, End, OrderBasis)"
+                                                "VALUES (?, ?, ?, ?, ?, ?)", tuple([worker_id] + row))
+                        else:
+                            self.connection.rollback()
+                            return "err"
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
@@ -185,7 +225,6 @@ class HandleDataBaseModel:
             self.connection.execute("begin transaction")
             self.cursor.execute(f"select name from sqlite_master where type='table' and name!='WorkersProjects'")
             tables = self.cursor.fetchall()
-            print(tables)
             for x in tables:
                 self.cursor.execute(f"pragma table_info({x[0]})")
                 self.cursor.execute(f"delete from {x[0]} where {self.cursor.fetchall()[0][1]}={worker_id}")
@@ -353,6 +392,7 @@ class HandleDataBaseModel:
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+            return e
 
     def update_units(self, old_units, units, ids):
         try:
@@ -388,6 +428,7 @@ class HandleDataBaseModel:
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+            return e
 
     def get_id_of_workers(self):
         self.cursor.execute("select id from Workers")
@@ -445,6 +486,7 @@ class HandleDataBaseModel:
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+            return e
 
     def get_projects_for_unit(self):
         self.cursor.execute("select Name from WorkersProjects")
@@ -462,6 +504,7 @@ class HandleDataBaseModel:
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")
             self.connection.rollback()
+            return e
 
     def get_work_hours(self, post_name):
         rows = []
