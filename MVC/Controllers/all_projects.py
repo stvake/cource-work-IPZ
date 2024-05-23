@@ -15,7 +15,7 @@ class AllProjectsController:
     def get_projects_from_db(self):
         info = self.model.get_all_projects()
         for i in info:
-            self.tab.projects_table.insert('', 'end', values=i[1:])
+            self.tab.projects_table.insert('', 'end', values=i)
 
     def close_tab(self):
         data = self.tab.projects_table.get_all_rows()

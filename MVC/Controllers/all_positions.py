@@ -1,4 +1,3 @@
-# from MVC.Controllers.full_worker_info import FullWorkerInfoController
 from MVC.Controllers.best_posts import BestPostsController
 from MVC.Controllers.best_worker import BestWorkerController
 
@@ -20,7 +19,7 @@ class PositionsController:
         self.post_name = None
         self.full_worker_info = {}
 
-        self.post_id = int()            # Змінеш коли зробиш таблицю в БД
+        self.post_id = int()
         self.get_posts_from_db()
 
     def get_posts_from_db(self):

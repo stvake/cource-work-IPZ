@@ -28,3 +28,4 @@ class FullWorkerInfoView(AddNewWorkerView):
 
     def _initialize_tab(self):
         self.notebook.insert("end", self.mainFrame, text=self.name)
+        self.notebook.select(self.mainFrame)

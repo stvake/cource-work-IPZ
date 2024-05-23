@@ -260,35 +260,8 @@ class HandleDataBaseModel:
             self.connection.execute("begin transaction")
             for row in data:
                 self.cursor.execute("delete from WorkersProjects where id=?", (row[0],))
-                self.cursor.execute('insert into WorkersProjects(mainworker_id, id, name, cost, '
-                                    'start, end, collaborators) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                                    tuple([self.get_worker_id(*row[-1].split(",")[0].split())]+row))
-            self.connection.commit()
-        except sqlite3.Error as e:
-            print(f"\033[91m{e}\033[0m")
-            self.connection.rollback()
-            return e
-
-    def update_worker_project_table(self, data, worker_id):
-        try:
-            self.connection.execute("begin transaction")
-            k = 0
-            self.cursor.execute("select count(*) from WorkersProjects where MainWorker_id = ?", (worker_id,))
-            old_rows = self.cursor.fetchone()[0]
-            self.cursor.execute('delete from WorkersProjects where MainWorker_id = ?', (worker_id,))
-            for row in data:
-                k += 1
-                row = [worker_id] + row
-                if k <= old_rows:
-                    self.cursor.execute(f'insert into WorkersProjects('
-                                        f'mainworker_id, id, name, cost, start, end, collaborators) '
-                                        f'VALUES (?, ?, ?, ?, ?, ?, ?)', tuple(row))
-                else:
-                    self.cursor.execute(f'select id from WorkersProjects order by id')
-                    row[1] = self.cursor.fetchall()[-1][0] + 1
-                    self.cursor.execute(f'insert into WorkersProjects('
-                                        f'mainworker_id, id, name, cost, start, end, collaborators) '
-                                        f'VALUES (?, ?, ?, ?, ?, ?, ?)', tuple(row))
+                self.cursor.execute('insert into WorkersProjects(id, name, cost, start, end, collaborators) '
+                                    'VALUES (?, ?, ?, ?, ?, ?)', tuple(row))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")

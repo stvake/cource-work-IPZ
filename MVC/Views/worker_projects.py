@@ -20,7 +20,8 @@ class WorkerProjectView:
 
         self.projects_table = EditableTable(self.mainScrolledFrame, columns=('ID', 'name', 'cost', 'start', 'end',
                                                                              'collaborators'),
-                                            show='headings', height=10, non_editable_columns=[0], allow_delete=False)
+                                            show='headings', height=10, non_editable_columns=[0, 1, 2, 3, 4, 5],
+                                            allow_delete=False)
         self.projects_table.heading('ID', text='№')
         self.projects_table.heading('name', text='Назва проекту')
         self.projects_table.heading('cost', text='Вартість проекту')
@@ -37,10 +38,7 @@ class WorkerProjectView:
 
         self.projects_table.pack(padx=5, pady=5, fill=BOTH)
 
-        self.closeTab_Button = ttk.Button(self.mainScrolledFrame, text="Зберегти та закрити вкладку")
+        self.closeTab_Button = ttk.Button(self.mainScrolledFrame, text="Закрити вкладку")
         self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
-
-        self.closeTabWithoutSave_Button = ttk.Button(self.mainScrolledFrame, text="Закрити вкладку без збереження")
-        self.closeTabWithoutSave_Button.pack(fill=BOTH, padx=5, pady=5)
 
         self.notebook.insert("end", self.mainFrame, text="Проекти: " + self.name)
