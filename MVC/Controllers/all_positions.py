@@ -9,8 +9,8 @@ class PositionsController:
         self.view = view
         self.view.tabs['Positions'] = self.view.create_tab('Positions')
         self.tab = self.view.tabs['Positions']
+        self.tab.save_Button.config(command=self.save)
         self.tab.closeTab_Button.config(command=self.close_tab)
-        self.tab.closeTabWithoutSave_Button.config(command=self.close_tab_without_save)
         self.tab.bestWorker_Button.config(command=self.open_best_worker_info)
         self.tab.bestPosts_Button.config(command=self.open_best_posts)
         self.worker = None
@@ -28,11 +28,11 @@ class PositionsController:
         for row in rows:
             self.tab.post_table.insert('', 'end', values=tuple(row))
 
-    def close_tab(self):
+    def save(self):
         all_elements = self.tab.post_table.get_all_rows()
         self.model.write_post(all_elements)
 
-    def close_tab_without_save(self):
+    def close_tab(self):
         self.tab.notebook.forget(self.tab.mainFrame)
 
     def open_best_worker_info(self):

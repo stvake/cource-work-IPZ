@@ -28,11 +28,11 @@ class AllPositionsView:
         self.bestPosts_Button = ttk.Button(self.frame, text="Відкрити вкладку з найбільш привабливими посадами")
         self.bestPosts_Button.pack(fill=BOTH, padx=5, pady=5)
 
-        self.closeTab_Button = ttk.Button(self.frame, text="Зберегти")
-        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
+        self.save_Button = ttk.Button(self.frame, text="Зберегти")
+        self.save_Button.pack(fill=BOTH, padx=5, pady=5)
 
-        self.closeTabWithoutSave_Button = ttk.Button(self.frame, text="Закрити без збереження")
-        self.closeTabWithoutSave_Button.pack(fill=BOTH, padx=5, pady=5)
+        self.closeTab_Button = ttk.Button(self.frame, text="Закрити")
+        self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
     def add_tab(self):
         self.notebook.insert("end", self.mainFrame, text="Список посад")

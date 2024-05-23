@@ -237,12 +237,12 @@ class AddNewWorkerView:
         self.professionalEducation_table.heading('Document', text='Назва документу, що посвідчує професійну освіту, '
                                                                   'ким виданий')
 
-        self.professionalEducation_table.column('Date', width=147)
-        self.professionalEducation_table.column('Name', width=147)
-        self.professionalEducation_table.column('Period', width=147)
+        self.professionalEducation_table.column('Date', width=70)
+        self.professionalEducation_table.column('Name', width=224)
+        self.professionalEducation_table.column('Period', width=70)
         self.professionalEducation_table.column('Type', width=147)
         self.professionalEducation_table.column('Form', width=147)
-        self.professionalEducation_table.column('Document', width=147)
+        self.professionalEducation_table.column('Document', width=224)
         self.professionalEducation_table.grid(row=0, column=0, columnspan=6, padx=5, pady=5)
         self.tables_other.append(self.professionalEducation_table)
 
@@ -257,11 +257,11 @@ class AddNewWorkerView:
         self.appointment_table.heading('Order', text='Підстава, наказ №')
         self.appointment_table.heading('Sign', text='Підпис працівника')
 
-        self.appointment_table.column('Date', width=126)
-        self.appointment_table.column('Name', width=126)
-        self.appointment_table.column('ProfName', width=126)
-        self.appointment_table.column('Code', width=126)
-        self.appointment_table.column('Salary', width=126)
+        self.appointment_table.column('Date', width=70)
+        self.appointment_table.column('Name', width=220)
+        self.appointment_table.column('ProfName', width=200)
+        self.appointment_table.column('Code', width=70)
+        self.appointment_table.column('Salary', width=70)
         self.appointment_table.column('Order', width=126)
         self.appointment_table.column('Sign', width=126)
         self.appointment_table.grid(row=0, column=0, columnspan=6, padx=5)
