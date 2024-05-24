@@ -467,7 +467,7 @@ class HandleDataBaseModel:
 
     def get_project_data_by_name(self, name):
         self.cursor.execute("select * from WorkersProjects where Name = ?", (name,))
-        return self.cursor.fetchone()[1:]
+        return self.cursor.fetchone()
 
     def set_unit_projects(self, projects, unit_name):
         try:
