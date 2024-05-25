@@ -42,3 +42,4 @@ class WorkerProjectView:
         self.closeTab_Button.pack(fill=BOTH, padx=5, pady=5)
 
         self.notebook.insert("end", self.mainFrame, text="Проекти: " + self.name)
+        self.notebook.select(self.mainFrame)
