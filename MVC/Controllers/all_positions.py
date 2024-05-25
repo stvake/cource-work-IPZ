@@ -1,6 +1,8 @@
 from MVC.Controllers.best_posts import BestPostsController
 from MVC.Controllers.best_worker import BestWorkerController
 
+from tkinter.messagebox import showwarning
+
 
 class PositionsController:
     def __init__(self, model, view):
@@ -29,7 +31,8 @@ class PositionsController:
 
     def save(self):
         all_elements = self.tab.post_table.get_all_rows()
-        self.model.write_post(all_elements)
+        if self.model.write_post(all_elements):
+            showwarning("Увага", "Змініть дані.")
 
     def close_tab(self):
         self.tab.notebook.forget(self.tab.mainFrame)
