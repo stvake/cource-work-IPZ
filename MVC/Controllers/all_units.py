@@ -68,8 +68,6 @@ class UnitsController:
             self.unit_projects[unit_name] = UnitProjectsController(self, unit_name, self.model, self.view)
 
     def _save(self):
-        self._sort_by_cost(reset=True)
-
         old_units = [(i[0], i[1][0]) for i in self.units]
         units = [i[0] for i in self.tab.units_table.get_all_rows()]
         ids = self.tab.units_table.get_children()
