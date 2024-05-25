@@ -1,5 +1,7 @@
 from MVC.Controllers.worker import WorkerController
 
+from tkinter.messagebox import showwarning
+
 
 class BestWorkerController:
     def __init__(self, model, view, post_name):
@@ -26,7 +28,7 @@ class BestWorkerController:
             try:
                 self.correlation1[i[0]] = self.correlation[i[0]] / i[1]
             except ZeroDivisionError:
-                pass
+                showwarning("Увага", "На даній посаді або немає працівників, або у працівника нульовий стаж")
         for i in self.correlation1.items():
             self.best_worker.append(i)
         self.best_worker = sorted(self.best_worker, key=lambda x: x[1], reverse=True)

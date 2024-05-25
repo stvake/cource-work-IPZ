@@ -70,9 +70,14 @@ class UnitWorkersController(AllWorkersController):
 
         workers_lf = LabelFrame(add_worker_win, text='Виберіть робітників')
         workers_lf.pack(padx=5, pady=5)
-        workers_table = ttk.Treeview(workers_lf, columns=('name', 'unit'), show='headings', selectmode=EXTENDED)
+        workers_table = ttk.Treeview(workers_lf, columns=('name', 'unit'), show='headings', selectmode=EXTENDED,
+                                     height=20)
         workers_table.heading('name', text='ПІБ')
         workers_table.heading('unit', text='Приналежність підрозділу')
+
+        workers_table.column('name', width=350)
+        workers_table.column('unit', width=400)
+
         workers_table.pack(padx=5, pady=5)
 
         not_unit_workers = self.model.get_not_unit_workers(self.unit_name)
@@ -91,7 +96,7 @@ class UnitWorkersController(AllWorkersController):
                     if ans:
                         self.model.set_worker_unit(not_unit_workers_ids[int(i[0][1:])-1], self.unit_name)
                 else:
-                    self.model.set_worker_unit(not_unit_workers_ids[int(i[0][1:])-1], self.unit_name)
+                    self.model.set_worker_unit(not_unit_workers_ids[int(i[0][1:], 16)-1], self.unit_name)
 
             self.view.worker_tabs.clear()
             self.workers_controllers.clear()

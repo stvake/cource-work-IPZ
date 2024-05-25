@@ -14,7 +14,7 @@ class AllPositionsView:
         self.frame.pack(expand=True, fill=BOTH)
 
         self.post_table = EditableTable(self.frame, columns=('Name', 'salary', 'time', 'amount', 'summ_salary'),
-                                        show='headings', height=32)
+                                        show='headings', height=32, non_editable_columns=[3, 4])
         self.post_table.heading('Name', text='Назва посади')
         self.post_table.heading('salary', text='Заробітна плата')
         self.post_table.heading('time', text='Кількість робочих годин')

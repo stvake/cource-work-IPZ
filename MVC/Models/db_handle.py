@@ -88,7 +88,9 @@ class HandleDataBaseModel:
         try:
             self.connection.execute("begin transaction")
             self.cursor.execute("select unit_name from Workers where id = ?", (worker_id,))
-            unit_name = self.cursor.fetchone()[0]
+            unit_name = self.cursor.fetchone()
+            if unit_name:
+                unit_name = unit_name[0]
             self.cursor.execute("delete from Workers where id = ?", (worker_id,))
             self.cursor.execute("delete from FullInfo where worker_id = ?", (worker_id,))
             self.cursor.execute("delete from Military where worker_id = ?", (worker_id,))
@@ -106,8 +108,7 @@ class HandleDataBaseModel:
             if (self.is_valid_date(info[9]) and
                     self.is_valid_date(info[16]) and
                     self.is_valid_date(info[26]) and
-                    self.is_valid_date(info[29]) and
-                    self.is_valid_date(info[36])):
+                    self.is_valid_date(info[29])):
                 self.cursor.execute("insert into FullInfo (worker_id, Nationality, Education, LastWork, "
                                     "LastWorkPost, WorkExperienceDate, WorkExperienceDays, WorkExperienceMonths, "
                                     "WorkExperienceYears, WorkBonusDays, WorkBonusMonths, WorkBonusYears, OldFireDate, "
@@ -204,7 +205,7 @@ class HandleDataBaseModel:
             self.cursor.execute("select * from Workers order by id desc")
             output = self.cursor.fetchall()[0][0] + 1
             self.cursor.execute("insert into Workers(id, LastName, FirstName, Patronymic, BirthDate, Photo, unit_name)"
-                                "values (?, ?, ?, ?, ?, ?, ?)", (output, '', '', '', '', '', ''))
+                                "values (?, ?, ?, ?, ?, ?, ?)", (output, '', '', '', '', None, None))
             self.connection.commit()
             return output
         except sqlite3.Error as e:
@@ -453,8 +454,8 @@ class HandleDataBaseModel:
             self.connection.execute("begin transaction")
             for i in tables_elements:
                 self.cursor.execute("delete from Posts where Post_name = ?", (i[0],))
-                self.cursor.execute(f'insert into Posts(Post_name, Salary_in_one_worker, Work_time, '
-                                    f'Sum_of_workers, Sum_salary) values (?, ?, ?, ?, ?)', tuple(i))
+                self.cursor.execute('insert into Posts(Post_name, Salary_in_one_worker, Work_time) '
+                                    'values (?, ?, ?)', tuple(i))
             self.connection.commit()
         except sqlite3.Error as e:
             print(f"\033[91m{e}\033[0m")

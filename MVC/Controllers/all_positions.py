@@ -31,7 +31,7 @@ class PositionsController:
 
     def save(self):
         all_elements = self.tab.post_table.get_all_rows()
-        if self.model.write_post(all_elements):
+        if self.model.write_post([i[:-2] for i in all_elements]):
             showwarning("Увага", "Змініть дані.")
 
     def close_tab(self):
