@@ -15,7 +15,7 @@ class UnitProjectsView:
         self.frame.pack(expand=True, fill=BOTH)
 
         self.projects_table = ComboboxTable(self.frame, columns=('ID', 'name', 'cost', 'start', 'end', 'collaborators'),
-                                            show='headings', height=10, allow_delete=False,
+                                            show='headings', height=35, allow_delete=False,
                                             non_editable_columns=[0, 2, 3, 4, 5])
         self.projects_table.heading('ID', text='№')
         self.projects_table.heading('name', text='Назва проекту')

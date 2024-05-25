@@ -14,15 +14,15 @@ class AllPositionsView:
         self.frame.pack(expand=True, fill=BOTH)
 
         self.post_table = EditableTable(self.frame, columns=('Name', 'salary', 'time', 'amount', 'summ_salary'),
-                                              show='headings', height=10)
+                                        show='headings', height=32)
         self.post_table.heading('Name', text='Назва посади')
-        self.post_table.heading('salary', text='Заробітня плата')
+        self.post_table.heading('salary', text='Заробітна плата')
         self.post_table.heading('time', text='Кількість робочих годин')
         self.post_table.heading('amount', text='Кількість працівників')
-        self.post_table.heading('summ_salary', text='Сума заробітньої плати')
-        self.post_table.pack()
+        self.post_table.heading('summ_salary', text='Сума заробітної плати')
+        self.post_table.pack(padx=5, pady=5)
 
-        self.bestWorker_Button = ttk.Button(self.frame, text="Відкрити справу найкращього працівника на вибраній посаді")
+        self.bestWorker_Button = ttk.Button(self.frame, text="Відкрити справу найкращого працівника на вибраній посаді")
         self.bestWorker_Button.pack(fill=BOTH, padx=5, pady=5)
 
         self.bestPosts_Button = ttk.Button(self.frame, text="Відкрити вкладку з найбільш привабливими посадами")

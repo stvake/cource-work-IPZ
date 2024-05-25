@@ -39,13 +39,13 @@ class AllUnitsView:
         self.units_table = EditableTable(self.table_frame,
                                          columns=('Name', 'number_of_workers', 'number_of_active_projects',
                                                   'number_of_all_projects', 'projects_cost'),
-                                         show='headings', height=10, non_editable_columns=[1, 2, 3, 4])
+                                         show='headings', height=30, non_editable_columns=[1, 2, 3, 4])
         self.units_table.heading('Name', text='Назва підрозділу')
         self.units_table.heading('number_of_workers', text='Кількість робітників')
         self.units_table.heading('number_of_active_projects', text='Кількість незавершених проектів')
         self.units_table.heading('number_of_all_projects', text='Кількість всіх проектів')
         self.units_table.heading('projects_cost', text='Сумарна вартість усіх проектів')
-        self.units_table.pack()
+        self.units_table.pack(padx=5, pady=5)
 
     def recreate_table(self):
         self.units_table.destroy()

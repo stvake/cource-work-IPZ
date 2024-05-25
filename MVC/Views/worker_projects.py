@@ -20,7 +20,7 @@ class WorkerProjectView:
 
         self.projects_table = EditableTable(self.mainScrolledFrame, columns=('ID', 'name', 'cost', 'start', 'end',
                                                                              'collaborators'),
-                                            show='headings', height=10, non_editable_columns=[0, 1, 2, 3, 4, 5],
+                                            show='headings', height=35, non_editable_columns=[0, 1, 2, 3, 4, 5],
                                             allow_delete=False)
         self.projects_table.heading('ID', text='№')
         self.projects_table.heading('name', text='Назва проекту')
