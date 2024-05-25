@@ -452,8 +452,8 @@ class HandleDataBaseModel:
     def write_post(self, tables_elements):
         try:
             self.connection.execute("begin transaction")
+            self.cursor.execute("delete from Posts")
             for i in tables_elements:
-                self.cursor.execute("delete from Posts where Post_name = ?", (i[0],))
                 self.cursor.execute('insert into Posts(Post_name, Salary_in_one_worker, Work_time) '
                                     'values (?, ?, ?)', tuple(i))
             self.connection.commit()
