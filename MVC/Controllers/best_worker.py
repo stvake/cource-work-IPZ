@@ -15,8 +15,11 @@ class BestWorkerController:
         self.correlation = {}
         self.correlation1 = {}
         self.best_worker = []
-        self.find_best_worker()
-        self.show_best_worker()
+        if not self.find_best_worker():
+            self.show_best_worker()
+        else:
+            self.close_tab()
+            showwarning("Увага", "На даній посаді немає працівників.")
 
     def find_best_worker(self):
         workers_hours = self.model.get_work_hours(self.post_name)
@@ -28,11 +31,15 @@ class BestWorkerController:
             try:
                 self.correlation1[i[0]] = self.correlation[i[0]] / i[1]
             except ZeroDivisionError:
-                showwarning("Увага", "На даній посаді або немає працівників, або у працівника нульовий стаж")
+                showwarning("Увага", "На даній посаді у працівника нульовий стаж.")
+                return
         for i in self.correlation1.items():
             self.best_worker.append(i)
         self.best_worker = sorted(self.best_worker, key=lambda x: x[1], reverse=True)
-        self.worker_id = self.best_worker[0][0]
+        try:
+            self.worker_id = self.best_worker[0][0]
+        except IndexError:
+            return 'err'
 
     def show_best_worker(self):
         self.view.create_tab(

@@ -501,7 +501,6 @@ class HandleDataBaseModel:
             help1 = []
             help2[i][1] = (now.date() - datetime.datetime.strptime(rows[i][1], "%d-%m-%Y").date()).days
 
-        self.connection.commit()
         return help2
 
     def get_projects_cost(self):
@@ -518,9 +517,11 @@ class HandleDataBaseModel:
 
         for i in collaborators:
             for j in i[1].split(", "):
-                projects_cost[j] += i[0]
+                try:
+                    projects_cost[j] += i[0]
+                except KeyError:
+                    pass
 
-        self.connection.commit()
         return projects_cost
 
     def get_all_worker(self):

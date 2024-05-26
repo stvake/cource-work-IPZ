@@ -12,7 +12,7 @@ class BestPostsView:
 
         self.best_posts_table.heading('№', text="Рейтинг")
         self.best_posts_table.heading('Name', text="Назва посади")
-        self.best_posts_table.heading('HourEarn', text="Заробіток за час")
+        self.best_posts_table.heading('HourEarn', text="Оплата за годину")
         self.best_posts_table.pack(padx=5, pady=5)
 
         self.notebook.insert("end", self.mainFrame, text="5 найпривабливіших посад")
