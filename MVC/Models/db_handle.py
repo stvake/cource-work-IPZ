@@ -254,7 +254,10 @@ class HandleDataBaseModel:
     def get_worker_id(self, last_name, first_name):
         self.cursor.execute(f"select id from Workers where LastName=? and FirstName=?",
                             (last_name, first_name))
-        return self.cursor.fetchone()[0]
+        try:
+            return self.cursor.fetchone()[0]
+        except TypeError:
+            pass
 
     def update_projects_table(self, data):
         try:
