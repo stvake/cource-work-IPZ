@@ -24,9 +24,9 @@ class HandleDataBaseModel:
     def get_worker_info(self, worker_id):
         self.cursor.execute("SELECT * FROM Workers WHERE id = ?", (worker_id,))
         info = list(self.cursor.fetchone())[:-1]
-        self.cursor.execute("SELECT * FROM Appointment WHERE worker_id = ? ORDER BY Date DESC",
+        self.cursor.execute("SELECT * FROM Appointment WHERE worker_id = ?",
                             (worker_id,))
-        info.append(self.cursor.fetchall()[0][3])
+        info.append(self.cursor.fetchall()[-1][3])
         self.cursor.execute("SELECT Salary_in_one_worker FROM Posts WHERE Post_name = ?", (info[6],))
         info.append(self.cursor.fetchone()[0])
         info = tuple(info)
@@ -433,7 +433,7 @@ class HandleDataBaseModel:
                 for j in workers_id:
                     self.cursor.execute("select Date, ProfName from Appointment where worker_id = ?", (j,))
                     date_prof = self.cursor.fetchall()
-                    sorted_help = sorted(date_prof, key=lambda x: x[0])
+                    sorted_help = sorted(date_prof, key=lambda x: datetime.datetime.strptime(x[0], '%d-%m-%Y'))
                     if sorted_help[-1][1] == names[i][0]:
                         help_count += 1
                 row.append(help_count)
